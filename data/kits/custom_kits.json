@@ -1,0 +1,108 @@
+{
+    "CUSTOM-TEST-01": {
+        "id": "CUSTOM-TEST-01",
+        "name": "Kit Manual de Teste",
+        "pole_id": "P11/600",
+        "materials": [
+            {
+                "sap": "307941",
+                "description": "MATERIAL TESTE 1",
+                "qty": 2.0
+            },
+            {
+                "sap": "999999",
+                "description": "MATERIAL TESTE 2",
+                "qty": 5.0
+            }
+        ]
+    },
+    "9/300-SI4-70AMX": {
+        "id": "9/300-SI4-70AMX",
+        "name": "POSTE BT PASSANTE CABO 70",
+        "pole_id": "",
+        "materials": [
+            {
+                "sap": "P29300",
+                "description": "P29300 INST POSTE DUPLO T CONCR 9/300",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "SI4",
+                "description": "SI4 INST 2 FINS DE REDE ANCORAGEM DUPLA",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "A-18",
+                "description": "A-18     INST SUPORTE DE ALCA PRE-FORMA",
+                "qty": 2,
+                "manual_price": null
+            },
+            {
+                "sap": "M14S1/0B",
+                "description": "M14S1/0B INST ALÇA PRE FORM 4-1/0 AWG",
+                "qty": 2,
+                "manual_price": null
+            }
+        ],
+        "labor": [
+            {
+                "description": "9m / 300daN (Unidade)",
+                "cost": 794.95
+            }
+        ]
+    },
+    "9/300-FDR": {
+        "id": "9/300-FDR",
+        "name": "9/300+SI3+AT-2",
+        "pole_id": "P19300B",
+        "materials": [
+            {
+                "sap": "SI3",
+                "description": "SI3 INST FIM DE REDE ANCORAGEM SIMPLES",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "M14S1/0B",
+                "description": "M14S1/0B INST ALÇA PRE FORM 4-1/0 AWG",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "A-18",
+                "description": "A-18     INST SUPORTE DE ALCA PRE-FORMA",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "329186",
+                "description": "CINTA POSTE CIRC ACO CARB 220,00MM",
+                "qty": 1,
+                "manual_price": null
+            },
+            {
+                "sap": "AT-2",
+                "description": "AT-2     INST ATERRAMENTO TIPO 2",
+                "qty": 1,
+                "manual_price": null
+            }
+        ],
+        "labor": []
+    },
+    "13CE3": {
+        "id": "13CE3",
+        "name": "RD.AE.COMPACTA PARA FIM REDE",
+        "pole_id": "",
+        "materials": [
+            {
+                "sap": "329186",
+                "description": "CINTA POSTE CIRC ACO CARB 220,00MM",
+                "qty": 3,
+                "manual_price": 32.8
+            }
+        ],
+        "labor": []
+    }
+}

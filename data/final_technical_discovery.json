@@ -1,0 +1,499 @@
+{
+    "cables": [],
+    "transformers": [],
+    "standard_values": {},
+    "coef_unitario_full": [
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "Cabos",
+            "Unnamed: 2": "R",
+            "Unnamed: 3": "X",
+            "Unnamed: 4": "Coef. Queda"
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "33 AA",
+            "Unnamed: 2": 1.0903,
+            "Unnamed: 3": 0.4034,
+            "Unnamed: 4": 0.24019300620579181
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "33 AC",
+            "Unnamed: 2": 1.0254,
+            "Unnamed: 3": 0.3419,
+            "Unnamed: 4": 0.2233260601622641
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "53 AA",
+            "Unnamed: 2": 0.7059,
+            "Unnamed: 3": 0.3705,
+            "Unnamed: 4": 0.16471556691382963
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "53 AC",
+            "Unnamed: 2": 0.6456,
+            "Unnamed: 3": 0.3235,
+            "Unnamed: 4": 0.14919753390048443
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "107 A",
+            "Unnamed: 2": 0.3225,
+            "Unnamed: 3": 0.2968,
+            "Unnamed: 4": 0.09055539996267538
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "107 AC",
+            "Unnamed: 2": 0.325,
+            "Unnamed: 3": 0.2968,
+            "Unnamed: 4": 0.09093614360819147
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "201 A",
+            "Unnamed: 2": 0.1731,
+            "Unnamed: 3": 0.2686,
+            "Unnamed: 4": 0.06602187621895751
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "201 AC",
+            "Unnamed: 2": 0.1731,
+            "Unnamed: 3": 0.2686,
+            "Unnamed: 4": 0.06602187621895751
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "53 QX",
+            "Unnamed: 2": 0.6641,
+            "Unnamed: 3": 0.1311,
+            "Unnamed: 4": 0.13985879198405582
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "85 QX",
+            "Unnamed: 2": 0.418,
+            "Unnamed: 3": 0.1279,
+            "Unnamed: 4": 0.09031606207978218
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "107 QX",
+            "Unnamed: 2": 0.3313,
+            "Unnamed: 3": 0.129,
+            "Unnamed: 4": 0.07345635270239954
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "53 MX",
+            "Unnamed: 2": 0.6641,
+            "Unnamed: 3": 0.1311,
+            "Unnamed: 4": 0.13985879198405582
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "70 MMX",
+            "Unnamed: 2": 0.5697,
+            "Unnamed: 3": 0.126,
+            "Unnamed: 4": 0.12055109501134868
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "185 MMX",
+            "Unnamed: 2": 0.2149,
+            "Unnamed: 3": 0.1178,
+            "Unnamed: 4": 0.05063410576365036
+        }
+    ],
+    "tabela_sheet_full": [
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "VALENDO: retirados da tabela feita p/ o SGD e também das tabelas da rede aérea.",
+            "Unnamed: 2": NaN,
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "Ampacidade:",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "Seção",
+            "Unnamed: 2": "Z1, Z2 (90 ºC) em W/km",
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": "Z0 (90 ºC) em W/km",
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "Ampacidade dos Cabos Subterrâneos.xls",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": NaN,
+            "Unnamed: 2": "Rca",
+            "Unnamed: 3": "jXL",
+            "Unnamed: 4": "Rca",
+            "Unnamed: 5": "jXL",
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "25 Al - Arm",
+            "Unnamed: 2": 1.5693,
+            "Unnamed: 3": 0.1071,
+            "Unnamed: 4": 2.5147,
+            "Unnamed: 5": 0.5168,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "AMPACIDADE1 DE CABOS ARMADOS-revisão.xls",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "50 Al - Arm",
+            "Unnamed: 2": 0.8388,
+            "Unnamed: 3": 0.1017,
+            "Unnamed: 4": 1.5913,
+            "Unnamed: 5": 0.3498,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "95 Al - Arm",
+            "Unnamed: 2": 0.4197,
+            "Unnamed: 3": 0.0882,
+            "Unnamed: 4": 1.0022,
+            "Unnamed: 5": 0.2443,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "..\\ARQ_2_ANEXOS\\Ampacidade_PVC_XLPE_NBR_5410_2004.pdf",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "240 Al - Arm",
+            "Unnamed: 2": 0.1665,
+            "Unnamed: 3": 0.0858,
+            "Unnamed: 4": 0.4335,
+            "Unnamed: 5": 0.129,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "25 Al",
+            "Unnamed: 2": 1.5693,
+            "Unnamed: 3": 0.109,
+            "Unnamed: 4": 2.6837,
+            "Unnamed: 5": 0.7544,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "..\\ARQ_2_ANEXOS\\Tabela_33_NBR_5410_2004.pdf",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "35 Cu",
+            "Unnamed: 2": 0.6887,
+            "Unnamed: 3": 0.1048,
+            "Unnamed: 4": 1.3095,
+            "Unnamed: 5": 0.2742,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "70 Cu",
+            "Unnamed: 2": 0.3523,
+            "Unnamed: 3": 0.1024,
+            "Unnamed: 4": 0.9706,
+            "Unnamed: 5": 0.2753,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "Colocar hiperlink do cabo concêntrico",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "95 Al",
+            "Unnamed: 2": 0.4195,
+            "Unnamed: 3": 0.0958,
+            "Unnamed: 4": 1.0367,
+            "Unnamed: 5": 0.2733,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "120 Cu",
+            "Unnamed: 2": 0.2023,
+            "Unnamed: 3": 0.0971,
+            "Unnamed: 4": 0.5365,
+            "Unnamed: 5": 0.156,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": "..\\ARQ_2_ANEXOS\\TABELA AMPACIDADADE_2 CIRCUITOS NO DUTO.doc",
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "240 Al",
+            "Unnamed: 2": 0.1663,
+            "Unnamed: 3": 0.0897,
+            "Unnamed: 4": 0.3601,
+            "Unnamed: 5": 0.1188,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "240 Cu",
+            "Unnamed: 2": 0.1035,
+            "Unnamed: 3": 0.0897,
+            "Unnamed: 4": 0.2973,
+            "Unnamed: 5": 0.1188,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "500 Cu",
+            "Unnamed: 2": 0.0568,
+            "Unnamed: 3": 0.0849,
+            "Unnamed: 4": 0.1535,
+            "Unnamed: 5": 0.1027,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "10_CONC_bi",
+            "Unnamed: 2": 2.3801016600000002,
+            "Unnamed: 3": 0.0001,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "10_CONC_Tri",
+            "Unnamed: 2": 2.3801016600000002,
+            "Unnamed: 3": 0.0001,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "13 Al - DX",
+            "Unnamed: 2": 2.6655,
+            "Unnamed: 3": 0.1022,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "13 Al - TX",
+            "Unnamed: 2": 2.6655,
+            "Unnamed: 3": 0.1158,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "13 Al - QX",
+            "Unnamed: 2": 2.6655,
+            "Unnamed: 3": 0.1384,
+            "Unnamed: 4": 3.5597,
+            "Unnamed: 5": 2.2919,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "21 Al - QX",
+            "Unnamed: 2": 1.677,
+            "Unnamed: 3": 0.135,
+            "Unnamed: 4": 2.7425,
+            "Unnamed: 5": 1.9386,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "53 Al - QX",
+            "Unnamed: 2": 0.6641,
+            "Unnamed: 3": 0.1311,
+            "Unnamed: 4": 1.7012,
+            "Unnamed: 5": 1.0492,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "70 Al - MX",
+            "Unnamed: 2": 0.5697,
+            "Unnamed: 3": 0.126,
+            "Unnamed: 4": 0.7246,
+            "Unnamed: 5": 1.1694,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "185 Al - MX",
+            "Unnamed: 2": 0.2149,
+            "Unnamed: 3": 0.1178,
+            "Unnamed: 4": 0.9204,
+            "Unnamed: 5": 0.4612,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": NaN,
+            "Unnamed: 2": "Cabos de Média Tensão - MT - SUBTERRÂNEOS",
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": NaN,
+            "Unnamed: 2": "50 Cu - MT - S",
+            "Unnamed: 3": "95 Al - MT - S",
+            "Unnamed: 4": "120 Cu - MT - S",
+            "Unnamed: 5": "240 Al - MT - S",
+            "Unnamed: 6": "240 Cu - MT - S",
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "R (W/km)",
+            "Unnamed: 2": 0.4488,
+            "Unnamed: 3": 0.3896,
+            "Unnamed: 4": 0.1879,
+            "Unnamed: 5": 0.1555,
+            "Unnamed: 6": 0.0959,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "j X (W/km)",
+            "Unnamed: 2": 0.1663,
+            "Unnamed: 3": 0.1496,
+            "Unnamed: 4": 0.1431,
+            "Unnamed: 5": 0.1278,
+            "Unnamed: 6": 0.1278,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": NaN,
+            "Unnamed: 2": "Cabos de Média Tensão - MT - AÉREOS",
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": NaN,
+            "Unnamed: 2": "21 AA - MT - A",
+            "Unnamed: 3": "53 AA - MT - A",
+            "Unnamed: 4": "201 A - MT - A",
+            "Unnamed: 5": "53 SC - MT - A",
+            "Unnamed: 6": "201 SC - MT - A",
+            "Unnamed: 7": "50 PR - MT - A",
+            "Unnamed: 8": "185 PR - MT - A"
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "R (W/km)",
+            "Unnamed: 2": 1.7174,
+            "Unnamed: 3": 0.7168,
+            "Unnamed: 4": 0.1755,
+            "Unnamed: 5": 0.7171,
+            "Unnamed: 6": 0.1756,
+            "Unnamed: 7": 0.8223,
+            "Unnamed: 8": 0.2078
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "j X (W/km)",
+            "Unnamed: 2": 0.5488,
+            "Unnamed: 3": 0.485,
+            "Unnamed: 4": 0.3896,
+            "Unnamed: 5": 0.3512,
+            "Unnamed: 6": 0.2498,
+            "Unnamed: 7": 0.1653,
+            "Unnamed: 8": 0.1417
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "2012-04-15T00:00:00",
+            "Unnamed: 2": NaN,
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "2012-04-15T00:00:00",
+            "Unnamed: 2": NaN,
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        },
+        {
+            "Unnamed: 0": NaN,
+            "Unnamed: 1": "SIM",
+            "Unnamed: 2": NaN,
+            "Unnamed: 3": NaN,
+            "Unnamed: 4": NaN,
+            "Unnamed: 5": NaN,
+            "Unnamed: 6": NaN,
+            "Unnamed: 7": NaN,
+            "Unnamed: 8": NaN
+        }
+    ]
+}

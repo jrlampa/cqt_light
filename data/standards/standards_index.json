@@ -1,0 +1,226 @@
+{
+    "root": {
+        "dirs": [
+            "Padrões"
+        ],
+        "files": []
+    },
+    "Padrões": {
+        "dirs": [
+            "Padrão RCSN",
+            "PADRÃO VILA",
+            "REDE BT ZERO",
+            "REDE COMPACTA",
+            "REDE CONVENCIONAL",
+            "REDE MTX",
+            "REDE RURAL"
+        ],
+        "files": []
+    },
+    "Padrões\\Padrão RCSN": {
+        "dirs": [
+            "Padrão MBNM"
+        ],
+        "files": [
+            "122125 - Blindagem de rede - Estrutura para blindagem superior.pdf",
+            "122126 - Blindagem de rede - Estrutura para blindagem inferior.pdf",
+            "122130 fls.1a2 - Blindagem de rede - Estrutura de transição direta para BT - BRTDBT.pdf",
+            "122131 fls.1a2  - Estrutura de transição para BT com cruzamento entre redes - BRTCBT.pdf",
+            "122135 fls.1a2 - Blindagem de rede - Estrutura de transição direta em final de linha  - BRTDBT3.pdf",
+            "122136 fls.1a3 - Estrutura de transição rede MBNM  RCSN em derivação - MBNMRCSN.pdf",
+            "Estrutura CA CRZ - materiais r03.doc",
+            "Estrutura CA CRZ - montagem r03.doc",
+            "Estrutura CA DER - materiais r03.doc",
+            "Estrutura CA DER - montagem r03.doc",
+            "Estrutura CA EQ - materiais r03.doc",
+            "Estrutura CA EQ - montagem r03.doc",
+            "Estrutura CA FA - materiais r03.doc",
+            "Estrutura CA FA - montagem r03.doc",
+            "Estrutura CA PR - materiais r03.doc",
+            "Estrutura CA PR - montagem r03.doc",
+            "Estrutura CA TRCONV - materiais 2_3.doc",
+            "Estrutura CA TRCONV - materiais 3_3.doc",
+            "Estrutura CA TRCONV - montagem.doc",
+            "Estrutura CA-FU - materiais r03.doc",
+            "Estrutura CA-FU - montagem r03.doc",
+            "Estrutura CA1A - materiais r05.doc",
+            "Estrutura CA1A - montagem r05.doc",
+            "Estrutura CA2 - materiais r04.doc",
+            "Estrutura CA2 - montagem r04.doc",
+            "Estrutura CA2 TRAP - materiais 2_3 r04.doc",
+            "Estrutura CA2 TRAP - materiais 3_3 r04.doc",
+            "Estrutura CA2 TRAP - montagem r04.doc",
+            "Estrutura CA3 - materiais r03.doc",
+            "Estrutura CA3 - montagem r.03.doc",
+            "Estrutura CA4 - materiais r04.doc",
+            "Estrutura CA4 - montagem r04.doc",
+            "Estrutura SA - materiais r03.doc",
+            "Estrutura SA - montagem r03.doc",
+            "Estrutura SAI - materiais.doc",
+            "Estrutura SAI - montagem.doc",
+            "IT CTP 006_07_NorProAerea.doc",
+            "Padrão RCSN revisão 01 de 12122008.doc",
+            "Padrão RCSN revisão 02 de 22maio2009.doc",
+            "Padrão RCSN revisão 03 de 31102011.pdf",
+            "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "Recomendações CA CRZ CA DER mud lad e ramais n meio vão.doc",
+            "Rede de BT elevada.doc"
+        ]
+    },
+    "Padrões\\Padrão RCSN\\Padrão MBNM": {
+        "dirs": [
+            "FOTOS"
+        ],
+        "files": [
+            "121655 fls.1a3 rev.01 - Estrutura para instalação de Chave de Faca – MBNM-KS.pdf",
+            "121656 fls.1a3 rev.01 - Estrutura conjugada para grandes ângulos,montagem para fora – MBNMB3B3.pdf",
+            "122114 fls.1a2 - Estrutura para alinhamento reto em beco - MBNM-B1.pdf",
+            "122115 fls.1a2 - Estrutura para ângulos ou mudanças de bitolas em beco - MBNM-B4.pdf",
+            "122116 fls.1a2 - Estrutura para final de linha em beco - MBNM-B3.pdf",
+            "122117 fls.1a3 - Estrutura para alinhamento reto com derivação de BT - MBNM-DBT.pdf",
+            "122123 fls.1a4 - Estrutura para instalação de transformador autoprotegido - MBNMTRAP.pdf",
+            "122136 fls.1a3 - Estrutura de transição rede MBNM  RCSN em derivação - MBNMRCSN.pdf",
+            "122176 fls.1a2 - Estrutura para pequenos ângulos com afastamento da Rede de MT – MBNM-B2A.pdf",
+            "122177 fls.1a2 - Estrutura de dupla ancoragem com afastamento da Rede de MT – MBNM-B4A.pdf",
+            "122178 fls.1a2  - Estrutura de fim de rede com afastamento da Rede de MT – MBNM-B3A.pdf",
+            "122179 fls.1a2  - Estrutura de dupla ancoragem com afastamento estendido da Rede de MT – MBNM-B4E.pdf",
+            "122180 fls.1a2 - Estrutura de fim de rede com afastamento estendido da Rede de MT – MBNM-B3E.pdf",
+            "122181 fls.1a4 - Estrutura para instalação de transformador de distribuição convencional - MBNMTR.pdf",
+            "122182 fls.1a2 - Estrutura para alinhamento reto com afastamento da Rede de MT – MBNM-B1A.pdf",
+            "122183 fls.1a3 - Estrutura conjugada para derivação - MBNM-DER.pdf",
+            "122185 fls.1a2 - Estrutura para pequenos ângulos em beco - MBNM-B2.pdf",
+            "122186 fls.1a3 - Estrutura conjugada para grandes ângulos - MBNMB3M3.pdf",
+            "122187 fls.1a3 - Estrutura de derivação direta para BT - MBNMDDBT.pdf",
+            "122188 fls1a2 - Estrutura de derivação oposta para BT - MBNMDOBT.pdf",
+            "Padrão MBN - Revisão 03 - 30012008.pdf",
+            "Padrão Rede MBNM - REVISÃO 04 - 2016.pdf"
+        ]
+    },
+    "Padrões\\Padrão RCSN\\Padrão MBNM\\FOTOS": {
+        "dirs": [],
+        "files": [
+            "IMG-20200813-WA0019.jpg",
+            "IMG-20200813-WA0020.jpg",
+            "IMG-20200813-WA0021.jpg",
+            "IMG-20200813-WA0022.jpg"
+        ]
+    },
+    "Padrões\\PADRÃO VILA": {
+        "dirs": [],
+        "files": [
+            "ALERTA DDE 025-18.pdf",
+            "PADRÃO VILA.pdf",
+            "POSTE METALICO - PADRÃO VILA.pdf"
+        ]
+    },
+    "Padrões\\REDE BT ZERO": {
+        "dirs": [
+            "FOTOS"
+        ],
+        "files": [
+            "OPO-20-9004.pdf",
+            "OPO-20-9007.pdf",
+            "OPO-20-9018.pdf",
+            "OPO-20-9022.pdf",
+            "Padrão de Rede Secundaria Blindada com Telemedição.pdf",
+            "Padrão de Rede Secundária Blindada com Telemedição BTZERO.pdf"
+        ]
+    },
+    "Padrões\\REDE BT ZERO\\FOTOS": {
+        "dirs": [],
+        "files": [
+            "IMG-20200810-WA0012.jpg",
+            "IMG-20200810-WA0013.jpg",
+            "IMG-20200810-WA0014.jpg",
+            "IMG-20200810-WA0015.jpg",
+            "IMG-20200810-WA0016.jpg",
+            "IMG-20200810-WA0017.jpg",
+            "IMG-20200810-WA0018.jpg",
+            "IMG-20200810-WA0019.jpg",
+            "IMG-20200810-WA0020.jpg",
+            "IMG-20200810-WA0021.jpg",
+            "IMG-20200810-WA0022.jpg",
+            "IMG-20200810-WA0023.jpg",
+            "IMG-20200810-WA0024.jpg",
+            "IMG-20200810-WA0025.jpg",
+            "IMG-20200810-WA0026.jpg",
+            "IMG-20200810-WA0027.jpg",
+            "IMG-20200810-WA0028.jpg",
+            "IMG-20200810-WA0029.jpg",
+            "IMG-20200810-WA0030.jpg",
+            "IMG-20200814-WA0000.jpg",
+            "IMG-20200814-WA0001.jpg",
+            "IMG-20200814-WA0002.jpg",
+            "IMG-20200814-WA0003.jpg",
+            "IMG-20200818-WA0015.jpg",
+            "IMG-20200818-WA0016.jpg",
+            "IMG-20200818-WA0017.jpg",
+            "IMG-20200818-WA0018.jpg",
+            "IMG-20200818-WA0019.jpg",
+            "IMG-20200828-WA0012.jpg",
+            "IMG-20200828-WA0013.jpg",
+            "IMG-20200828-WA0014.jpg",
+            "IMG-20200828-WA0015.jpg",
+            "IMG-20200828-WA0016.jpg",
+            "IMG-20200828-WA0017.jpg",
+            "IMG-20200828-WA0018.jpg",
+            "IMG-20200828-WA0019.jpg",
+            "IMG-20200828-WA0020.jpg",
+            "IMG-20200828-WA0021.jpg",
+            "IMG-20200828-WA0022.jpg",
+            "IMG-20200828-WA0023.jpg",
+            "IMG-20200828-WA0024.jpg",
+            "IMG-20200828-WA0025.jpg",
+            "IMG-20200828-WA0026.jpg",
+            "IMG-20200828-WA0027.jpg",
+            "IMG-20200828-WA0028.jpg",
+            "IMG-20200828-WA0029.jpg",
+            "IMG-20200828-WA0030.jpg",
+            "IMG-20200828-WA0031.jpg",
+            "IMG-20200828-WA0032.jpg",
+            "IMG-20200828-WA0033.jpg"
+        ]
+    },
+    "Padrões\\REDE COMPACTA": {
+        "dirs": [
+            "REDE BT MULTIPLEXADA"
+        ],
+        "files": [
+            "Padronização de Rede Compacta em Espaçadores 15kV e 34,5kV -.pdf",
+            "Padronização de Rede Compacta em espaçadores 15kV e 362kV - Revisão 02.pdf",
+            "Padrão Compacta - REVISÃO 2016 - REVISÃO 3.pdf",
+            "Rede Compacta 13_8kV - Estruturas e Equipamentos.pdf"
+        ]
+    },
+    "Padrões\\REDE COMPACTA\\REDE BT MULTIPLEXADA": {
+        "dirs": [],
+        "files": [
+            "Padrão de Rede Multiplexada - 00.pdf",
+            "Padrão de Rede Multiplexada - 01.pdf",
+            "Padrão de Rede Multiplexada - 02.pdf",
+            "Padrão de Rede Multiplexada - 03.pdf",
+            "Padrão de redes secundárias multiplexadas.pdf"
+        ]
+    },
+    "Padrões\\REDE CONVENCIONAL": {
+        "dirs": [],
+        "files": [
+            "Padrão Rede Convencional - 2016.pdf"
+        ]
+    },
+    "Padrões\\REDE MTX": {
+        "dirs": [],
+        "files": [
+            "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "Padrão Rede MTX BT - REVISÃO 04 - 2016.pdf",
+            "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf"
+        ]
+    },
+    "Padrões\\REDE RURAL": {
+        "dirs": [],
+        "files": [
+            "PADRÃO RURAL MONOFÁSICO REV 04 - 2016.pdf",
+            "RURAL TRIFASICO.pdf"
+        ]
+    }
+}

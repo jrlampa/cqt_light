@@ -1,0 +1,41 @@
+# Systems
+.DS_Store
+Thumbs.db
+
+# Environments
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Node
+node_modules/
+dist/
+build/
+.npm/
+
+# Large Files & Data
+PLANILHA CUSTO MODULAR/
+Padrões/
+temp_excel/
+*.xlsm
+*.xlsx
+*.docx
+data/raw/
+*.pdf
+*.db
+*.sqlite
+data/technical_data.db
+
+# Logs
+*.log
+logs/
+
+# React
+frontend/dist/
+frontend/node_modules/

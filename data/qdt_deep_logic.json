@@ -1,0 +1,431 @@
+{
+    "headers_found": {
+        "C": "Trecho do Circuito",
+        "D": "Nº Cons. no final de cada trecho",
+        "E": "=IF(OR(F13=\"Erro 04\",F14=\"Erro 04\",F15=\"Erro 04\",F16=\"Erro 04\",F17=\"Erro 04\",F18=\"Erro 04\",F19=\"Erro 04\",F20=\"Erro 04\",F21=\"Erro 04\",F22=\"Erro 04\",F23=\"Erro 04\",F24=\"Erro 04\",F25=\"Erro 04\",F26=\"Erro 04\",F27=\"Erro 04\",F28=\"Erro 04\",F29=\"Erro 04\",F30=\"Erro 04\",F31=\"Erro 04\",F32=\"Erro 04\"),\"kVA     por Cons.   com      Erro 04 !\",\"kVA     por Cons.\")",
+        "F": "kVA    por Cons.",
+        "G": "FDIV",
+        "H": "Nº de fases do trecho",
+        "I": "=IF(OR(I13=\"Erro 02\",I14=\"Erro 02\",I15=\"Erro 02\",I16=\"Erro 02\",I17=\"Erro 02\",I18=\"Erro 02\",I19=\"Erro 02\",I20=\"Erro 02\",I21=\"Erro 02\",I22=\"Erro 02\",I23=\"Erro 02\",I24=\"Erro 02\",I25=\"Erro 02\",I26=\"Erro 02\",I27=\"Erro 02\",I28=\"Erro 02\",I29=\"Erro 02\",I30=\"Erro 02\",I31=\"Erro 02\",I32=\"Erro 02\"),\"LÓGICA          c/ Erro 02 !\",\"LÓGICA\")",
+        "J": "Tipo de Trecho",
+        "K": "Carga no fim do trecho             [ kVA ] ",
+        "L": "Carga no fim do trecho             [ kVA ] ",
+        "M": "Carga no fim do trecho escolhida",
+        "O": "Nº de cabos no banco",
+        "P": "Temp. do cabo em  [ °C ]",
+        "AA": "Carga no fim do trecho             [ kVA ] ",
+        "AB": "Temp. do cabo em  [ °C ]",
+        "AM": "Cabo de B.T.",
+        "AT": "Rcc fase                                                            [  W / km ]                                                         20°C",
+        "AW": "a",
+        "AX": "Rcc fase       [  W / km ]    90°C",
+        "AY": "Rca fase                               [  W / km ]                      90°C",
+        "BB": "XL fase                        [ W / km ]",
+        "BE": "K*",
+        "BF": "Rcc  neutro               [ W/km ]",
+        "BI": "Rca fase 1  [ W/km ]",
+        "BJ": "K 1",
+        "BK": "Z cabo",
+        "BL": "Z cabo",
+        "BM": "Rca",
+        "BN": "Rca F+N",
+        "BO": "Rca F+N",
+        "BP": "Rca fase 2  [ W/km ]",
+        "BQ": "K 2",
+        "BR": "Z cabo",
+        "BS": "Z cabo",
+        "BT": "Rca",
+        "BU": "Rca F+N",
+        "BV": "Rca F+N",
+        "BW": "Sem crescimento da carga",
+        "CD": "Com crescimento da carga",
+        "DA": "Nº de fases de um trecho",
+        "DE": "Critério de diversificação"
+    },
+    "row_15_logic": {
+        "B": {
+            "val": "=IF(AND(CA15<>\"\",CA16=\"\"),\"RL\",\"\")",
+            "header": ""
+        },
+        "C": {
+            "val": "P-2",
+            "header": "Trecho do Circuito"
+        },
+        "D": {
+            "val": "1",
+            "header": "Nº Cons. no final de cada trecho"
+        },
+        "E": {
+            "val": "41.43",
+            "header": "=IF(OR(F13=\"Erro 04\",F14=\"Erro 04\",F15=\"Erro 04\",F16=\"Erro 04\",F17=\"Erro 04\",F18=\"Erro 04\",F19=\"Erro 04\",F20=\"Erro 04\",F21=\"Erro 04\",F22=\"Erro 04\",F23=\"Erro 04\",F24=\"Erro 04\",F25=\"Erro 04\",F26=\"Erro 04\",F27=\"Erro 04\",F28=\"Erro 04\",F29=\"Erro 04\",F30=\"Erro 04\",F31=\"Erro 04\",F32=\"Erro 04\"),\"kVA     por Cons.   com      Erro 04 !\",\"kVA     por Cons.\")"
+        },
+        "G": {
+            "val": "1",
+            "header": "FDIV"
+        },
+        "H": {
+            "val": "3",
+            "header": "Nº de fases do trecho"
+        },
+        "I": {
+            "val": "=IF(OR(D15=\"\",H15=\"\"),\"\",IF(OR(D15=0,H15=0),\"Erro 02\",IF(AND(H15<=H14,D15<=D14),\"OK !\",\"Erro 02\")))",
+            "header": "=IF(OR(I13=\"Erro 02\",I14=\"Erro 02\",I15=\"Erro 02\",I16=\"Erro 02\",I17=\"Erro 02\",I18=\"Erro 02\",I19=\"Erro 02\",I20=\"Erro 02\",I21=\"Erro 02\",I22=\"Erro 02\",I23=\"Erro 02\",I24=\"Erro 02\",I25=\"Erro 02\",I26=\"Erro 02\",I27=\"Erro 02\",I28=\"Erro 02\",I29=\"Erro 02\",I30=\"Erro 02\",I31=\"Erro 02\",I32=\"Erro 02\"),\"LÓGICA          c/ Erro 02 !\",\"LÓGICA\")"
+        },
+        "J": {
+            "val": "Rede",
+            "header": "Tipo de Trecho"
+        },
+        "K": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",IF(D15>2,E15*G15,IF(D15=2,8*G15,4*G15)))",
+            "header": "Carga no fim do trecho             [ kVA ] "
+        },
+        "L": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",E15*G15)",
+            "header": "Carga no fim do trecho             [ kVA ] "
+        },
+        "M": {
+            "val": "=IF($CH$5=\"SIM\",K15,L15)",
+            "header": "Carga no fim do trecho escolhida"
+        },
+        "N": {
+            "val": "=IF(M15<(E15*G15),\"Erro 05 !\",\"\")",
+            "header": ""
+        },
+        "P": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",IF(AND(AM15=\"240 Al - Arm\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - Arm\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - Arm\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,Q15))))))))))",
+            "header": "Temp. do cabo em  [ °C ]"
+        },
+        "Q": {
+            "val": "=IF(AND(AM15=\"50 Al - Arm\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"50 Al - Arm\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"50 Al - Arm\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,R15))))))",
+            "header": ""
+        },
+        "R": {
+            "val": "=IF(AND(AM15=\"25 Al\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AM15=\"25 Al\",M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,S15)))))))",
+            "header": ""
+        },
+        "S": {
+            "val": "=IF(AND(AM15=\"70 Cu\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Cu\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Cu\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,T15))))))",
+            "header": ""
+        },
+        "T": {
+            "val": "=IF(AND(AM15=\"120 Cu\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"120 Cu\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"120 Cu\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,U15))))))",
+            "header": ""
+        },
+        "U": {
+            "val": "=IF(AND(AM15=\"240 Cu\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Cu\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Cu\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,V15))))))",
+            "header": ""
+        },
+        "V": {
+            "val": "=IF(AND(AM15=\"10 Cu_CONC_bi\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_bi\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_bi\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,W15))))))))))))",
+            "header": ""
+        },
+        "W": {
+            "val": "=IF(AND(AM15=\"13 Al - DX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - DX\",H15=2),M15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - DX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=2),M15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,X15))))))",
+            "header": ""
+        },
+        "X": {
+            "val": "=IF(AND(AM15=\"13 Al - QX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - QX\",H15=2),M15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - QX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=2),M15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,Y15))))))",
+            "header": ""
+        },
+        "Y": {
+            "val": "=IF(AND(AM15=\"70 Al - MX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Al - MX\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Al - MX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=2),M15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,Z15)))))))))",
+            "header": ""
+        },
+        "Z": {
+            "val": "=IF(AND(AM15=\"53 Al - QX\",H15=3),M15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"53 Al - QX\",H15=2),M15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"53 Al - QX\",H15=1),M15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,\"\")))",
+            "header": ""
+        },
+        "AA": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",M15*((100+$BY$6)/100)^$CA$6)",
+            "header": "Carga no fim do trecho             [ kVA ] "
+        },
+        "AB": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",IF(AND(AM15=\"240 Al - Arm\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - Arm\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - Arm\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"150 Al - Arm\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al - Arm\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AC15))))))))))",
+            "header": "Temp. do cabo em  [ °C ]"
+        },
+        "AC": {
+            "val": "=IF(AND(AM15=\"50 Al - Arm\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"50 Al - Arm\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"50 Al - Arm\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al - Arm\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AD15))))))",
+            "header": ""
+        },
+        "AD": {
+            "val": "=IF(AND(AM15=\"25 Al\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"25 Al\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AM15=\"25 Al\",AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"35 Cu\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AE15)))))))",
+            "header": ""
+        },
+        "AE": {
+            "val": "=IF(AND(AM15=\"70 Cu\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Cu\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Cu\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"95 Al\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AF15))))))",
+            "header": ""
+        },
+        "AF": {
+            "val": "=IF(AND(AM15=\"120 Cu\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"120 Cu\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"120 Cu\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AG15))))))",
+            "header": ""
+        },
+        "AG": {
+            "val": "=IF(AND(AM15=\"240 Cu\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Cu\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Cu\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"500 Cu\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AH15))))))",
+            "header": ""
+        },
+        "AH": {
+            "val": "=IF(AND(AM15=\"10 Cu_CONC_bi\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_bi\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_bi\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"10 Cu_CONC_Tri\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_bi\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"16 Al_CONC_Tri\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AI15))))))))))))",
+            "header": ""
+        },
+        "AI": {
+            "val": "=IF(AND(AM15=\"13 Al - DX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - DX\",H15=2),AA15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - DX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=2),AA15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - TX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,AJ15))))))",
+            "header": ""
+        },
+        "AJ": {
+            "val": "=IF(AND(AM15=\"13 Al - QX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - QX\",H15=2),AA15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"13 Al - QX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=2),AA15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"21 Al - QX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,AK15))))))",
+            "header": ""
+        },
+        "AK": {
+            "val": "=IF(AND(AM15=\"70 Al - MX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Al - MX\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"70 Al - MX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"185 Al - MX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=2),AA15/($BX$6/1000)/(AO15/(90-30))+30,IF(AND(AM15=\"240 Al - MX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(90-30))+30,AL15)))))))))",
+            "header": ""
+        },
+        "AL": {
+            "val": "=IF(AND(AM15=\"53 Al - QX\",H15=3),AA15/($BX$6*SQRT(3)/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"53 Al - QX\",H15=2),AA15/($BX$6/1000)/(AO15/(70-30))+30,IF(AND(AM15=\"53 Al - QX\",H15=1),AA15/($BX$6/SQRT(3)/1000)/(AO15/(70-30))+30,\"\")))",
+            "header": ""
+        },
+        "AM": {
+            "val": "185 Al - MX",
+            "header": "Cabo de B.T."
+        },
+        "AN": {
+            "val": "355",
+            "header": ""
+        },
+        "AO": {
+            "val": "=AN15*AP15",
+            "header": ""
+        },
+        "AP": {
+            "val": "1",
+            "header": ""
+        },
+        "AQ": {
+            "val": "30",
+            "header": ""
+        },
+        "AR": {
+            "val": "=IF(AP15=\"\",\"\",AQ15/AP15)",
+            "header": ""
+        },
+        "AS": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\",AO15 = \"\"),\"\",AR15+AS14)",
+            "header": ""
+        },
+        "AT": {
+            "val": "=IF(AM15=\"240 Al - Arm\",$CY$32,IF(AM15=\"150 Al - Arm\",$CY$35,IF(AM15=\"95 Al - Arm\",$CY$30,IF(AM15=\"50 Al - Arm\",$CY$28,IF(AM15=\"25 Al - Arm\",$CY$27,IF(AM15=\"25 Al\",$CY$27,IF(AM15=\"35 Cu\",$CY$17,IF(AM15=\"70 Cu\",$CY$18,IF(AM15=\"95 Al\",$CY$30,AU15)))))))))",
+            "header": "Rcc fase                                                            [  W / km ]                                                         20°C"
+        },
+        "AU": {
+            "val": "=IF(AM15=\"120 Cu\",$CY$19,IF(AM15=\"240 Al\",$CY$32,IF(AM15=\"240 Cu\",$CY$20,IF(AM15=\"500 Cu\",$CY$21,IF(AM15=\"10 Cu_CONC_bi\",$CY$15,IF(AM15=\"10 Cu_CONC_Tri\",$CY$15,IF(AM15=\"16 Al_CONC_bi\",$CY$36,IF(AM15=\"16 Al_CONC_Tri\",$CY$36,IF(AM15=\"13 Al - DX\",$CY$22,IF(AM15=\"13 Al - TX\",$CY$23,AV15))))))))))",
+            "header": ""
+        },
+        "AV": {
+            "val": "=IF(AM15=\"13 Al - QX\",$CY$24,IF(AM15=\"21 Al - QX\",$CY$25,IF(AM15=\"70 Al - MX\",$CY$29,IF(AM15=\"185 Al - MX\",$CY$31,IF(AM15=\"240 Al - MX\",$CY$32,IF(AM15=\"53 Al - QX\",$CY$26,\"\"))))))",
+            "header": ""
+        },
+        "AW": {
+            "val": "=IF(OR(AM15=\"25 Al - Arm\",AM15=\"50 Al - Arm\",AM15=\"95 Al - Arm\",AM15=\"150 Al - Arm\",AM15=\"240 Al - Arm\",AM15=\"25 Al\",AM15=\"95 Al\",AM15=\"240 Al\",AM15=\"13 Al - DX\",AM15=\"13 Al - TX\",AM15=\"13 Al - QX\",AM15=\"21 Al - QX\",AM15=\"53 Al - QX\",AM15=\"70 Al - MX\",AM15=\"185 Al - MX\",AM15=\"240 Al - MX\",AM15=\"16 Al_CONC_bi\",AM15=\"16 Al_CONC_Tri\"),0.00403,0.00393)",
+            "header": "a"
+        },
+        "AX": {
+            "val": "=IF(OR(AM15=$DF$6,AM15=$DG$6,AM15=$DH$6,AM15=$DI$6,AM15=$DJ$6),AT15*(1+AW15*(70-20)),AT15*(1+AW15*(90-20)))",
+            "header": "Rcc fase       [  W / km ]    90°C"
+        },
+        "AY": {
+            "val": "=IF(AM15=\"25 Al - Arm\",$DL$15,IF(AM15=\"50 Al - Arm\",$DL$16,IF(AM15=\"95 Al - Arm\",$DL$17,IF(AM15=\"150 Al - Arm\",$DL$18,IF(AM15=\"240 Al - Arm\",$DL$19,IF(AM15=\"25 Al\",$DL$20,IF(AM15=\"35 Cu\",$DL$21,IF(AM15=\"70 Cu\",$DL$22,IF(AM15=\"95 Al\",$DL$23,AZ15)))))))))",
+            "header": "Rca fase                               [  W / km ]                      90°C"
+        },
+        "AZ": {
+            "val": "=IF(AM15=\"120 Cu\",$DL$24,IF(AM15=\"240 Al\",$DL$25,IF(AM15=\"240 Cu\",$DL$26,IF(AM15=\"500 Cu\",$DL$27,IF(AM15=\"10 Cu_CONC_bi\",$DL$28,IF(AM15=\"10 Cu_CONC_tri\",$DL$29,IF(AM15=\"16 Al_CONC_bi\",$DL$30,IF(AM15=\"16 Al_CONC_tri\",$DL$31,IF(AM15=\"13 Al - DX\",$DL$32,IF(AM15=\"13 Al - TX\",$DL$33,BA15))))))))))",
+            "header": ""
+        },
+        "BA": {
+            "val": "=IF(AM15=\"13 Al - QX\",$DL$34,IF(AM15=\"21 Al - QX\",$DL$35,IF(AM15=\"53 Al - QX\",$DL$36,IF(AM15=\"70 Al - MX\",$DL$37,IF(AM15=\"185 Al - MX\",$DL$38,IF(AM15=\"240 Al - MX\",$DL$39,0))))))",
+            "header": ""
+        },
+        "BB": {
+            "val": "=IF(AM15=\"25 Al - Arm\",$DM$15,IF(AM15=\"50 Al - Arm\",$DM$16,IF(AM15=\"95 Al - Arm\",$DM$17,IF(AM15=\"150 Al - Arm\",$DM$18,IF(AM15=\"240 Al - Arm\",$DM$19,IF(AM15=\"25 Al\",$DM$20,IF(AM15=\"35 Cu\",$DM$21,IF(AM15=\"70 Cu\",$DM$22,IF(AM15=\"95 Al\",$DM$23,BC15)))))))))",
+            "header": "XL fase                        [ W / km ]"
+        },
+        "BC": {
+            "val": "=IF(AM15=\"120 Cu\",$DM$24,IF(AM15=\"240 Al\",$DM$25,IF(AM15=\"240 Cu\",$DM$26,IF(AM15=\"500 Cu\",$DM$27,IF(AM15=\"10 Cu_CONC_bi\",$DM$28,IF(AM15=\"10 Cu_CONC_tri\",$DM$29,IF(AM15=\"16 Al_CONC_bi\",$DM$30,IF(AM15=\"16 Al_CONC_tri\",$DM$31,IF(AM15=\"13 Al - DX\",$DM$32,IF(AM15=\"13 Al - TX\",$DM$33,BD15))))))))))",
+            "header": ""
+        },
+        "BD": {
+            "val": "=IF(AM15=\"13 Al - QX\",$DM$34,IF(AM15=\"21 Al - QX\",$DM$35,IF(AM15=\"53 Al - QX\",$DM$36,IF(AM15=\"70 Al - MX\",$DM$37,IF(AM15=\"185 Al - MX\",$DM$38,IF(AM15=\"240 Al - MX\",$DM$39,0))))))",
+            "header": ""
+        },
+        "BE": {
+            "val": "=AY15/AX15",
+            "header": "K*"
+        },
+        "BF": {
+            "val": "=IF(AM15=\"240 Al - Arm\",$CY$34,IF(AM15=\"150 Al - Arm\",$CY$30,IF(AM15=\"95 Al - Arm\",$CY$28,IF(AM15=\"50 Al - Arm\",$CY$33,IF(AM15=\"25 Al - Arm\",$CY$27,IF(AM15=\"25 Al\",$CY$27,IF(AM15=\"35 Cu\",$CY$16,IF(AM15=\"70 Cu\",$CY$18,IF(AM15=\"95 Al\",$CY$18,BG15)))))))))",
+            "header": "Rcc  neutro               [ W/km ]"
+        },
+        "BG": {
+            "val": "=IF(AM15=\"120 Cu\",$CY$18,IF(AM15=\"240 Al\",$CY$19,IF(AM15=\"500 Cu\",$CY$20,IF(AM15=\"240 Cu\",$CY$19,IF(AM15=\"10 Cu_CONC_bi\",$CY$15,IF(AM15=\"10 Cu_CONC_Tri\",$CY$15,IF(AM15=\"16 Al_CONC_bi\",$CY$36,IF(AM15=\"16 Al_CONC_Tri\",$CY$36,IF(AM15=\"13 Al - DX\",$CY$22,IF(AM15=\"13 Al - TX\",$CY$23,BH15))))))))))",
+            "header": ""
+        },
+        "BH": {
+            "val": "=IF(AM15=\"13 Al - QX\",$CY$24,IF(AM15=\"21 Al - QX\",$CY$25,IF(AM15=\"53 Al - QX\",$CY$26,IF(AM15=\"70 Al - MX\",$CY$29,IF(AM15=\"240 Al - MX\",$CY$34,IF(AM15=\"185 Al - MX\",$CY$34,\"\"))))))",
+            "header": ""
+        },
+        "BI": {
+            "val": "=AT15*(1+AW15*(BX15-20))*BE15",
+            "header": "Rca fase 1  [ W/km ]"
+        },
+        "BJ": {
+            "val": "=SQRT(BI15^2+BB15^2)/($BX$6^2/100)",
+            "header": "K 1"
+        },
+        "BK": {
+            "val": "=IMSUM(BK14,BL14)",
+            "header": "Z cabo"
+        },
+        "BL": {
+            "val": "=IMPRODUCT(COMPLEX(BI15,BB15),AR15/1000)",
+            "header": "Z cabo"
+        },
+        "BM": {
+            "val": "=BI15*BF15/AT15",
+            "header": "Rca"
+        },
+        "BN": {
+            "val": "=BN14+BO14",
+            "header": "Rca F+N"
+        },
+        "BO": {
+            "val": "=(BI15+BM15)*AR15/1000",
+            "header": "Rca F+N"
+        },
+        "BP": {
+            "val": "=AT15*(1+AW15*(CE15-20))*BE15",
+            "header": "Rca fase 2  [ W/km ]"
+        },
+        "BQ": {
+            "val": "=SQRT(BP15^2+BB15^2)/($BX$6^2/100)",
+            "header": "K 2"
+        },
+        "BR": {
+            "val": "=IMSUM(BR14,BS14)",
+            "header": "Z cabo"
+        },
+        "BS": {
+            "val": "=IMPRODUCT(COMPLEX(BP15,BB15),AR15/1000)",
+            "header": "Z cabo"
+        },
+        "BT": {
+            "val": "=BP15*BF15/AT15",
+            "header": "Rca"
+        },
+        "BU": {
+            "val": "=BU14+BV14",
+            "header": "Rca F+N"
+        },
+        "BV": {
+            "val": "=(BP15+BT15)*AR15/1000",
+            "header": "Rca F+N"
+        },
+        "BW": {
+            "val": "=M15",
+            "header": "Sem crescimento da carga"
+        },
+        "BX": {
+            "val": "=IF($AM$2<>\"Cálculo de Queda de Tensão e Curt-Circuito em Rede Subterrânea de B.T\",\"\",P15)",
+            "header": ""
+        },
+        "BY": {
+            "val": "=IF(BX15=\"\",\"\",IF(AND(BX15>=70.1,OR(AM15=$DF$6,AM15=$DG$6,AM15=$DH$6,AM15=$DI$6,AM15=$DJ$6)),\"Erro 08\",IF(BX15<=90.1,\"Ok !\",\"Erro 03\")))",
+            "header": ""
+        },
+        "BZ": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",IF(H15=3,BW15*BJ15*AR15,IF(H15=2,BW15*BJ15*AR15*2,IF(H15=1,BW15*BJ15*AR15*6,0))))",
+            "header": ""
+        },
+        "CA": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H14=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",BZ15+CA14)",
+            "header": ""
+        },
+        "CB": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",($BX$6/SQRT(3))/IMABS(IMSUM($AS$8,BK15,BL15,$CA$8,$CF$8)))",
+            "header": ""
+        },
+        "CC": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",($BX$6/SQRT(3))/IMABS(IMSUM($AS$8,BN15,BO15,$CA$8,$CF$8)))",
+            "header": ""
+        },
+        "CD": {
+            "val": "=IF(B15=J15,BW15,AA15)",
+            "header": "Com crescimento da carga"
+        },
+        "CE": {
+            "val": "=IF($AM$2<>\"Cálculo de Queda de Tensão e Curt-Circuito em Rede Subterrânea de B.T\",\"\",AB15)",
+            "header": ""
+        },
+        "CF": {
+            "val": "=IF(CE15=\"\",\"\",IF(AND(CE15>=70.1,OR(AM15=$DF$6,AM15=$DG$6,AM15=$DH$6,AM15=$DI$6,AM15=$DJ$6)),\"Erro 08\",IF(CE15<=90.1,\"Ok !\",\"Erro 03\")))",
+            "header": ""
+        },
+        "CG": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15=\"\"),\"\",IF(H15=3,CD15*BQ15*AR15,IF(H15=2,CD15*BQ15*AR15*2,IF(H15=1,CD15*BQ15*AR15*6,0))))",
+            "header": ""
+        },
+        "CH": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H14=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",CG15+CH14)",
+            "header": ""
+        },
+        "CI": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",($BX$6/SQRT(3))/IMABS(IMSUM($AS$8,BR15,BS15,$CA$8,$CF$8)))",
+            "header": ""
+        },
+        "CJ": {
+            "val": "=IF(OR(C15=\"\",D15=\"\",H15=\"\",E15=\"\",G15=\"\",I15=\"Erro !\",AM15=\"\",AR15 = \"\"),\"\",($BX$6/SQRT(3))/IMABS(IMSUM($AS$8,BU15,BV15,$CA$8,$CF$8)))",
+            "header": ""
+        },
+        "CW": {
+            "val": "6880 cond. nu.",
+            "header": ""
+        },
+        "CX": {
+            "val": "10",
+            "header": ""
+        },
+        "CY": {
+            "val": "1.83",
+            "header": ""
+        },
+        "CZ": {
+            "val": "0.00393",
+            "header": ""
+        },
+        "DA": {
+            "val": "=(1+70*CZ15)*CY15",
+            "header": "Nº de fases de um trecho"
+        },
+        "DB": {
+            "val": "=1.02*DA15",
+            "header": ""
+        },
+        "DC": {
+            "val": "=17.241/CY15",
+            "header": ""
+        },
+        "DD": {
+            "val": "=CO6",
+            "header": ""
+        },
+        "DE": {
+            "val": "90",
+            "header": "Critério de diversificação"
+        }
+    },
+    "final_components": {
+        "C33": "=CX102",
+        "CX102": "=IF(CV105=100,0,IF(BV4=100,0,IF(CV105+BV4=0,0,IF(MAX(CH13:CH32)>=100,0,IF(CW100>=100,0,CW104)))))",
+        "CW104": "=CW103*CW102",
+        "CW100": "=SUM(CW96:CW99)",
+        "CV105": "=(CU105/(BX6/SQRT(3)))*100",
+        "BV4": "=($BW$13/$AS$6)*($BW$6)"
+    }
+}

@@ -1,0 +1,131 @@
+{
+    "distrib_cargas": {
+        "G3": null,
+        "G5": "=IF(G3=\"\",\"\",G3*0.375)"
+    },
+    "qdt_esquerdo": {
+        "C33": "=CX102",
+        "CX102": "=IF(CV105=100,0,IF(BV4=100,0,IF(CV105+BV4=0,0,IF(MAX(CH13:CH32)>=100,0,IF(CW100>=100,0,CW104)))))",
+        "row_10": {
+            "Trecho": null,
+            "kVA": "Trecho do Circuito",
+            "Seção": "=IF(OR(F13=\"Erro 04\",F14=\"Erro 04\",F15=\"Erro 04\",F16=\"Erro 04\",F17=\"Erro 04\",F18=\"Erro 04\",F19=\"Erro 04\",F20=\"Erro 04\",F21=\"Erro 04\",F22=\"Erro 04\",F23=\"Erro 04\",F24=\"Erro 04\",F25=\"Erro 04\",F26=\"Erro 04\",F27=\"Erro 04\",F28=\"Erro 04\",F29=\"Erro 04\",F30=\"Erro 04\",F31=\"Erro 04\",F32=\"Erro 04\"),\"kVA     por Cons.   com      Erro 04 !\",\"kVA     por Cons.\")",
+            "Formula_QD": null
+        },
+        "row_11": {
+            "Trecho": null,
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": null
+        },
+        "row_12": {
+            "Trecho": null,
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": null
+        },
+        "row_13": {
+            "Trecho": null,
+            "kVA": "TRAF.1",
+            "Seção": 99.62,
+            "Formula_QD": null
+        },
+        "row_14": {
+            "Trecho": null,
+            "kVA": "P-1",
+            "Seção": 46.84,
+            "Formula_QD": "Seção"
+        },
+        "row_15": {
+            "Trecho": null,
+            "kVA": "P-2",
+            "Seção": 41.43,
+            "Formula_QD": 10
+        },
+        "row_16": {
+            "Trecho": "antigo",
+            "kVA": "P-3",
+            "Seção": 35.25,
+            "Formula_QD": 25
+        },
+        "row_17": {
+            "Trecho": "=IF(AND(C27=\"rl\",C28=\"rl\"),\"sim\",IF(AND(C28=\"rl\",C29=\"rl\"),\"sim\",IF(AND(C29=\"rl\",C30=\"rl\"),\"sim\",IF(AND(C30=\"rl\",C31=\"rl\"),\"sim\",IF(AND(C31=\"rl\",C32=\"rl\"),\"sim\",\"não\")))))",
+            "kVA": "P-4",
+            "Seção": 26.6,
+            "Formula_QD": 35
+        },
+        "row_18": {
+            "Trecho": "=IF(AND(C20=\"rl\",C21=\"rl\"),\"sim\",IF(AND(C21=\"rl\",C22=\"rl\"),\"sim\",IF(AND(C22=\"rl\",C23=\"rl\"),\"sim\",IF(AND(C23=\"rl\",C24=\"rl\"),\"sim\",IF(AND(C24=\"rl\",C25=\"rl\"),\"sim\",IF(AND(C25=\"rl\",C26=\"rl\"),\"sim\",IF(AND(C26=\"rl\",C27=\"rl\"),\"sim\",A17)))))))",
+            "kVA": "P-5",
+            "Seção": 19.27,
+            "Formula_QD": 70
+        },
+        "row_19": {
+            "Trecho": "=IF(AND(C13=\"rl\",C14=\"rl\"),\"sim\",IF(AND(C14=\"rl\",C15=\"rl\"),\"sim\",IF(AND(C15=\"rl\",C16=\"rl\"),\"sim\",IF(AND(C16=\"rl\",C17=\"rl\"),\"sim\",IF(AND(C17=\"rl\",C18=\"rl\"),\"sim\",IF(AND(C18=\"rl\",C19=\"rl\"),\"sim\",IF(AND(C19=\"rl\",C20=\"rl\"),\"sim\",A18)))))))",
+            "kVA": "P-6",
+            "Seção": 8.61,
+            "Formula_QD": 120
+        },
+        "row_20": {
+            "Trecho": "=IF(CA16<>\"\",CA15,IF(CA15<>\"\",CA14,IF(CA14<>\"\",CA13,\"\")))",
+            "kVA": "P-7",
+            "Seção": 2.22,
+            "Formula_QD": 240
+        },
+        "row_21": {
+            "Trecho": "=IF(CA24<>\"\",CA23,IF(CA23<>\"\",CA22,IF(CA22<>\"\",CA21,IF(CA21<>\"\",CA20,IF(CA20<>\"\",CA19,IF(CA19<>\"\",CA18,IF(CA18<>\"\",CA17,IF(CA17<>\"\",CA16,A20))))))))",
+            "kVA": "RAMAL",
+            "Seção": 2.22,
+            "Formula_QD": 500
+        },
+        "row_22": {
+            "Trecho": "=IF(CA32<>\"\",CA31,IF(CA31<>\"\",CA30,IF(CA30<>\"\",CA29,IF(CA29<>\"\",CA28,IF(CA28<>\"\",CA27,IF(CA27<>\"\",CA26,IF(CA26<>\"\",CA25,IF(CA25<>\"\",CA24,A21))))))))",
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "13 DX"
+        },
+        "row_23": {
+            "Trecho": null,
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "13 TX"
+        },
+        "row_24": {
+            "Trecho": "=IF(BZ18<>\"\",BZ18,IF(BZ17<>\"\",BZ17,IF(BZ16<>\"\",BZ16,IF(BZ15<>\"\",BZ15,IF(BZ14<>\"\",BZ14,IF(BZ13<>\"\",BZ13,\"\"))))))",
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "13 QX"
+        },
+        "row_25": {
+            "Trecho": "=IF(BZ24<>\"\",BZ24,IF(BZ23<>\"\",BZ23,IF(BZ22<>\"\",BZ22,IF(BZ21<>\"\",BZ21,IF(BZ20<>\"\",BZ20,IF(BZ19<>\"\",BZ19,A24))))))",
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "21 QX"
+        },
+        "row_26": {
+            "Trecho": "=IF(BZ32<>\"\",BZ32,IF(BZ31<>\"\",BZ31,IF(BZ30<>\"\",BZ30,IF(BZ29<>\"\",BZ29,IF(BZ28<>\"\",BZ28,IF(BZ27<>\"\",BZ27,IF(BZ26<>\"\",BZ26,IF(BZ25<>\"\",BZ25,A25))))))))",
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "53 QX"
+        },
+        "row_27": {
+            "Trecho": "=IF(A19=\"sim\",(((BX6/SQRT(3))-((BX6/SQRT(3))*(A22/100)))-(((A26/2)/100)*((BX6/SQRT(3))))),\"\")",
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": 25
+        },
+        "row_28": {
+            "Trecho": null,
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": 50
+        },
+        "row_29": {
+            "Trecho": null,
+            "kVA": null,
+            "Seção": null,
+            "Formula_QD": "70 MX"
+        }
+    },
+    "ramais": {}
+}

@@ -1,0 +1,16 @@
+import sqlite3
+
+def inspect_db(db_path):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    print(f"Tables in {db_path}: {[t[0] for t in tables]}")
+    for table_name in tables:
+        name = table_name[0]
+        cursor.execute(f"PRAGMA table_info({name});")
+        cols = cursor.fetchall()
+        print(f"Table {name} has columns: {[c[1] for c in cols]}")
+    conn.close()
+
+inspect_db('data/database_completo.db')
