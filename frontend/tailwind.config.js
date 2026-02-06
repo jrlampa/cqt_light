@@ -5,14 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        glass: {
-          light: 'rgba(255, 255, 255, 0.3)',
-          border: 'rgba(255, 255, 255, 0.2)',
-        }
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }

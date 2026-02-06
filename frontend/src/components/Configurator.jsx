@@ -1,224 +1,350 @@
-import React, { useState, useEffect } from 'react';
-import { Calculator, Package, CheckCircle, AlertCircle } from 'lucide-react';
-import MaterialTable from './MaterialTable';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Package, Search, X, Plus, Trash2, Calculator, DollarSign, Layers } from 'lucide-react';
 
 const Configurator = () => {
-  // Dropdown States
-  const [contracts, setContracts] = useState([]);
-  const [selectedContract, setSelectedContract] = useState('');
+  // Selected kits
+  const [selectedKits, setSelectedKits] = useState([]);
 
-  // Structure Selections
-  const [structures, setStructures] = useState([]); // Available options (codes)
-  const [selections, setSelections] = useState({
-    poste: '',
-    condutor_mt: '',
-    condutor_bt: '',
-    estrutura_mt1: '',
-    estrutura_mt2: '',
-    estrutura_bt: ''
-  });
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef(null);
 
-  // Results
+  // Aggregated data
   const [materials, setMaterials] = useState([]);
-  const [costs, setCosts] = useState([]);
-  const [totalCost, setTotalCost] = useState(0);
+  const [services, setServices] = useState([]);
+  const [stats, setStats] = useState({ materials: 0, kits: 0, labor: 0 });
+
+  // Loading state
   const [loading, setLoading] = useState(false);
 
+  // Load stats on mount
   useEffect(() => {
-    loadInitialData();
+    loadStats();
   }, []);
 
-  const loadInitialData = async () => {
-    if (!window.api) return;
-
-    try {
-      const cts = await window.api.getContracts();
-      setContracts(cts || []);
-
-      const kitCodes = await window.api.getAllKitCodes();
-      setStructures(kitCodes || []);
-
-      // Default select first contract if avail
-      if (cts && cts.length > 0) {
-        setSelectedContract(cts[0].id);
-      }
-    } catch (error) {
-      console.error("Failed to load init data", error);
-    }
-  };
-
-  // Trigger calculation when selections change
+  // Recalculate when kits change
   useEffect(() => {
-    calculateBudget();
-  }, [selections, selectedContract]);
+    if (selectedKits.length > 0) {
+      calculateAggregation();
+    } else {
+      setMaterials([]);
+      setServices([]);
+    }
+  }, [selectedKits]);
 
-  const handleSelectionChange = (field, value) => {
-    setSelections(prev => ({ ...prev, [field]: value }));
+  const loadStats = async () => {
+    if (!window.api) return;
+    const data = await window.api.getStats();
+    setStats(data);
   };
 
-  const calculateBudget = async () => {
-    if (!window.api) return;
-
-    // Gather valid selected kit codes
-    const kitCodes = Object.values(selections).filter(Boolean);
-    if (kitCodes.length === 0) {
-      setMaterials([]);
-      setCosts([]);
-      setTotalCost(0);
+  const searchKits = async (query) => {
+    if (!window.api || !query.trim()) {
+      setSearchResults([]);
       return;
     }
+    const results = await window.api.searchKits(query);
+    // Filter out already selected kits
+    const filtered = results.filter(k => !selectedKits.find(s => s.codigo_kit === k.codigo_kit));
+    setSearchResults(filtered);
+  };
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setShowDropdown(true);
+    searchKits(value);
+  };
+
+  const handleSelectKit = (kit) => {
+    setSelectedKits(prev => [...prev, kit]);
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowDropdown(false);
+    searchRef.current?.focus();
+  };
+
+  const handleRemoveKit = (codigoKit) => {
+    setSelectedKits(prev => prev.filter(k => k.codigo_kit !== codigoKit));
+  };
+
+  const handleClearAll = () => {
+    setSelectedKits([]);
+    setMaterials([]);
+    setServices([]);
+  };
+
+  const calculateAggregation = async () => {
+    if (!window.api) return;
     setLoading(true);
-    try {
-      // 1. Get Aggregated Materials
-      const aggMats = await window.api.getAggregatedComposition(kitCodes);
-      setMaterials(aggMats);
 
-      // 2. Get Service Costs for these kits (Mock mapping: Service Code == Kit Code)
-      if (selectedContract) {
-        // Fetch all costs for contract
-        // In a real app, we'd query specifically for the relevant codes, 
-        // but getting all context costs and filtering in JS is fine for < 1000 items
-        const contractCosts = await window.api.getCostsByContract(selectedContract);
+    const kitCodes = selectedKits.map(k => k.codigo_kit);
 
-        // Filter costs that match our selected kit codes
-        const relevantCosts = contractCosts.filter(c => kitCodes.includes(c.codigo_servico));
+    // Get aggregated materials
+    const mats = await window.api.getAggregatedMaterials(kitCodes);
+    setMaterials(mats || []);
 
-        setCosts(relevantCosts);
+    // Get aggregated services
+    const svcs = await window.api.getAggregatedServices(kitCodes);
+    setServices(svcs || []);
 
-        const sum = relevantCosts.reduce((acc, curr) => acc + curr.preco_bruto, 0);
-        setTotalCost(sum);
-      }
-    } catch (error) {
-      console.error("Calculation error", error);
-    } finally {
-      setLoading(false);
+    setLoading(false);
+  };
+
+  // Keyboard handler for search
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setShowDropdown(false);
+    } else if (e.key === 'Enter' && searchResults.length > 0) {
+      handleSelectKit(searchResults[0]);
     }
   };
 
+  // Calculate totals
+  const totalMaterials = materials.reduce((sum, m) => sum + (m.subtotal || 0), 0);
+  const totalServices = services.reduce((sum, s) => sum + (s.preco_bruto || 0), 0);
+  const grandTotal = totalMaterials + totalServices;
+
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto">
-      <header>
-        <h2 className="text-3xl font-bold text-white mb-2">Configurador de Poste</h2>
-        <p className="text-gray-400">Selecione os componentes para gerar a composição e orçamento.</p>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 1. Configuration Panel */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg">
-            <h3 className="text-lg font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-              <SettingsIcon className="w-5 h-5" /> Parâmetros
-            </h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Contrato / Regional</label>
-                <select
-                  className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-cyan-500 outline-none"
-                  value={selectedContract}
-                  onChange={(e) => setSelectedContract(e.target.value)}
-                >
-                  <option value="">Selecione um contrato...</option>
-                  {contracts.map(c => (
-                    <option key={c.id} value={c.id}>{c.numero_contrato} - {c.regional}</option>
-                  ))}
-                </select>
-              </div>
-
-              <Dropdown label="Tipo de Poste" value={selections.poste} options={structures} onChange={v => handleSelectionChange('poste', v)} />
-              <Dropdown label="Estrutura MT 1" value={selections.estrutura_mt1} options={structures} onChange={v => handleSelectionChange('estrutura_mt1', v)} />
-            </div>
+    <div className="space-y-6 pb-32">
+      {/* Header Stats */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="glass-panel p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-blue-600 mb-1">
+            <Layers className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Materiais</span>
           </div>
+          <p className="text-2xl font-bold text-gray-800">{stats.materials?.toLocaleString()}</p>
+        </div>
+        <div className="glass-panel p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-emerald-600 mb-1">
+            <Package className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Kits</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-800">{stats.kits?.toLocaleString()}</p>
+        </div>
+        <div className="glass-panel p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-purple-600 mb-1">
+            <DollarSign className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Mão de Obra</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-800">{stats.labor?.toLocaleString()}</p>
+        </div>
+      </div>
+
+      {/* Kit Search */}
+      <div className="glass-panel p-6 rounded-2xl">
+        <div className="flex items-center gap-3 mb-4">
+          <Calculator className="w-6 h-6 text-blue-500" />
+          <h2 className="text-xl font-bold text-gray-800">Configurador de Orçamento</h2>
         </div>
 
-        {/* 2. Results & Budget */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Cost Summary Card */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20">
-              <p className="text-sm text-emerald-400 mb-1 font-medium">CUSTO TOTAL (SERVIÇOS)</p>
-              <div className="text-4xl font-bold text-white">
-                {totalCost.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => setShowDropdown(true)}
+                onKeyDown={handleKeyDown}
+                placeholder="Buscar kits... (ex: 13N1, SI3)"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white/80 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              />
+            </div>
+            {selectedKits.length > 0 && (
+              <button
+                onClick={handleClearAll}
+                className="px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition flex items-center gap-2 font-medium"
+              >
+                <Trash2 className="w-4 h-4" />
+                Limpar
+              </button>
+            )}
+          </div>
+
+          {/* Search Dropdown */}
+          {showDropdown && searchResults.length > 0 && (
+            <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-64 overflow-y-auto">
+              {searchResults.map((kit, idx) => (
+                <button
+                  key={kit.codigo_kit}
+                  onClick={() => handleSelectKit(kit)}
+                  className={`w-full text-left px-4 py-3 hover:bg-blue-50 flex items-center gap-3 ${idx === 0 ? 'bg-blue-50' : ''
+                    }`}
+                >
+                  <span className="font-mono font-bold text-blue-600">{kit.codigo_kit}</span>
+                  <span className="text-gray-600 truncate">{kit.descricao_kit}</span>
+                  <Plus className="w-4 h-4 text-gray-400 ml-auto" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Selected Kits */}
+        {selectedKits.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {selectedKits.map(kit => (
+              <div
+                key={kit.codigo_kit}
+                className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+              >
+                <span className="font-mono">{kit.codigo_kit}</span>
+                <button
+                  onClick={() => handleRemoveKit(kit.codigo_kit)}
+                  className="hover:bg-blue-200 rounded-full p-0.5"
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
-              <p className="text-xs text-gray-400 mt-2">Baseado no contrato selecionado</p>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Results */}
+      {selectedKits.length > 0 && (
+        <>
+          {/* Materials Section */}
+          <div className="glass-panel p-6 rounded-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <Layers className="w-5 h-5 text-emerald-500" />
+                Materiais ({materials.length})
+              </h3>
+              <span className="text-sm text-gray-500">
+                Subtotal: <span className="font-bold text-emerald-600">R$ {totalMaterials.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </span>
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl bg-white/5 border border-white/10">
-              <p className="text-sm text-cyan-400 mb-1 font-medium">MATERIAIS AGREGADOS</p>
-              <div className="text-4xl font-bold text-white">
-                {materials.length} <span className="text-lg text-gray-400 font-normal">itens</span>
-              </div>
-              <p className="text-xs text-gray-400 mt-2">Agrupados por código SAP</p>
+            <div className="overflow-hidden rounded-xl border border-gray-200">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-xs uppercase text-gray-500">
+                  <tr>
+                    <th className="px-4 py-3 text-left">SAP</th>
+                    <th className="px-4 py-3 text-left">Descrição</th>
+                    <th className="px-4 py-3 text-center">Un</th>
+                    <th className="px-4 py-3 text-right">Qtd</th>
+                    <th className="px-4 py-3 text-right">Unit (R$)</th>
+                    <th className="px-4 py-3 text-right">Subtotal (R$)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {materials.slice(0, 50).map((mat, idx) => (
+                    <tr key={mat.sap || idx} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 font-mono text-blue-600">{mat.sap}</td>
+                      <td className="px-4 py-2 text-gray-700 truncate max-w-xs">{mat.descricao}</td>
+                      <td className="px-4 py-2 text-center text-gray-500">{mat.unidade}</td>
+                      <td className="px-4 py-2 text-right font-medium">{mat.total_quantidade?.toFixed(2)}</td>
+                      <td className="px-4 py-2 text-right text-gray-600">{mat.preco_unitario?.toFixed(2)}</td>
+                      <td className="px-4 py-2 text-right font-bold text-gray-800">{mat.subtotal?.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {materials.length > 50 && (
+                <div className="px-4 py-2 bg-gray-50 text-center text-sm text-gray-500">
+                  Mostrando 50 de {materials.length} materiais
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Materials Table */}
-          <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden bg-white/5 backdrop-blur-md">
-            <div className="px-6 py-4 bg-white/5 border-b border-white/10 flex justify-between items-center">
-              <h3 className="font-semibold text-white">Lista de Materiais Consolidada</h3>
-              <button className="text-xs bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 px-3 py-1 rounded-md transition">Exportar Excel</button>
+          {/* Divider */}
+          <div className="section-divider"></div>
+
+          {/* Services Section */}
+          <div className="glass-panel p-6 rounded-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-purple-500" />
+                Mão de Obra ({services.length})
+              </h3>
+              <span className="text-sm text-gray-500">
+                Subtotal: <span className="font-bold text-purple-600">R$ {totalServices.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </span>
             </div>
 
-            {loading ? (
-              <div className="p-8 text-center text-gray-400">Calculando...</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
-                  <thead className="bg-black/20 text-xs uppercase text-gray-400">
+            {services.length > 0 ? (
+              <div className="overflow-hidden rounded-xl border border-gray-200">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 text-xs uppercase text-gray-500">
                     <tr>
-                      <th className="px-6 py-3">Código SAP</th>
-                      <th className="px-6 py-3">Descrição</th>
-                      <th className="px-6 py-3">Unid.</th>
-                      <th className="px-6 py-3 text-right">Qtd. Total</th>
+                      <th className="px-4 py-3 text-left">Código</th>
+                      <th className="px-4 py-3 text-left">Descrição</th>
+                      <th className="px-4 py-3 text-center">Un</th>
+                      <th className="px-4 py-3 text-right">Preço (R$)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {materials.map((m, idx) => (
-                      <tr key={idx} className="hover:bg-white/5">
-                        <td className="px-6 py-3 font-mono text-cyan-300">{m.codigo_sap}</td>
-                        <td className="px-6 py-3">{m.descricao}</td>
-                        <td className="px-6 py-3">{m.unidade}</td>
-                        <td className="px-6 py-3 text-right font-medium text-white">{m.total_quantidade}</td>
+                  <tbody className="divide-y divide-gray-100">
+                    {services.map((svc, idx) => (
+                      <tr key={svc.codigo_mo || idx} className="hover:bg-gray-50">
+                        <td className="px-4 py-2 font-mono text-purple-600">{svc.codigo_mo}</td>
+                        <td className="px-4 py-2 text-gray-700">{svc.descricao}</td>
+                        <td className="px-4 py-2 text-center text-gray-500">{svc.unidade}</td>
+                        <td className="px-4 py-2 text-right font-bold text-gray-800">{svc.preco_bruto?.toFixed(2)}</td>
                       </tr>
                     ))}
-                    {materials.length === 0 && (
-                      <tr>
-                        <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
-                          Nenhum material selecionado. Configure a estrutura ao lado.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <DollarSign className="w-12 h-12 mx-auto mb-2 opacity-30" />
+                <p>Nenhum serviço de mão de obra vinculado a estes kits.</p>
+                <p className="text-sm mt-1">Importe dados de Custo Modular na aba "Mão de Obra".</p>
+              </div>
             )}
           </div>
+        </>
+      )}
+
+      {/* Fixed Footer */}
+      {selectedKits.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 glass-panel border-t border-white/40 px-8 py-4 z-50">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div>
+                <span className="text-xs text-gray-500 uppercase">Kits Selecionados</span>
+                <p className="text-lg font-bold text-gray-800">{selectedKits.length}</p>
+              </div>
+              <div className="h-8 w-px bg-gray-300"></div>
+              <div>
+                <span className="text-xs text-gray-500 uppercase">Materiais</span>
+                <p className="text-lg font-bold text-emerald-600">R$ {totalMaterials.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div className="h-8 w-px bg-gray-300"></div>
+              <div>
+                <span className="text-xs text-gray-500 uppercase">Mão de Obra</span>
+                <p className="text-lg font-bold text-purple-600">R$ {totalServices.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xs text-gray-500 uppercase">Total Geral</span>
+              <p className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
+                R$ {grandTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Empty State */}
+      {selectedKits.length === 0 && (
+        <div className="text-center py-16">
+          <Package className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">Selecione Kits para Começar</h3>
+          <p className="text-gray-400">Use a busca acima para adicionar estruturas ao orçamento.</p>
+          <p className="text-sm text-gray-400 mt-2">Pressione <kbd className="px-2 py-1 bg-gray-100 rounded">Enter</kbd> para selecionar o primeiro resultado.</p>
+        </div>
+      )}
     </div>
   );
 };
-
-// Helper Sub-component
-const Dropdown = ({ label, value, options, onChange }) => (
-  <div>
-    <label className="block text-sm text-gray-400 mb-1">{label}</label>
-    <select
-      className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-cyan-500 outline-none"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    >
-      <option value="">(Vazio)</option>
-      {options.map(opt => (
-        <option key={opt} value={opt}>{opt}</option>
-      ))}
-    </select>
-  </div>
-);
-
-const SettingsIcon = (props) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
-);
 
 export default Configurator;
