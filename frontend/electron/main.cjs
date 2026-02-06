@@ -6,7 +6,6 @@ const db = require('./db/database.cjs');
 let mainWindow;
 
 async function createWindow() {
-  // Initialize database before creating window
   await db.init();
 
   mainWindow = new BrowserWindow({
@@ -24,7 +23,6 @@ async function createWindow() {
     show: false,
   });
 
-  // Load app
   if (isDev) {
     mainWindow.loadURL('http://localhost:5174');
     mainWindow.webContents.openDevTools();
@@ -32,11 +30,8 @@ async function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
 
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
+  mainWindow.once('ready-to-show', () => mainWindow.show());
 
-  // Open external links in browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
@@ -44,59 +39,39 @@ async function createWindow() {
 }
 
 app.whenReady().then(createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
-});
+app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 
 // ========== IPC HANDLERS ==========
 
-// --- Materials ---
+// Fast cost calculation (single query)
+ipcMain.handle('get-custo-total', (_, kitCodes) => db.getCustoTotal(kitCodes));
+
+// Materials
 ipcMain.handle('get-all-materials', () => db.getAllMaterials());
-ipcMain.handle('get-material', (_, sap) => db.getMaterial(sap));
+ipcMain.handle('search-materials', (_, query) => db.searchMaterials(query));
 ipcMain.handle('upsert-material', (_, { sap, descricao, unidade, preco_unitario }) =>
   db.upsertMaterial(sap, descricao, unidade, preco_unitario));
-ipcMain.handle('delete-material', (_, sap) => db.deleteMaterial(sap));
-ipcMain.handle('search-materials', (_, query) => db.searchMaterials(query));
 
-// --- Kits ---
+// Kits
 ipcMain.handle('get-all-kits', () => db.getAllKits());
-ipcMain.handle('get-kit', (_, codigoKit) => db.getKit(codigoKit));
-ipcMain.handle('create-kit', (_, { codigoKit, descricaoKit }) =>
-  db.createKit(codigoKit, descricaoKit));
-ipcMain.handle('delete-kit', (_, codigoKit) => db.deleteKit(codigoKit));
 ipcMain.handle('search-kits', (_, query) => db.searchKits(query));
+ipcMain.handle('get-kit', (_, codigoKit) => db.getKit(codigoKit));
+ipcMain.handle('upsert-kit', (_, { codigoKit, descricaoKit, codigoServico, custoServico }) =>
+  db.upsertKit(codigoKit, descricaoKit, codigoServico, custoServico));
 
-// --- Kit Composition ---
+// Kit Composition
 ipcMain.handle('get-kit-composition', (_, codigoKit) => db.getKitComposition(codigoKit));
 ipcMain.handle('add-material-to-kit', (_, { codigoKit, sap, quantidade }) =>
   db.addMaterialToKit(codigoKit, sap, quantidade));
-ipcMain.handle('update-kit-material-qty', (_, { id, quantidade }) =>
-  db.updateKitMaterialQty(id, quantidade));
+ipcMain.handle('update-kit-material-qty', (_, { id, quantidade }) => db.updateKitMaterialQty(id, quantidade));
 ipcMain.handle('remove-material-from-kit', (_, id) => db.removeMaterialFromKit(id));
 
-// --- Aggregated Materials (Key Feature) ---
-ipcMain.handle('get-aggregated-materials', (_, kitCodes) => db.getAggregatedMaterials(kitCodes));
+// Servicos CM
+ipcMain.handle('get-all-servicos', () => db.getAllServicos());
+ipcMain.handle('search-servicos', (_, query) => db.searchServicos(query));
+ipcMain.handle('upsert-servico', (_, { codigo, descricao, precoBruto }) =>
+  db.upsertServico(codigo, descricao, precoBruto));
 
-// --- Labor ---
-ipcMain.handle('get-all-labor', () => db.getAllLabor());
-ipcMain.handle('get-labor', (_, codigoMo) => db.getLabor(codigoMo));
-ipcMain.handle('upsert-labor', (_, { codigoMo, descricao, unidade, precoBruto }) =>
-  db.upsertLabor(codigoMo, descricao, unidade, precoBruto));
-ipcMain.handle('delete-labor', (_, codigoMo) => db.deleteLabor(codigoMo));
-
-// --- Kit Services ---
-ipcMain.handle('get-kit-services', (_, codigoKit) => db.getKitServices(codigoKit));
-ipcMain.handle('add-service-to-kit', (_, { codigoKit, codigoMo }) =>
-  db.addServiceToKit(codigoKit, codigoMo));
-ipcMain.handle('remove-service-from-kit', (_, id) => db.removeServiceFromKit(id));
-
-// --- Aggregated Services ---
-ipcMain.handle('get-aggregated-services', (_, kitCodes) => db.getAggregatedServices(kitCodes));
-
-// --- Stats ---
+// Stats
 ipcMain.handle('get-stats', () => db.getStats());
