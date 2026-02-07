@@ -14,32 +14,69 @@ export async function parseExcelPrecos(file) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
 
-        // Procurar aba "Custo Materiais"
-        const sheetName = workbook.SheetNames.find(
-          name => name.toLowerCase().includes('custo') && name.toLowerCase().includes('materiais')
+        // Procurar aba "Custo Materiais" ou similar
+        let sheetName = workbook.SheetNames.find(
+          name => {
+            const lower = name.toLowerCase();
+            return (lower.includes('custo') && lower.includes('materiais')) ||
+              lower.includes('preço') ||
+              lower.includes('preco') ||
+              lower === 'materiais';
+          }
         );
 
+        // Se não encontrar, usar primeira aba
         if (!sheetName) {
-          reject(new Error('Aba "Custo Materiais" não encontrada'));
-          return;
+          console.warn('Aba "Custo Materiais" não encontrada, usando primeira aba:', workbook.SheetNames[0]);
+          sheetName = workbook.SheetNames[0];
         }
 
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
-        // Detectar colunas SAP e Preço
-        const headerRow = jsonData[0] || [];
-        const sapColIndex = headerRow.findIndex(h =>
-          h && (h.toString().toLowerCase().includes('sap') || h.toString().toLowerCase().includes('código'))
-        );
-        const precoColIndex = headerRow.findIndex(h =>
-          h && (h.toString().toLowerCase().includes('preço') || h.toString().toLowerCase().includes('valor'))
-        );
-
-        if (sapColIndex === -1 || precoColIndex === -1) {
-          reject(new Error('Colunas SAP ou Preço não encontradas no cabeçalho'));
+        if (jsonData.length < 2) {
+          reject(new Error('Planilha vazia ou sem dados'));
           return;
         }
+
+        // Detectar colunas SAP e Preço com múltiplos padrões
+        const headerRow = jsonData[0] || [];
+
+        // Padrões para SAP
+        const sapPatterns = ['sap', 'código', 'codigo', 'cod', 'material', 'item'];
+        const sapColIndex = headerRow.findIndex(h => {
+          if (!h) return false;
+          const str = h.toString().toLowerCase();
+          return sapPatterns.some(pattern => str.includes(pattern));
+        });
+
+        // Padrões para Preço
+        const precoPatterns = ['preço', 'preco', 'valor', 'custo', 'unitário', 'unitario', 'price'];
+        const precoColIndex = headerRow.findIndex(h => {
+          if (!h) return false;
+          const str = h.toString().toLowerCase();
+          return precoPatterns.some(pattern => str.includes(pattern));
+        });
+
+        if (sapColIndex === -1 || precoColIndex === -1) {
+          // Criar mensagem de erro detalhada
+          const availableColumns = headerRow
+            .map((h, i) => h ? `${i}: "${h}"` : null)
+            .filter(Boolean)
+            .join(', ');
+
+          reject(new Error(
+            `Colunas não encontradas no cabeçalho.\n\n` +
+            `Procurando:\n` +
+            `- SAP: ${sapPatterns.join(', ')}\n` +
+            `- Preço: ${precoPatterns.join(', ')}\n\n` +
+            `Colunas disponíveis: ${availableColumns || 'nenhuma'}\n\n` +
+            `Certifique-se que a primeira linha contém os nomes das colunas.`
+          ));
+          return;
+        }
+
+        console.log(`✅ Colunas detectadas: SAP="${headerRow[sapColIndex]}" (índice ${sapColIndex}), Preço="${headerRow[precoColIndex]}" (índice ${precoColIndex})`);
 
         // Parse rows
         const precos = [];
@@ -48,8 +85,11 @@ export async function parseExcelPrecos(file) {
           const sap = row[sapColIndex];
           const preco = row[precoColIndex];
 
-          if (sap && preco !== undefined && preco !== null && preco !== '') {
-            const precoNum = typeof preco === 'number' ? preco : parseFloat(preco.toString().replace(',', '.'));
+          // Skip empty rows
+          if (!sap || sap === '') continue;
+
+          if (preco !== undefined && preco !== null && preco !== '') {
+            let precoNum = typeof preco === 'number' ? preco : parseFloat(preco.toString().replace(',', '.'));
 
             if (!isNaN(precoNum)) {
               precos.push({
@@ -60,6 +100,12 @@ export async function parseExcelPrecos(file) {
           }
         }
 
+        if (precos.length === 0) {
+          reject(new Error('Nenhum preço válido encontrado na planilha'));
+          return;
+        }
+
+        console.log(`✅ Parsed ${precos.length} preços`);
         resolve(precos);
       } catch (error) {
         reject(error);
