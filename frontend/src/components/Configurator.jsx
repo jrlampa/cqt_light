@@ -75,6 +75,11 @@ const Configurator = () => {
   const [custoData, setCustoData] = useState({ materiais: [], totalMaterial: 0, totalServico: 0, totalGeral: 0 });
   const [calcTime, setCalcTime] = useState(0);
 
+  // Refs for keyboard navigation
+  const posteInputRef = useRef(null);
+  const estruturaInputRef = useRef(null);
+  const materialInputRef = useRef(null);
+
   const structureRef = useRef(null);
   const materialRef = useRef(null);
   const qtyInputRef = useRef(null);
