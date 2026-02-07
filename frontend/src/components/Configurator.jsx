@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap } from 'lucide-react';
+import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap, DollarSign } from 'lucide-react';
 
 // Hooks
 import { useBudgetCalculator } from '../hooks/useBudgetCalculator';
@@ -12,6 +12,8 @@ import { SummaryFooter } from './SummaryFooter';
 import BudgetHistory from './BudgetHistory';
 import TemplateManager from './TemplateManager';
 import { KitDetailsModal } from './KitDetailsModal';
+import { CompanySelector } from './CompanySelector';
+import { PriceManagementModal } from './PriceManagementModal';
 import { exportMaterialsToExcel } from '../utils/excelExporter';
 
 // Conductor options
@@ -91,6 +93,8 @@ const Configurator = () => {
   const [showTemplateManager, setShowTemplateManager] = useState(false);
   const [showKitDetails, setShowKitDetails] = useState(false);
   const [selectedKit, setSelectedKit] = useState(null);
+  const [showPriceManagement, setShowPriceManagement] = useState(false);
+  const [empresaAtiva, setEmpresaAtiva] = useState(null);
 
   // --- HOOKS ---
   const { custoData, setCustoData, calculateTotal } = useBudgetCalculator();
@@ -347,11 +351,28 @@ const Configurator = () => {
             >
               <LayoutTemplate className="w-4 h-4" />
             </button>
+            <button
+              onClick={() => setShowPriceManagement(true)}
+              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-emerald-600 transition ml-1"
+              title="Gestão de Preços"
+            >
+              <DollarSign className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
+        {/* Company Selector */}
+        <CompanySelector
+          onCompanyChange={(empresa) => {
+            setEmpresaAtiva(empresa);
+            // Recalcular custos com nova empresa
+            calculateTotal(estruturas, materiaisAvulsos);
+          }}
+        />
+
         {/* Action Buttons */}
         <div className="flex gap-2">
+
           <button
             onClick={clearAll}
             disabled={totalKits === 0 && totalMats === 0}
@@ -373,17 +394,19 @@ const Configurator = () => {
           >
             <FileText className="w-3 h-3" /> Relatório
           </button>
-        </div>
+        </div >
 
         {/* Export Button */}
-        {custoData.materiais.length > 0 && (
-          <button
-            onClick={() => exportMaterialsToExcel(custoData.materiais, custoData)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
-          >
-            <Download className="w-3 h-3" /> Exportar Excel
-          </button>
-        )}
+        {
+          custoData.materiais.length > 0 && (
+            <button
+              onClick={() => exportMaterialsToExcel(custoData.materiais, custoData)}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
+            >
+              <Download className="w-3 h-3" /> Exportar Excel
+            </button>
+          )
+        }
 
         {/* Poste */}
         <div className="relative">
@@ -476,10 +499,10 @@ const Configurator = () => {
             )}
           </div>
         </div>
-      </div>
+      </div >
 
       {/* Main Content Area: Structure List or Material List */}
-      <div className="flex-1 flex flex-col bg-gray-50 border-r border-gray-200">
+      < div className="flex-1 flex flex-col bg-gray-50 border-r border-gray-200" >
         {/* Simple Tabs for switching if needed, though current design shows one based on activeTab state */}
         {/* Since StructureList handles structures and MaterialList handles activeTab check, we render both components
              but only one will display based on activeTab prop logic inside them (if wrapped nicely) or conditional render here.
@@ -487,48 +510,50 @@ const Configurator = () => {
              StructureList has tabs inside. Ideally we lift tabs out or keep them sync.
              Let's render conditionally for clarity.
          */}
-        {activeTab === 'estruturas' ? (
-          <StructureList
-            estruturas={estruturas}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            searchStructure={searchStructure}
-            structureQuery={structureQuery}
-            structureResults={structureResults}
-            showStructureDropdown={showStructureDropdown}
-            structureHighlight={nav.structureHighlight}
-            handleStructureKeyDown={handleStructureNav}
-            selectStructure={(item) => openQtyPopup(item, 'structure')}
-            removeStructure={removeStructure}
-            onKitClick={openKitDetails}
-            structureRef={nav.structureRef}
-            setStructureQuery={setStructureQuery}
-            setShowStructureDropdown={setShowStructureDropdown}
-            setStructureHighlight={nav.setStructureHighlight}
-          />
-        ) : (
-          <MaterialList
-            materiaisAvulsos={materiaisAvulsos}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            searchMaterial={searchMaterial}
-            materialQuery={materialQuery}
-            materialResults={materialResults}
-            showMaterialDropdown={showMaterialDropdown}
-            materialHighlight={nav.materialHighlight}
-            handleMaterialKeyDown={handleMaterialNav}
-            selectMaterial={(item) => openQtyPopup(item, 'material')}
-            removeMaterial={removeMaterial}
-            materialRef={nav.materialRef}
-            setMaterialQuery={setMaterialQuery}
-            setShowMaterialDropdown={setShowMaterialDropdown}
-            setMaterialHighlight={nav.setMaterialHighlight}
-          />
-        )}
-      </div>
+        {
+          activeTab === 'estruturas' ? (
+            <StructureList
+              estruturas={estruturas}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              searchStructure={searchStructure}
+              structureQuery={structureQuery}
+              structureResults={structureResults}
+              showStructureDropdown={showStructureDropdown}
+              structureHighlight={nav.structureHighlight}
+              handleStructureKeyDown={handleStructureNav}
+              selectStructure={(item) => openQtyPopup(item, 'structure')}
+              removeStructure={removeStructure}
+              onKitClick={openKitDetails}
+              structureRef={nav.structureRef}
+              setStructureQuery={setStructureQuery}
+              setShowStructureDropdown={setShowStructureDropdown}
+              setStructureHighlight={nav.setStructureHighlight}
+            />
+          ) : (
+            <MaterialList
+              materiaisAvulsos={materiaisAvulsos}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              searchMaterial={searchMaterial}
+              materialQuery={materialQuery}
+              materialResults={materialResults}
+              showMaterialDropdown={showMaterialDropdown}
+              materialHighlight={nav.materialHighlight}
+              handleMaterialKeyDown={handleMaterialNav}
+              selectMaterial={(item) => openQtyPopup(item, 'material')}
+              removeMaterial={removeMaterial}
+              materialRef={nav.materialRef}
+              setMaterialQuery={setMaterialQuery}
+              setShowMaterialDropdown={setShowMaterialDropdown}
+              setMaterialHighlight={nav.setMaterialHighlight}
+            />
+          )
+        }
+      </div >
 
       {/* Footer */}
-      <SummaryFooter
+      < SummaryFooter
         custoData={custoData}
         condutorMT={condutorMT}
         condutorBT={condutorBT}
@@ -539,7 +564,7 @@ const Configurator = () => {
       />
 
       {/* Modals */}
-      <BudgetHistory
+      < BudgetHistory
         isOpen={showBudgetHistory}
         onClose={() => setShowBudgetHistory(false)}
         onLoad={loadBudget}
@@ -553,7 +578,7 @@ const Configurator = () => {
         }}
       />
 
-      <TemplateManager
+      < TemplateManager
         isOpen={showTemplateManager}
         onClose={() => setShowTemplateManager(false)}
         onApply={loadTemplate}
@@ -565,13 +590,19 @@ const Configurator = () => {
         }}
       />
 
-      <KitDetailsModal
+      < KitDetailsModal
         isOpen={showKitDetails}
         onClose={() => setShowKitDetails(false)}
         kit={selectedKit}
         onSaveMateriais={updateKitMateriais}
       />
-    </div>
+
+      <PriceManagementModal
+        isOpen={showPriceManagement}
+        onClose={() => setShowPriceManagement(false)}
+        empresaAtiva={empresaAtiva}
+      />
+    </div >
   );
 };
 
