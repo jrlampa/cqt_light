@@ -163,6 +163,30 @@ class DatabaseService {
     `, [codigoKit, descricaoKit, codigoServico, custoServico]);
   }
 
+  // Create a new kit (explicit insert)
+  createKit(codigoKit, descricaoKit) {
+    this.run(`
+      INSERT INTO kits (codigo_kit, descricao_kit, codigo_servico, custo_servico)
+      VALUES (?, ?, NULL, 0)
+    `, [codigoKit, descricaoKit]);
+    return this.getKit(codigoKit);
+  }
+
+  // Update kit metadata (description only, don't touch composition)
+  updateKitMetadata(codigoKit, descricaoKit) {
+    return this.run(`
+      UPDATE kits SET descricao_kit = ? WHERE codigo_kit = ?
+    `, [descricaoKit, codigoKit]);
+  }
+
+  // Delete kit and its composition (cascade)
+  deleteKit(codigoKit) {
+    // Delete composition first
+    this.run('DELETE FROM kit_composicao WHERE codigo_kit = ?', [codigoKit]);
+    // Then delete kit
+    return this.run('DELETE FROM kits WHERE codigo_kit = ?', [codigoKit]);
+  }
+
   // ========== KIT COMPOSITION ==========
   getKitComposition(codigoKit) {
     return this.all(`

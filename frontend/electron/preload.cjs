@@ -14,6 +14,9 @@ contextBridge.exposeInMainWorld('api', {
   searchKits: (query) => ipcRenderer.invoke('search-kits', query),
   getKit: (codigoKit) => ipcRenderer.invoke('get-kit', codigoKit),
   upsertKit: (data) => ipcRenderer.invoke('upsert-kit', data),
+  createKit: (data) => ipcRenderer.invoke('create-kit', data),
+  updateKitMetadata: (data) => ipcRenderer.invoke('update-kit-metadata', data),
+  deleteKit: (codigo_kit) => ipcRenderer.invoke('delete-kit', codigo_kit),
 
   // Kit Composition
   getKitComposition: (codigoKit) => ipcRenderer.invoke('get-kit-composition', codigoKit),

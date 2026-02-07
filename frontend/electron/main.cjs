@@ -59,6 +59,12 @@ ipcMain.handle('search-kits', (_, query) => db.searchKits(query));
 ipcMain.handle('get-kit', (_, codigoKit) => db.getKit(codigoKit));
 ipcMain.handle('upsert-kit', (_, { codigoKit, descricaoKit, codigoServico, custoServico }) =>
   db.upsertKit(codigoKit, descricaoKit, codigoServico, custoServico));
+ipcMain.handle('create-kit', (_, { codigo_kit, descricao_kit }) =>
+  db.createKit(codigo_kit, descricao_kit));
+ipcMain.handle('update-kit-metadata', (_, { codigo_kit, descricao_kit }) =>
+  db.updateKitMetadata(codigo_kit, descricao_kit));
+ipcMain.handle('delete-kit', (_, codigo_kit) =>
+  db.deleteKit(codigo_kit));
 
 // Kit Composition
 ipcMain.handle('get-kit-composition', (_, codigoKit) => db.getKitComposition(codigoKit));
