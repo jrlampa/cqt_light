@@ -9,7 +9,11 @@ const LaborManager = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newServico, setNewServico] = useState({ codigo: '', descricao: '', preco_bruto: 0 });
 
-  useEffect(() => { loadServicos(); }, []);
+  useEffect(() => {
+    const saved = localStorage.getItem('laborManager_searchQuery');
+    if (saved) setSearchQuery(saved);
+    loadServicos();
+  }, []);
 
   const loadServicos = async () => {
     if (!window.api) return;
@@ -25,6 +29,7 @@ const LaborManager = () => {
     } else {
       await loadServicos();
     }
+    localStorage.setItem('laborManager_searchQuery', searchQuery);
   };
 
   const startEdit = (item) => { setEditingId(item.codigo); setEditData({ ...item }); };

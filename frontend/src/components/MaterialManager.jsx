@@ -12,6 +12,8 @@ const MaterialManager = () => {
 
   // Load materials on mount
   useEffect(() => {
+    const saved = localStorage.getItem('materialManager_searchQuery');
+    if (saved) setSearchQuery(saved);
     loadMaterials();
   }, []);
 
@@ -32,6 +34,7 @@ const MaterialManager = () => {
     } else {
       await loadMaterials();
     }
+    localStorage.setItem('materialManager_searchQuery', searchQuery);
     setLoading(false);
   };
 

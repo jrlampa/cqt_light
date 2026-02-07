@@ -35,7 +35,7 @@ function App() {
   };
 
   const tabs = [
-    { id: 'configurator', label: 'Configurador', icon: Calculator, shortcut: '1' },
+    { id: 'configurator', label: 'Montagem', icon: Calculator, shortcut: '1' },
     { id: 'materials', label: 'Materiais', icon: Layers, shortcut: '2' },
     { id: 'kits', label: 'Kits', icon: Package, shortcut: '3' },
     { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4' },
@@ -69,8 +69,8 @@ function App() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === tab.id
-                  ? 'bg-white shadow-md text-blue-600'
-                  : 'text-gray-600 hover:bg-white/50'
+                ? 'bg-white shadow-md text-blue-600'
+                : 'text-gray-600 hover:bg-white/50'
                 }`}
             >
               <tab.icon className="w-4 h-4" />
