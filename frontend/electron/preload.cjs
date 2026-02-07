@@ -18,6 +18,12 @@ contextBridge.exposeInMainWorld('api', {
   updateKitMetadata: (data) => ipcRenderer.invoke('update-kit-metadata', data),
   deleteKit: (codigo_kit) => ipcRenderer.invoke('delete-kit', codigo_kit),
 
+  // Orçamentos
+  saveOrcamento: (data) => ipcRenderer.invoke('save-orcamento', data),
+  getOrcamentos: () => ipcRenderer.invoke('get-orcamentos'),
+  getOrcamento: (id) => ipcRenderer.invoke('get-orcamento', id),
+  deleteOrcamento: (id) => ipcRenderer.invoke('delete-orcamento', id),
+
   // Kit Composition
   getKitComposition: (codigoKit) => ipcRenderer.invoke('get-kit-composition', codigoKit),
   addMaterialToKit: (data) => ipcRenderer.invoke('add-material-to-kit', data),

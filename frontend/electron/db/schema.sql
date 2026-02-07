@@ -41,3 +41,12 @@ CREATE INDEX IF NOT EXISTS idx_servicos_codigo ON servicos_cm(codigo);
 CREATE INDEX IF NOT EXISTS idx_servicos_descricao ON servicos_cm(descricao);
 CREATE INDEX IF NOT EXISTS idx_kit_composicao_kit ON kit_composicao(codigo_kit);
 CREATE INDEX IF NOT EXISTS idx_kit_composicao_sap ON kit_composicao(sap);
+-- 5. orcamentos (Budget History)
+CREATE TABLE IF NOT EXISTS orcamentos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL,
+  data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+  total REAL DEFAULT 0,
+  dados_json TEXT NOT NULL -- Full state snapshot
+);
+CREATE INDEX IF NOT EXISTS idx_orcamentos_data ON orcamentos(data_criacao DESC);

@@ -22,7 +22,17 @@ describe('Database Service Tests', () => {
       }),
       getKitComposition: (codigo) => Promise.resolve([
         { sap: '123', quantidade: 2, preco_unitario: 10.5, subtotal: 21.0 }
-      ])
+      ]),
+      saveOrcamento: (nome, total, dados) => Promise.resolve({
+        id: 1, nome, total, data_criacao: new Date().toISOString()
+      }),
+      getOrcamentos: () => Promise.resolve([
+        { id: 1, nome: 'Orçamento Teste', total: 1000, data_criacao: new Date().toISOString() }
+      ]),
+      getOrcamento: (id) => Promise.resolve({
+        id, nome: 'Orçamento Teste', total: 1000, dados_json: JSON.stringify({ itens: [] })
+      }),
+      deleteOrcamento: (id) => Promise.resolve()
     };
   });
 
@@ -55,6 +65,31 @@ describe('Database Service Tests', () => {
     const composition = await db.getKitComposition('13N1');
     expect(composition).toBeDefined();
     expect(Array.isArray(composition)).toBe(true);
+  });
+
+  describe('Budget Management Tests', () => {
+    it('should save a new budget', async () => {
+      const budget = { nome: 'Obra A', total: 1000, dados: { itens: [] } };
+      const saved = await db.saveOrcamento(budget.nome, budget.total, budget.dados);
+      expect(saved).toBeDefined();
+      expect(saved.id).toBe(1);
+      expect(saved.nome).toBe('Obra A');
+    });
+
+    it('should list saved budgets', async () => {
+      const budgets = await db.getOrcamentos();
+      expect(budgets).toBeDefined();
+      expect(Array.isArray(budgets)).toBe(true);
+      expect(budgets.length).toBeGreaterThan(0);
+      expect(budgets[0].total).toBeDefined();
+    });
+
+    it('should load a specific budget details', async () => {
+      const budget = await db.getOrcamento(1);
+      expect(budget).toBeDefined();
+      expect(budget.id).toBe(1);
+      expect(budget.dados_json).toBeDefined();
+    });
   });
 });
 
@@ -120,3 +155,5 @@ describe('Cost Calculation Tests', () => {
     expect(total).toBe(46.0);
   });
 });
+
+

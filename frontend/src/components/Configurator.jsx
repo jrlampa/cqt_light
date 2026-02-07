@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench, Save, FileText, Trash2, Pencil, Download } from 'lucide-react';
-import { exportMaterialsToExcel } from '../utils/excelExporter';
+import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench, Save, FileText, Trash2, Pencil, Download, FolderOpen } from 'lucide-react';
+import { exportBudgetToExcel } from '../utils/excelExporter';
+import BudgetHistory from './BudgetHistory';
 
 // Conductor options
 const CONDUTORES_MT = [
@@ -88,6 +89,18 @@ const Configurator = () => {
   useEffect(() => {
     saveState({ condutorMT, condutorBT, estruturas, materiaisAvulsos });
   }, [condutorMT, condutorBT, estruturas, materiaisAvulsos]);
+
+  // Budget History
+  const [showBudgetHistory, setShowBudgetHistory] = useState(false);
+
+  const loadBudget = (data) => {
+    if (!data) return;
+    setCondutorMT(data.condutorMT);
+    setCondutorBT(data.condutorBT);
+    setEstruturas(data.estruturas || []);
+    setMateriaisAvulsos(data.materiaisAvulsos || []);
+    alert('✅ Orçamento carregado com sucesso! Clique em "Calcular" para atualizar os valores.');
+  };
 
   // Global shortcuts
   useEffect(() => {
@@ -495,6 +508,13 @@ const Configurator = () => {
           <div className="flex items-center gap-2">
             <Calculator className="w-4 h-4 text-blue-500" />
             <h2 className="font-bold text-gray-800 text-sm">Configurador</h2>
+            <button
+              onClick={() => setShowBudgetHistory(true)}
+              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-blue-600 transition ml-2"
+              title="Histórico de Orçamentos"
+            >
+              <FolderOpen className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -821,13 +841,24 @@ const Configurator = () => {
                   </span>
                 </div>
               </div>
-              <button
-                onClick={copySummary}
-                className="w-full mt-3 px-3 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition flex items-center justify-center gap-2 text-sm font-semibold"
-              >
-                <FileText className="w-4 h-4" />
-                Copiar Resumo
-              </button>
+              <div className="flex gap-2 w-full mt-3">
+                <button
+                  onClick={copySummary}
+                  className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2 text-sm font-semibold border border-gray-200"
+                  title="Copiar resumo para área de transferência"
+                >
+                  <FileText className="w-4 h-4" />
+                  Copiar
+                </button>
+                <button
+                  onClick={() => exportBudgetToExcel(custoData, estruturas, 'Orcamento_CQT')}
+                  className="flex-1 px-3 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition flex items-center justify-center gap-2 text-sm font-semibold shadow-md"
+                  title="Baixar planilha completa em Excel"
+                >
+                  <Download className="w-4 h-4" />
+                  Excel
+                </button>
+              </div>
               <p className="text-[10px] text-gray-400 text-center mt-2">
                 <kbd className="px-1 py-0.5 bg-gray-100 rounded text-gray-600">Ctrl+P</kbd>
               </p>
@@ -835,6 +866,21 @@ const Configurator = () => {
           </div>
         </div>
       )}
+
+      {/* Budget History Modal */}
+      <BudgetHistory
+        isOpen={showBudgetHistory}
+        onClose={() => setShowBudgetHistory(false)}
+        onLoad={loadBudget}
+        currentData={{
+          materiais: custoData.materiais,
+          totalGeral: custoData.totalGeral,
+          condutorMT,
+          condutorBT,
+          estruturas,
+          materiaisAvulsos
+        }}
+      />
     </div>
   );
 };

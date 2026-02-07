@@ -63,6 +63,14 @@ ipcMain.handle('create-kit', (_, { codigo_kit, descricao_kit }) =>
   db.createKit(codigo_kit, descricao_kit));
 ipcMain.handle('update-kit-metadata', (_, { codigo_kit, descricao_kit }) =>
   db.updateKitMetadata(codigo_kit, descricao_kit));
+ipcMain.handle('delete-kit', (_, codigo_kit) => db.deleteKit(codigo_kit));
+
+// Orçamentos
+ipcMain.handle('save-orcamento', (_, { nome, total, dados }) =>
+  db.saveOrcamento(nome, total, dados));
+ipcMain.handle('get-orcamentos', () => db.getOrcamentos());
+ipcMain.handle('get-orcamento', (_, id) => db.getOrcamento(id));
+ipcMain.handle('delete-orcamento', (_, id) => db.deleteOrcamento(id));
 ipcMain.handle('delete-kit', (_, codigo_kit) =>
   db.deleteKit(codigo_kit));
 

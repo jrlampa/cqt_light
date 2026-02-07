@@ -249,6 +249,36 @@ class DatabaseService {
       servicos: servicos?.count || 0
     };
   }
+
+  // ========== ORÇAMENTOS (Budget History) ==========
+  saveOrcamento(nome, total, dados) {
+    const info = this.run(`
+      INSERT INTO orcamentos (nome, total, dados_json)
+      VALUES (?, ?, ?)
+    `, [nome, total, JSON.stringify(dados)]);
+    return { id: info.lastInsertRowid, nome, total, data_criacao: new Date().toISOString() };
+  }
+
+  getOrcamentos() {
+    return this.all('SELECT id, nome, total, data_criacao FROM orcamentos ORDER BY data_criacao DESC');
+  }
+
+  getOrcamento(id) {
+    const orcamento = this.get('SELECT * FROM orcamentos WHERE id = ?', [id]);
+    if (orcamento) {
+      try {
+        orcamento.dados = JSON.parse(orcamento.dados_json);
+      } catch (e) {
+        console.error('Erro ao fazer parse do JSON do orçamento:', e);
+        orcamento.dados = null;
+      }
+    }
+    return orcamento;
+  }
+
+  deleteOrcamento(id) {
+    this.run('DELETE FROM orcamentos WHERE id = ?', [id]);
+  }
 }
 
 module.exports = new DatabaseService();
