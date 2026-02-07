@@ -64,6 +64,7 @@ ipcMain.handle('create-kit', (_, { codigo_kit, descricao_kit }) =>
 ipcMain.handle('update-kit-metadata', (_, { codigo_kit, descricao_kit }) =>
   db.updateKitMetadata(codigo_kit, descricao_kit));
 ipcMain.handle('delete-kit', (_, codigo_kit) => db.deleteKit(codigo_kit));
+ipcMain.handle('get-kit-composition', (_, codigoKit) => db.getKitComposition(codigoKit));
 
 // Orçamentos
 ipcMain.handle('save-orcamento', (_, { nome, total, dados }) =>

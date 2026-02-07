@@ -13,6 +13,7 @@ export const StructureList = ({
   handleStructureKeyDown,
   selectStructure,
   removeStructure,
+  onKitClick,
   structureRef,
   setStructureQuery,
   setShowStructureDropdown,
@@ -82,7 +83,11 @@ export const StructureList = ({
             </div>
           ) : (
             estruturas.map((est) => (
-              <div key={est.id} className="group flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition">
+              <div
+                key={est.id}
+                className="group flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition cursor-pointer"
+                onClick={() => onKitClick?.(est)}
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-blue-100">
                     {est.codigo_kit}
@@ -98,7 +103,7 @@ export const StructureList = ({
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-gray-700 text-sm">R$ {((est.quantidade || 1) * (est.preco_kit || 0)).toFixed(2)}</span>
                   <button
-                    onClick={() => removeStructure(est.id)}
+                    onClick={(e) => { e.stopPropagation(); removeStructure(est.id); }}
                     className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 className="w-4 h-4" />

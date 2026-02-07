@@ -11,6 +11,7 @@ import { MaterialList } from './MaterialList';
 import { SummaryFooter } from './SummaryFooter';
 import BudgetHistory from './BudgetHistory';
 import TemplateManager from './TemplateManager';
+import { KitDetailsModal } from './KitDetailsModal';
 import { exportMaterialsToExcel } from '../utils/excelExporter';
 
 // Conductor options
@@ -88,6 +89,8 @@ const Configurator = () => {
 
   const [showBudgetHistory, setShowBudgetHistory] = useState(false);
   const [showTemplateManager, setShowTemplateManager] = useState(false);
+  const [showKitDetails, setShowKitDetails] = useState(false);
+  const [selectedKit, setSelectedKit] = useState(null);
 
   // --- HOOKS ---
   const { custoData, setCustoData, calculateTotal } = useBudgetCalculator();
@@ -221,6 +224,20 @@ const Configurator = () => {
 
   const removeStructure = (id) => setEstruturas(prev => prev.filter(e => e.id !== id));
   const removeMaterial = (id) => setMateriaisAvulsos(prev => prev.filter(m => m.id !== id));
+
+  const openKitDetails = (kit) => {
+    setSelectedKit(kit);
+    setShowKitDetails(true);
+  };
+
+  const updateKitMateriais = (materiaisExtras) => {
+    if (!selectedKit) return;
+    setEstruturas(prev => prev.map(kit =>
+      kit.id === selectedKit.id
+        ? { ...kit, materiaisExtras }
+        : kit
+    ));
+  };
 
   const clearAll = () => {
     if (!confirm('Limpar toda a configuração?')) return;
@@ -483,6 +500,7 @@ const Configurator = () => {
             handleStructureKeyDown={handleStructureNav}
             selectStructure={(item) => openQtyPopup(item, 'structure')}
             removeStructure={removeStructure}
+            onKitClick={openKitDetails}
             structureRef={nav.structureRef}
             setStructureQuery={setStructureQuery}
             setShowStructureDropdown={setShowStructureDropdown}
@@ -545,6 +563,13 @@ const Configurator = () => {
           estruturas,
           materiaisAvulsos
         }}
+      />
+
+      <KitDetailsModal
+        isOpen={showKitDetails}
+        onClose={() => setShowKitDetails(false)}
+        kit={selectedKit}
+        onSaveMateriais={updateKitMateriais}
       />
     </div>
   );
