@@ -32,6 +32,12 @@ CREATE TABLE IF NOT EXISTS kit_composicao (
   UNIQUE(codigo_kit, sap)
 );
 -- Indexes for fast lookups
+CREATE INDEX IF NOT EXISTS idx_materiais_sap ON materiais(sap);
+CREATE INDEX IF NOT EXISTS idx_materiais_descricao ON materiais(descricao);
+CREATE INDEX IF NOT EXISTS idx_kits_codigo ON kits(codigo_kit);
+CREATE INDEX IF NOT EXISTS idx_kits_descricao ON kits(descricao_kit);
+CREATE INDEX IF NOT EXISTS idx_kits_servico ON kits(codigo_servico);
+CREATE INDEX IF NOT EXISTS idx_servicos_codigo ON servicos_cm(codigo);
+CREATE INDEX IF NOT EXISTS idx_servicos_descricao ON servicos_cm(descricao);
 CREATE INDEX IF NOT EXISTS idx_kit_composicao_kit ON kit_composicao(codigo_kit);
 CREATE INDEX IF NOT EXISTS idx_kit_composicao_sap ON kit_composicao(sap);
-CREATE INDEX IF NOT EXISTS idx_kits_servico ON kits(codigo_servico);
