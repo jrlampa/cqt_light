@@ -178,6 +178,18 @@ const Configurator = () => {
   };
 
   const openQtyPopup = (item, type) => {
+    // Close all dropdowns first to prevent modal stacking
+    setShowStructureDropdown(false);
+    setShowMaterialDropdown(false);
+    setShowPosteDropdown(false);
+    setShowMTDropdown(false);
+    setShowBTDropdown(false);
+
+    // Clear search queries
+    if (type === 'structure') setStructureQuery('');
+    if (type === 'material') setMaterialQuery('');
+
+    // Open quantity popup
     setPendingItem(item);
     setPendingType(type);
     setQty(1);
@@ -267,8 +279,8 @@ const Configurator = () => {
     <div className="h-full flex gap-4 relative">
       {/* Quantity Popup */}
       {showQtyPopup && pendingItem && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowQtyPopup(false)}>
-          <div className="bg-white rounded-2xl p-6 shadow-2xl w-80" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100]" onClick={() => setShowQtyPopup(false)}>
+          <div className="bg-white rounded-2xl p-6 shadow-2xl w-80 animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <h3 className="font-bold text-lg mb-2">Quantidade</h3>
             <p className="text-sm text-gray-600 mb-4">
               <span className={`font-mono font-bold ${pendingType === 'structure' ? 'text-orange-600' : 'text-blue-600'}`}>
