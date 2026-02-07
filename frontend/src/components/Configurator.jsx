@@ -372,6 +372,44 @@ const Configurator = () => {
     localStorage.removeItem('cqt_configurator_state');
   };
 
+  // Copy summary to clipboard
+  const copySummary = () => {
+    const summary = `ORÇAMENTO CQT LIGHT\n\n` +
+      `Material: R$ ${custoData.totalMaterial.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n` +
+      `Mão de Obra: R$ ${custoData.totalServico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n` +
+      `TOTAL: R$ ${custoData.totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n\n` +
+      `Materiais (${custoData.materiais.length}):\n` +
+      custoData.materiais.map(m =>
+        `${m.sap} - ${m.descricao} (${m.quantidade} ${m.unidade}) - R$ ${m.subtotal.toFixed(2)}`
+      ).join('\n');
+
+    navigator.clipboard.writeText(summary).then(() => {
+      alert('✅ Resumo copiado para área de transferência!');
+    });
+  };
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleGlobalKeys = (e) => {
+      // ESC: Clear all
+      if (e.key === 'Escape') {
+        clearAll();
+        setTimeout(() => posteInputRef.current?.focus(), 100);
+      }
+      // Ctrl+P: Copy summary
+      if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        copySummary();
+      }
+      // Ctrl+Enter: Calculate
+      if (e.ctrlKey && e.key === 'Enter') {
+        calculateTotal();
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeys);
+    return () => window.removeEventListener('keydown', handleGlobalKeys);
+  }, [custoData]);
+
   // Keyboard handlers
   const handlePosteKeyDown = (e) => {
     if (!showPosteDropdown || posteResults.length === 0) return;
@@ -754,6 +792,49 @@ const Configurator = () => {
           </div>
         </div>
       </div>
+
+      {/* Sticky Summary Footer */}
+      {custoData.totalGeral > 0 && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl border-2 border-emerald-500 overflow-hidden">
+            <div className="bg-gradient-to-r from-emerald-500 to-blue-500 px-4 py-2">
+              <div className="flex items-center gap-2 text-white font-bold text-sm">
+                <Calculator className="w-4 h-4" />
+                <span>TOTAL GERAL</span>
+              </div>
+            </div>
+            <div className="px-4 py-3">
+              <p className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                R$ {custoData.totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <div className="flex gap-3 text-xs mt-2">
+                <div>
+                  <span className="text-gray-500">Mat:</span>
+                  <span className="text-emerald-600 font-semibold ml-1">
+                    R$ {custoData.totalMaterial.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">M.O.:</span>
+                  <span className="text-purple-600 font-semibold ml-1">
+                    R$ {custoData.totalServico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={copySummary}
+                className="w-full mt-3 px-3 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition flex items-center justify-center gap-2 text-sm font-semibold"
+              >
+                <FileText className="w-4 h-4" />
+                Copiar Resumo
+              </button>
+              <p className="text-[10px] text-gray-400 text-center mt-2">
+                <kbd className="px-1 py-0.5 bg-gray-100 rounded text-gray-600">Ctrl+P</kbd>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
