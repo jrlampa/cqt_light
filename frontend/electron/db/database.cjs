@@ -553,6 +553,9 @@ class DatabaseService {
   getAllTemplatesManuais() {
     return this.all('SELECT nome_template, kit_base, observacao FROM templates_kit_manual ORDER BY nome_template');
   }
+  getAllSufixos() {
+    return this.all('SELECT * FROM sufixos_contextuais');
+  }
 }
 
 module.exports = new DatabaseService();

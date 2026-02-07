@@ -82,4 +82,6 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('get-template-manual', nome),
   getAllTemplatesManuais: () =>
     ipcRenderer.invoke('get-all-templates-manuais'),
+  getAllSufixos: () =>
+    ipcRenderer.invoke('get-all-sufixos'),
 });

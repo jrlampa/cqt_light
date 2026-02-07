@@ -96,6 +96,10 @@ const Configurator = () => {
   const [showPriceManagement, setShowPriceManagement] = useState(false);
   const [empresaAtiva, setEmpresaAtiva] = useState(null);
 
+  // Resolution Data
+  const [sufixos, setSufixos] = useState([]);
+  const [manualTemplates, setManualTemplates] = useState([]);
+
   // --- HOOKS ---
   const { custoData, setCustoData, calculateTotal } = useBudgetCalculator();
 
@@ -110,12 +114,27 @@ const Configurator = () => {
       setShowQtyPopup(false);
     },
     onCopy: () => copySummary(),
-    onCalculate: () => calculateTotal({ estruturas, materiaisAvulsos })
+    onCalculate: () => calculateTotal({
+      estruturas,
+      materiaisAvulsos,
+      condutorMT,
+      condutorBT,
+      sufixos,
+      templates: manualTemplates
+    })
   };
 
   const nav = useKeyboardNav(actions);
 
   // --- EFFECTS ---
+  // Load Resolution Data
+  useEffect(() => {
+    if (window.api) {
+      window.api.getAllSufixos().then(setSufixos).catch(console.error);
+      window.api.getAllTemplatesManuais().then(setManualTemplates).catch(console.error);
+    }
+  }, []);
+
   // Save state
   useEffect(() => {
     saveState({ condutorMT, condutorBT, estruturas, materiaisAvulsos });
@@ -123,8 +142,15 @@ const Configurator = () => {
 
   // Recalculate when items change
   useEffect(() => {
-    calculateTotal({ estruturas, materiaisAvulsos });
-  }, [estruturas, materiaisAvulsos, calculateTotal]);
+    calculateTotal({
+      estruturas,
+      materiaisAvulsos,
+      condutorMT,
+      condutorBT,
+      sufixos,
+      templates: manualTemplates
+    });
+  }, [estruturas, materiaisAvulsos, condutorMT, condutorBT, sufixos, manualTemplates, calculateTotal]);
 
 
   // --- HANDLERS ---

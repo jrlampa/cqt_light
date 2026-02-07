@@ -141,3 +141,5 @@ ipcMain.handle('get-template-manual', (_, nome) =>
   db.getTemplateManual(nome));
 ipcMain.handle('get-all-templates-manuais', () =>
   db.getAllTemplatesManuais());
+ipcMain.handle('get-all-sufixos', () =>
+  db.getAllSufixos());
