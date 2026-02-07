@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench } from 'lucide-react';
+import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench, Save, FileText, Trash2, Pencil, Download } from 'lucide-react';
+import { exportMaterialsToExcel } from '../utils/excelExporter';
 
 // Conductor options
 const CONDUTORES_MT = [
@@ -175,6 +176,17 @@ const Configurator = () => {
     if (pendingType === 'structure') {
       const entry = { ...pendingItem, id: Date.now(), quantidade: qty };
       setEstruturas(prev => [...prev, entry]);
+    } else if (pendingType === 'edit_material') {
+      // Editing existing material - update or add to materiaisAvulsos
+      const existing = materiaisAvulsos.find(m => m.sap === pendingItem.sap);
+      if (existing) {
+        setMateriaisAvulsos(prev => prev.map(m =>
+          m.sap === pendingItem.sap ? { ...m, quantidade: qty } : m
+        ));
+      } else {
+        const entry = { ...pendingItem, id: Date.now(), quantidade: qty };
+        setMateriaisAvulsos(prev => [...prev, entry]);
+      }
     } else {
       const entry = { ...pendingItem, id: Date.now(), quantidade: qty };
       setMateriaisAvulsos(prev => [...prev, entry]);
@@ -188,6 +200,31 @@ const Configurator = () => {
   const removeStructure = (id) => { setEstruturas(prev => prev.filter(e => e.id !== id)); };
   const removeMaterial = (id) => { setMateriaisAvulsos(prev => prev.filter(m => m.id !== id)); };
 
+  // Edit material in consolidated view
+  const editConsolidatedMaterial = (mat) => {
+    // Find if this material exists in materiaisAvulsos
+    const existing = materiaisAvulsos.find(m => m.sap === mat.sap);
+    if (existing) {
+      setPendingItem(existing);
+      setPendingType('edit_material');
+      setQty(existing.quantidade || 1);
+      setShowQtyPopup(true);
+    } else {
+      // Add as new loose material for editing
+      const newMat = { ...mat, id: Date.now() };
+      setPendingItem(newMat);
+      setPendingType('edit_material');
+      setQty(mat.quantidade || 1);
+      setShowQtyPopup(true);
+    }
+  };
+
+  // Delete material from consolidated view (only if in materiaisAvulsos)
+  const deleteConsolidatedMaterial = (sap) => {
+    // Remove all instances of this material from materiaisAvulsos
+    setMateriaisAvulsos(prev => prev.filter(m => m.sap !== sap));
+  };
+
   // Calculate total costs
   const calculateTotal = async () => {
     if (!window.api) return;
@@ -199,7 +236,6 @@ const Configurator = () => {
       for (let i = 0; i < count; i++) kitList.push(e.codigo_kit);
     });
 
-
     const start = performance.now();
 
     // Get kit materials
@@ -208,39 +244,103 @@ const Configurator = () => {
       kitData = await window.api.getCustoTotal(kitList) || kitData;
     }
 
-    // Combine with loose materials
-    const allMaterials = [...kitData.materiais];
-    let looseTotal = 0;
+    // Build consolidated materials with categories
+    const allMaterials = [];
 
+    // 1. Add POSTES (from materiaisAvulsos that contain "POSTE")
+    const postes = [];
     materiaisAvulsos.forEach(mat => {
-      const qty = mat.quantidade || 1;
-      const price = mat.preco_unitario || 0;
-      const subtotal = qty * price;
-      looseTotal += subtotal;
-
-      // Check if material already exists in list
-      const existing = allMaterials.find(m => m.sap === mat.sap);
-      if (existing) {
-        existing.quantidade = (existing.quantidade || 0) + qty;
-        existing.subtotal = (existing.subtotal || 0) + subtotal;
-      } else {
-        allMaterials.push({
+      if (mat.descricao?.toUpperCase().includes('POSTE')) {
+        const qty = mat.quantidade || 1;
+        const price = mat.preco_unitario || 0;
+        postes.push({
           sap: mat.sap,
           descricao: mat.descricao,
           unidade: mat.unidade,
           preco_unitario: price,
           quantidade: qty,
-          subtotal: subtotal
+          subtotal: qty * price,
+          categoria: 'POSTE'
         });
       }
     });
 
-    const totalMaterial = kitData.totalMaterial + looseTotal;
+    // 2. Add KITS/STRUCTURES as line items
+    const kitsMap = new Map();
+    estruturas.forEach(e => {
+      const qty = e.quantidade || 1;
+      const price = e.preco_kit || 0;
+      const key = e.codigo_kit;
+
+      if (kitsMap.has(key)) {
+        const existing = kitsMap.get(key);
+        existing.quantidade += qty;
+        existing.subtotal += qty * price;
+      } else {
+        kitsMap.set(key, {
+          sap: e.codigo_kit,
+          descricao: e.descricao_kit || e.codigo_kit,
+          unidade: 'KIT',
+          preco_unitario: price,
+          quantidade: qty,
+          subtotal: qty * price,
+          categoria: 'KIT'
+        });
+      }
+    });
+
+    // 3. Add materials from kits (merged)
+    const kitMaterialsMap = new Map();
+    kitData.materiais.forEach(mat => {
+      const key = mat.sap;
+      if (kitMaterialsMap.has(key)) {
+        const existing = kitMaterialsMap.get(key);
+        existing.quantidade += mat.quantidade || 0;
+        existing.subtotal += mat.subtotal || 0;
+      } else {
+        kitMaterialsMap.set(key, {
+          ...mat,
+          categoria: 'KIT_MATERIAL'
+        });
+      }
+    });
+
+    // 4. Add LOOSE MATERIALS (excluding postes)
+    const looseMaterials = [];
+    let looseTotal = 0;
+    materiaisAvulsos.forEach(mat => {
+      if (!mat.descricao?.toUpperCase().includes('POSTE')) {
+        const qty = mat.quantidade || 1;
+        const price = mat.preco_unitario || 0;
+        const subtotal = qty * price;
+        looseTotal += subtotal;
+
+        looseMaterials.push({
+          sap: mat.sap,
+          descricao: mat.descricao,
+          unidade: mat.unidade,
+          preco_unitario: price,
+          quantidade: qty,
+          subtotal: subtotal,
+          categoria: 'MATERIAL_AVULSO'
+        });
+      }
+    });
+
+    // Combine all in order: Postes, Kits, Kit Materials, Loose Materials
+    allMaterials.push(...postes);
+    allMaterials.push(...Array.from(kitsMap.values()));
+    allMaterials.push(...Array.from(kitMaterialsMap.values()));
+    allMaterials.push(...looseMaterials);
+
+    const totalMaterial = kitData.totalMaterial + looseTotal +
+      postes.reduce((sum, p) => sum + p.subtotal, 0) +
+      Array.from(kitsMap.values()).reduce((sum, k) => sum + k.subtotal, 0);
     const totalServico = kitData.totalServico || 0;
 
     setCalcTime(performance.now() - start);
     setCustoData({
-      materiais: allMaterials.sort((a, b) => (a.descricao || '').localeCompare(b.descricao || '')),
+      materiais: allMaterials,
       totalMaterial,
       totalServico,
       totalGeral: totalMaterial + totalServico
@@ -298,7 +398,7 @@ const Configurator = () => {
     if (e.key === 'Escape') { e.preventDefault(); setShowQtyPopup(false); }
   };
 
-  const totalKits = estruturas.reduce((sum, e) => sum + (e.quantidade || 1), 0) + (selectedPoste ? 1 : 0);
+  const totalKits = estruturas.reduce((sum, e) => sum + (e.quantidade || 1), 0);
   const totalMats = materiaisAvulsos.reduce((sum, m) => sum + (m.quantidade || 1), 0);
 
   return (
@@ -309,7 +409,7 @@ const Configurator = () => {
           <div className="bg-white rounded-2xl p-6 shadow-2xl w-80" onClick={e => e.stopPropagation()}>
             <h3 className="font-bold text-lg mb-2">Quantidade</h3>
             <p className="text-sm text-gray-600 mb-4">
-              <span className={`font-mono font-bold ${pendingType === 'structure' ? 'text-orange-600' : 'text-blue-600'}`}>
+              <span className={`font - mono font - bold ${pendingType === 'structure' ? 'text-orange-600' : 'text-blue-600'} `}>
                 {pendingType === 'structure' ? pendingItem.codigo_kit : pendingItem.sap}
               </span>
               <br />
@@ -343,8 +443,42 @@ const Configurator = () => {
             <Calculator className="w-4 h-4 text-blue-500" />
             <h2 className="font-bold text-gray-800 text-sm">Configurador</h2>
           </div>
-          {(totalKits > 0 || totalMats > 0) && <button onClick={clearAll} className="text-[10px] text-red-500 hover:underline">Limpar</button>}
         </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-1">
+          <button
+            onClick={clearAll}
+            disabled={totalKits === 0 && totalMats === 0}
+            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            <Trash2 className="w-3 h-3" /> Limpar
+          </button>
+          <button
+            onClick={() => alert('Salvar como Kit - Em breve!')}
+            disabled={totalKits === 0 && totalMats === 0}
+            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            <Save className="w-3 h-3" /> Kit
+          </button>
+          <button
+            onClick={() => alert('Salvar para Relatório - Em breve!')}
+            disabled={totalKits === 0 && totalMats === 0}
+            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            <FileText className="w-3 h-3" /> Relatório
+          </button>
+        </div>
+
+        {/* Export Button */}
+        {custoData.materiais.length > 0 && (
+          <button
+            onClick={() => exportMaterialsToExcel(custoData.materiais, custoData)}
+            className="w-full flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
+          >
+            <Download className="w-3 h-3" /> Exportar Excel
+          </button>
+        )}
 
         {/* Poste */}
         <div className="relative">
@@ -356,7 +490,7 @@ const Configurator = () => {
           {showPosteDropdown && posteResults.length > 0 && (
             <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-32 overflow-y-auto">
               {posteResults.map((mat, idx) => (
-                <button key={mat.sap} onMouseDown={(e) => { e.preventDefault(); selectPoste(mat); }} className={`w-full text-left px-2 py-1.5 text-xs flex gap-2 ${idx === posteHighlight ? 'bg-green-100' : 'hover:bg-gray-50'}`}>
+                <button key={mat.sap} onMouseDown={(e) => { e.preventDefault(); selectPoste(mat); }} className={`w - full text - left px - 2 py - 1.5 text - xs flex gap - 2 ${idx === posteHighlight ? 'bg-green-100' : 'hover:bg-gray-50'} `}>
                   <span className="font-mono font-bold text-green-600">{mat.sap}</span>
                   <span className="text-gray-500 truncate text-[10px]">{mat.descricao}</span>
                 </button>
@@ -366,34 +500,77 @@ const Configurator = () => {
         </div>
 
         {/* Conductors */}
-        <div className="grid grid-cols-2 gap-1">
+        <div className="grid grid-cols-2 gap-2">
+          {/* MT Conductor */}
           <div className="relative">
-            <label className="text-[10px] text-gray-500 uppercase font-bold">MT</label>
-            <button onClick={() => { setShowMTDropdown(!showMTDropdown); setShowBTDropdown(false); setMtHighlight(0); }} onKeyDown={handleMTKeyDown} className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg border text-[10px] ${condutorMT ? 'border-orange-400 bg-orange-50' : 'border-gray-200'}`}>
-              <span className={condutorMT ? 'font-medium truncate' : 'text-gray-400'}>{condutorMT ? condutorMT.label.split(' ')[1] : 'Selec.'}</span>
+            <label className="text-[10px] text-gray-500 uppercase font-bold flex items-center gap-1">
+              <Zap className="w-3 h-3 text-orange-500" /> MT
+            </label>
+            <button
+              onClick={() => { setShowMTDropdown(!showMTDropdown); setShowBTDropdown(false); setMtHighlight(0); }}
+              onKeyDown={handleMTKeyDown}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-xs transition ${condutorMT ? 'border-orange-400 bg-gradient-to-br from-orange-50 to-orange-100 shadow-sm' : 'border-gray-200 hover:border-orange-300'}`}
+            >
+              <div className="flex flex-col items-start">
+                {condutorMT ? (
+                  <>
+                    <span className="font-bold text-orange-700">{condutorMT.label.split(' ')[1]}</span>
+                    <span className="text-[9px] text-orange-600">{condutorMT.tipo}</span>
+                  </>
+                ) : (
+                  <span className="text-gray-400 text-xs">Selecionar...</span>
+                )}
+              </div>
               <ChevronDown className="w-3 h-3 text-gray-400" />
             </button>
             {showMTDropdown && (
-              <div className="absolute z-50 w-40 mt-1 bg-white rounded-lg shadow-xl border max-h-32 overflow-y-auto">
+              <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 {CONDUTORES_MT.map((opt, idx) => (
-                  <button key={opt.id} onMouseDown={(e) => { e.preventDefault(); setCondutorMT(opt); setShowMTDropdown(false); }} className={`w-full text-left px-2 py-1.5 text-[10px] flex justify-between ${idx === mtHighlight ? 'bg-orange-100' : 'hover:bg-orange-50'}`}>
-                    <span>{opt.label}</span><span className="text-gray-400">{opt.tipo}</span>
+                  <button
+                    key={opt.id}
+                    onMouseDown={(e) => { e.preventDefault(); setCondutorMT(opt); setShowMTDropdown(false); }}
+                    className={`w-full text-left px-3 py-2 text-xs flex justify-between items-center ${idx === mtHighlight ? 'bg-orange-100' : 'hover:bg-orange-50'}`}
+                  >
+                    <span className="font-semibold text-orange-700">{opt.label}</span>
+                    <span className="text-[9px] px-1.5 py-0.5 bg-orange-200 text-orange-700 rounded">{opt.tipo}</span>
                   </button>
                 ))}
               </div>
             )}
           </div>
+
+          {/* BT Conductor */}
           <div className="relative">
-            <label className="text-[10px] text-gray-500 uppercase font-bold">BT</label>
-            <button onClick={() => { setShowBTDropdown(!showBTDropdown); setShowMTDropdown(false); setBtHighlight(0); }} onKeyDown={handleBTKeyDown} className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg border text-[10px] ${condutorBT ? 'border-blue-400 bg-blue-50' : 'border-gray-200'}`}>
-              <span className={condutorBT ? 'font-medium truncate' : 'text-gray-400'}>{condutorBT ? condutorBT.label.split(' ')[1] : 'Selec.'}</span>
+            <label className="text-[10px] text-gray-500 uppercase font-bold flex items-center gap-1">
+              <Zap className="w-3 h-3 text-blue-500" /> BT
+            </label>
+            <button
+              onClick={() => { setShowBTDropdown(!showBTDropdown); setShowMTDropdown(false); setBtHighlight(0); }}
+              onKeyDown={handleBTKeyDown}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-xs transition ${condutorBT ? 'border-blue-400 bg-gradient-to-br from-blue-50 to-blue-100 shadow-sm' : 'border-gray-200 hover:border-blue-300'}`}
+            >
+              <div className="flex flex-col items-start">
+                {condutorBT ? (
+                  <>
+                    <span className="font-bold text-blue-700">{condutorBT.label.split(' ')[1]}</span>
+                    <span className="text-[9px] text-blue-600">{condutorBT.tipo}</span>
+                  </>
+                ) : (
+                  <span className="text-gray-400 text-xs">Selecionar...</span>
+                )}
+              </div>
               <ChevronDown className="w-3 h-3 text-gray-400" />
             </button>
             {showBTDropdown && (
-              <div className="absolute z-50 w-40 mt-1 bg-white rounded-lg shadow-xl border max-h-32 overflow-y-auto">
+              <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 {CONDUTORES_BT.map((opt, idx) => (
-                  <button key={opt.id} onMouseDown={(e) => { e.preventDefault(); setCondutorBT(opt); setShowBTDropdown(false); }} className={`w-full text-left px-2 py-1.5 text-[10px] flex justify-between ${idx === btHighlight ? 'bg-blue-100' : 'hover:bg-blue-50'}`}>
-                    <span>{opt.label}</span><span className="text-gray-400">{opt.tipo}</span>
+                  <button
+                    key={opt.id}
+                    onMouseDown={(e) => { e.preventDefault(); setCondutorBT(opt); setShowBTDropdown(false); }}
+                    className={`w-full text-left px-3 py-2 text-xs flex justify-between items-center ${idx === btHighlight ? 'bg-blue-100' : 'hover:bg-blue-50'}`}
+                  >
+                    <span className="font-semibold text-blue-700">{opt.label}</span>
+                    <span className="text-[9px] px-1.5 py-0.5 bg-blue-200 text-blue-700 rounded">{opt.tipo}</span>
                   </button>
                 ))}
               </div>
@@ -413,7 +590,7 @@ const Configurator = () => {
             {showStructureDropdown && structureResults.length > 0 && (
               <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 {structureResults.map((kit, idx) => (
-                  <button key={kit.codigo_kit} onMouseDown={(e) => { e.preventDefault(); openQtyPopup(kit, 'structure'); }} className={`w-full text-left px-2 py-1.5 text-xs flex items-center gap-1 ${idx === structureHighlight ? 'bg-orange-100' : 'hover:bg-gray-50'}`}>
+                  <button key={kit.codigo_kit} onMouseDown={(e) => { e.preventDefault(); openQtyPopup(kit, 'structure'); }} className={`w - full text - left px - 2 py - 1.5 text - xs flex items - center gap - 1 ${idx === structureHighlight ? 'bg-orange-100' : 'hover:bg-gray-50'} `}>
                     <span className="font-mono font-bold text-orange-600">{kit.codigo_kit}</span>
                     <span className="text-gray-500 truncate flex-1 text-[10px]">{kit.descricao_kit}</span>
                     <Plus className="w-3 h-3 text-gray-400" />
@@ -449,7 +626,7 @@ const Configurator = () => {
             {showMaterialDropdown && materialResults.length > 0 && (
               <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 {materialResults.map((mat, idx) => (
-                  <button key={mat.sap} onMouseDown={(e) => { e.preventDefault(); openQtyPopup(mat, 'material'); }} className={`w-full text-left px-2 py-1.5 text-xs flex items-center gap-1 ${idx === materialHighlight ? 'bg-blue-100' : 'hover:bg-gray-50'}`}>
+                  <button key={mat.sap} onMouseDown={(e) => { e.preventDefault(); openQtyPopup(mat, 'material'); }} className={`w - full text - left px - 2 py - 1.5 text - xs flex items - center gap - 1 ${idx === materialHighlight ? 'bg-blue-100' : 'hover:bg-gray-50'} `}>
                     <span className="font-mono font-bold text-blue-600">{mat.sap}</span>
                     <span className="text-gray-500 truncate flex-1 text-[10px]">{mat.descricao}</span>
                     <Plus className="w-3 h-3 text-gray-400" />
@@ -486,23 +663,42 @@ const Configurator = () => {
             <table className="w-full text-sm">
               <thead className="bg-gray-100 text-[10px] uppercase text-gray-500 sticky top-0">
                 <tr>
-                  <th className="px-3 py-2 text-left">SAP</th>
-                  <th className="px-3 py-2 text-left">Descrição</th>
-                  <th className="px-3 py-2 text-center">Un</th>
-                  <th className="px-3 py-2 text-right">Qtd</th>
-                  <th className="px-3 py-2 text-right">Unit</th>
-                  <th className="px-3 py-2 text-right">Subtotal</th>
+                  <th className="px-2 py-2 text-left">SAP</th>
+                  <th className="px-2 py-2 text-left">Descrição</th>
+                  <th className="px-2 py-2 text-center">Un</th>
+                  <th className="px-2 py-2 text-right">Qtd</th>
+                  <th className="px-2 py-2 text-right">Unit</th>
+                  <th className="px-2 py-2 text-right">Subtotal</th>
+                  <th className="px-2 py-2 text-center w-16">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {custoData.materiais.map((mat, idx) => (
-                  <tr key={mat.sap || idx} className="hover:bg-blue-50/50">
-                    <td className="px-3 py-1.5 font-mono text-blue-700 font-bold text-xs">{mat.sap}</td>
-                    <td className="px-3 py-1.5 text-gray-700 text-xs truncate max-w-[250px]">{mat.descricao}</td>
-                    <td className="px-3 py-1.5 text-center text-gray-400 text-xs">{mat.unidade}</td>
-                    <td className="px-3 py-1.5 text-right text-xs">{mat.quantidade?.toFixed(2)}</td>
-                    <td className="px-3 py-1.5 text-right text-gray-400 text-xs">{mat.preco_unitario?.toFixed(2)}</td>
-                    <td className="px-3 py-1.5 text-right font-bold text-emerald-700 text-xs">{mat.subtotal?.toFixed(2)}</td>
+                  <tr key={mat.sap || idx} className="hover:bg-blue-50/50 group">
+                    <td className="px-2 py-1.5 font-mono text-blue-700 font-bold text-xs">{mat.sap}</td>
+                    <td className="px-2 py-1.5 text-gray-700 text-xs truncate max-w-[200px]">{mat.descricao}</td>
+                    <td className="px-2 py-1.5 text-center text-gray-400 text-xs">{mat.unidade}</td>
+                    <td className="px-2 py-1.5 text-right text-xs">{mat.quantidade?.toFixed(2)}</td>
+                    <td className="px-2 py-1.5 text-right text-gray-400 text-xs">{mat.preco_unitario?.toFixed(2)}</td>
+                    <td className="px-2 py-1.5 text-right font-bold text-emerald-700 text-xs">{mat.subtotal?.toFixed(2)}</td>
+                    <td className="px-2 py-1.5 text-center">
+                      <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                        <button
+                          onClick={() => editConsolidatedMaterial(mat)}
+                          className="p-1 rounded hover:bg-blue-100 text-blue-500"
+                          title="Alterar quantidade"
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => deleteConsolidatedMaterial(mat.sap)}
+                          className="p-1 rounded hover:bg-red-100 text-red-500"
+                          title="Excluir material"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

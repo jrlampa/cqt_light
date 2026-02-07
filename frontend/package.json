@@ -12,11 +12,12 @@
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5174 && electron .\""
   },
   "dependencies": {
-    "sql.js": "^1.11.0",
     "electron-is-dev": "^3.0.1",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sql.js": "^1.11.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
