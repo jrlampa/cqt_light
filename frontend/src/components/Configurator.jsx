@@ -289,49 +289,59 @@ const Configurator = () => {
       }
     });
 
-    // 3. Add materials from kits (merged)
-    const kitMaterialsMap = new Map();
+    // 3. CONSOLIDATE ALL MATERIALS BY SAP (kit materials + loose materials)
+    // This prevents duplicates when same material appears in kit and as loose item
+    const consolidatedMaterials = new Map();
+
+    // Add kit materials
     kitData.materiais.forEach(mat => {
       const key = mat.sap;
-      if (kitMaterialsMap.has(key)) {
-        const existing = kitMaterialsMap.get(key);
+      if (consolidatedMaterials.has(key)) {
+        const existing = consolidatedMaterials.get(key);
         existing.quantidade += mat.quantidade || 0;
         existing.subtotal += mat.subtotal || 0;
       } else {
-        kitMaterialsMap.set(key, {
+        consolidatedMaterials.set(key, {
           ...mat,
-          categoria: 'KIT_MATERIAL'
+          categoria: 'MATERIAL'
         });
       }
     });
 
-    // 4. Add LOOSE MATERIALS (excluding postes)
-    const looseMaterials = [];
+    // Add loose materials (excluding postes, merge by SAP)
     let looseTotal = 0;
     materiaisAvulsos.forEach(mat => {
       if (!mat.descricao?.toUpperCase().includes('POSTE')) {
+        const key = mat.sap;
         const qty = mat.quantidade || 1;
         const price = mat.preco_unitario || 0;
         const subtotal = qty * price;
         looseTotal += subtotal;
 
-        looseMaterials.push({
-          sap: mat.sap,
-          descricao: mat.descricao,
-          unidade: mat.unidade,
-          preco_unitario: price,
-          quantidade: qty,
-          subtotal: subtotal,
-          categoria: 'MATERIAL_AVULSO'
-        });
+        if (consolidatedMaterials.has(key)) {
+          // Merge with existing (from kits)
+          const existing = consolidatedMaterials.get(key);
+          existing.quantidade += qty;
+          existing.subtotal += subtotal;
+        } else {
+          // New material
+          consolidatedMaterials.set(key, {
+            sap: mat.sap,
+            descricao: mat.descricao,
+            unidade: mat.unidade,
+            preco_unitario: price,
+            quantidade: qty,
+            subtotal: subtotal,
+            categoria: 'MATERIAL'
+          });
+        }
       }
     });
 
-    // Combine all in order: Postes, Kits, Kit Materials, Loose Materials
+    // Combine all in order: Postes, Kits, Consolidated Materials
     allMaterials.push(...postes);
     allMaterials.push(...Array.from(kitsMap.values()));
-    allMaterials.push(...Array.from(kitMaterialsMap.values()));
-    allMaterials.push(...looseMaterials);
+    allMaterials.push(...Array.from(consolidatedMaterials.values()));
 
     const totalMaterial = kitData.totalMaterial + looseTotal +
       postes.reduce((sum, p) => sum + p.subtotal, 0) +
