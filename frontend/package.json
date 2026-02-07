@@ -16,11 +16,11 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "better-sqlite3": "^12.6.2",
     "electron-is-dev": "^3.0.1",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sql.js": "^1.11.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

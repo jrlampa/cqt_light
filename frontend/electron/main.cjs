@@ -144,3 +144,8 @@ ipcMain.handle('delete-template-manual', async (_, nome_template) => {
 });
 ipcMain.handle('get-all-sufixos', () =>
   db.getAllSufixos());
+
+// Price Management
+ipcMain.handle('get-zero-price-materials', () => db.getZeroPriceMaterials());
+ipcMain.handle('update-material-price', (_, { sap, price }) => db.updateMaterialPrice(sap, price));
+ipcMain.handle('update-all-kits-service-cost', (_, amount) => db.updateServiceCostForAllKits(amount));

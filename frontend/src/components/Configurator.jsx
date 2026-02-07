@@ -12,6 +12,7 @@ import { SummaryFooter } from './SummaryFooter';
 import BudgetHistory from './BudgetHistory';
 import TemplateManager from './TemplateManager';
 import ManualKitManager from './ManualKitManager';
+import PriceManager from './PriceManager';
 import { KitResolutionModal } from './KitResolutionModal';
 import { KitDetailsModal } from './KitDetailsModal';
 import { CompanySelector } from './CompanySelector';
@@ -93,7 +94,8 @@ const Configurator = () => {
 
   const [showBudgetHistory, setShowBudgetHistory] = useState(false);
   const [showTemplateManager, setShowTemplateManager] = useState(false);
-  const [showManualKitManager, setShowManualKitManager] = useState(false);
+  const [isManualKitManagerOpen, setIsManualKitManagerOpen] = useState(false);
+  const [isPriceManagerOpen, setIsPriceManagerOpen] = useState(false);
   const [showKitDetails, setShowKitDetails] = useState(false);
   const [selectedKit, setSelectedKit] = useState(null);
   const [showPriceManagement, setShowPriceManagement] = useState(false);
@@ -162,10 +164,10 @@ const Configurator = () => {
 
   // Reload data when ManualKitManager closes
   useEffect(() => {
-    if (!showManualKitManager && window.api) {
+    if (!isManualKitManagerOpen && window.api) {
       window.api.getAllTemplatesManuais().then(setManualTemplates).catch(console.error);
     }
-  }, [showManualKitManager]);
+  }, [isManualKitManagerOpen]);
 
 
   // --- HANDLERS ---
@@ -431,8 +433,16 @@ const Configurator = () => {
       )}
 
       <ManualKitManager
-        isOpen={showManualKitManager}
-        onClose={() => setShowManualKitManager(false)}
+        isOpen={isManualKitManagerOpen}
+        onClose={() => {
+          setIsManualKitManagerOpen(false);
+          // Refresh if needed, though usually it's just templates
+        }}
+      />
+
+      <PriceManager
+        isOpen={isPriceManagerOpen}
+        onClose={() => setIsPriceManagerOpen(false)}
       />
 
       {/* Left Panel */}
@@ -456,11 +466,17 @@ const Configurator = () => {
               <LayoutTemplate className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setShowPriceManagement(true)}
-              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-emerald-600 transition ml-1"
-              title="Gestão de Preços"
+              onClick={() => setIsManualKitManagerOpen(true)}
+              className="px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 text-sm font-bold flex items-center gap-2 transition-all shadow-sm"
             >
-              <DollarSign className="w-4 h-4" />
+              <Package className="w-4 h-4" /> Gerenciar Kits
+            </button>
+
+            <button
+              onClick={() => setIsPriceManagerOpen(true)}
+              className="px-4 py-2 border border-blue-200 bg-blue-50 rounded-xl hover:bg-blue-100 text-blue-700 text-sm font-bold flex items-center gap-2 transition-all shadow-sm"
+            >
+              <DollarSign className="w-4 h-4" /> Gestão de Preços
             </button>
           </div>
         </div>

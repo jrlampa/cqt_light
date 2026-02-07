@@ -1,4 +1,4 @@
-const initSqlJs = require('sql.js');
+const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
@@ -12,56 +12,38 @@ class DatabaseService {
   async init() {
     if (this.initialized) return;
 
-    const SQL = await initSqlJs();
+    try {
+      this.db = new Database(this.dbPath);
 
-    if (fs.existsSync(this.dbPath)) {
-      const buffer = fs.readFileSync(this.dbPath);
-      this.db = new SQL.Database(buffer);
-    } else {
-      this.db = new SQL.Database();
+      // Performance optimizations
+      this.db.pragma('journal_mode = WAL');
+      this.db.pragma('synchronous = NORMAL');
+
+      const schemaPath = path.join(__dirname, 'schema.sql');
+      const schema = fs.readFileSync(schemaPath, 'utf-8');
+      this.db.exec(schema);
+
+      this.initialized = true;
+    } catch (err) {
+      console.error('Database initialization error:', err);
+      throw err;
     }
-
-    const schemaPath = path.join(__dirname, 'schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf-8');
-    this.db.run(schema);
-
-    this.initialized = true;
-    this.save();
-  }
-
-  save() {
-    if (!this.db) return;
-    const data = this.db.export();
-    fs.writeFileSync(this.dbPath, Buffer.from(data));
   }
 
   run(sql, params = []) {
-    this.db.run(sql, params);
-    this.save();
-    return { changes: this.db.getRowsModified() };
+    const info = this.db.prepare(sql).run(params);
+    return {
+      changes: info.changes,
+      lastInsertRowid: info.lastInsertRowid
+    };
   }
 
   get(sql, params = []) {
-    const stmt = this.db.prepare(sql);
-    stmt.bind(params);
-    if (stmt.step()) {
-      const result = stmt.getAsObject();
-      stmt.free();
-      return result;
-    }
-    stmt.free();
-    return null;
+    return this.db.prepare(sql).get(params);
   }
 
   all(sql, params = []) {
-    const results = [];
-    const stmt = this.db.prepare(sql);
-    stmt.bind(params);
-    while (stmt.step()) {
-      results.push(stmt.getAsObject());
-    }
-    stmt.free();
-    return results;
+    return this.db.prepare(sql).all(params);
   }
 
   // ========== FAST COST CALCULATION (< 100ms) ==========
@@ -595,6 +577,20 @@ class DatabaseService {
   }
   getAllSufixos() {
     return this.all('SELECT * FROM sufixos_contextuais');
+  }
+
+  // --- NEW: Price Management ---
+
+  getZeroPriceMaterials() {
+    return this.all("SELECT * FROM materiais WHERE preco_unitario = 0 OR preco_unitario IS NULL ORDER BY sap");
+  }
+
+  updateMaterialPrice(sap, price) {
+    return this.run("UPDATE materiais SET preco_unitario = ? WHERE sap = ?", [price, sap]);
+  }
+
+  updateServiceCostForAllKits(amount) {
+    return this.run("UPDATE kits SET custo_servico = ?", [amount]);
   }
 }
 

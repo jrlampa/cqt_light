@@ -83,6 +83,12 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('get-template-manual', nome),
   getAllTemplatesManuais: () =>
     ipcRenderer.invoke('get-all-templates-manuais'),
+  deleteTemplateManual: (nome) => ipcRenderer.invoke('delete-template-manual', nome),
   getAllSufixos: () =>
     ipcRenderer.invoke('get-all-sufixos'),
+
+  // Price Management
+  getZeroPriceMaterials: () => ipcRenderer.invoke('get-zero-price-materials'),
+  updateMaterialPrice: (sap, price) => ipcRenderer.invoke('update-material-price', { sap, price }),
+  updateAllKitsServiceCost: (amount) => ipcRenderer.invoke('update-all-kits-service-cost', amount),
 });
