@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-02-07T18:17:35.474Z",
+  "dbStats": {
+    "materials": 26636,
+    "kits": 3326,
+    "servicos": 483
+  },
+  "kits": {
+    "inExcel": 86,
+    "inDB": 3326,
+    "missingInDB": 1,
+    "missingInExcel": 3241,
+    "withoutComposition": 1247
+  },
+  "issues": [
+    "1 kits faltando no DB",
+    "3241 kits no DB não estão no Excel",
+    "1247 kits sem composição"
+  ]
+}

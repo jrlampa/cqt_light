@@ -104,3 +104,34 @@ CREATE INDEX IF NOT EXISTS idx_historico_empresa ON historico_precos(empresa_id)
 CREATE INDEX IF NOT EXISTS idx_historico_data ON historico_precos(data_alteracao DESC);
 -- 10. configuracao (App Configuration)
 CREATE TABLE IF NOT EXISTS configuracao (chave TEXT PRIMARY KEY, valor TEXT);
+-- 11. sufixos_contextuais (Dynamic Kit Material Resolution)
+-- Maps partial codes (F-10/, M1/) to complete codes based on pole/conductor context
+CREATE TABLE IF NOT EXISTS sufixos_contextuais (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  prefixo TEXT NOT NULL,
+  -- 'F-10/', 'M1/', 'TR/', 'O-25/'
+  tipo_contexto TEXT NOT NULL,
+  -- 'poste', 'condutor', 'estrutura'
+  valor_contexto TEXT NOT NULL,
+  -- '11600B', 'CAA 1/0', etc
+  sufixo TEXT NOT NULL,
+  -- '06', '1/0', etc
+  codigo_completo TEXT,
+  -- Cached: 'F-10/06' (optional)
+  UNIQUE(prefixo, tipo_contexto, valor_contexto)
+);
+CREATE INDEX IF NOT EXISTS idx_sufixos_prefixo ON sufixos_contextuais(prefixo);
+CREATE INDEX IF NOT EXISTS idx_sufixos_contexto ON sufixos_contextuais(tipo_contexto, valor_contexto);
+-- 12. templates_kit_manual (Manual Kit Templates from PADRÕES)
+-- Stores entire kit template including partial codes
+CREATE TABLE IF NOT EXISTS templates_kit_manual (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome_template TEXT NOT NULL UNIQUE,
+  -- 'CE3T', 'CE2JPR', etc
+  kit_base TEXT,
+  -- Base SAP kit code (13CE3T)
+  materiais_json TEXT NOT NULL,
+  -- JSON array: [{codigo, quantidade, tipo}]
+  observacao TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_templates_manual_nome ON templates_kit_manual(nome_template);

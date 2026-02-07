@@ -124,3 +124,20 @@ ipcMain.handle('reajuste-em-massa', (_, { empresaId, percentual, filtroSaps }) =
 ipcMain.handle('get-historico-precos', (_, { empresaId, limit }) =>
   db.getHistoricoPrecos(empresaId, limit));
 
+// SUFIXOS CONTEXTUAIS (Dynamic Kit Material Resolution)
+ipcMain.handle('resolver-sufixo', (_, { prefixo, tipoContexto, valorContexto }) =>
+  db.resolverSufixo(prefixo, tipoContexto, valorContexto));
+ipcMain.handle('upsert-sufixo', (_, { prefixo, tipoContexto, valorContexto, sufixo }) =>
+  db.upsertSufixo(prefixo, tipoContexto, valorContexto, sufixo));
+ipcMain.handle('get-sufixos-by-prefixo', (_, prefixo) =>
+  db.getSufixosByPrefixo(prefixo));
+ipcMain.handle('get-sufixos-by-contexto', (_, { tipoContexto, valorContexto }) =>
+  db.getSufixosByContexto(tipoContexto, valorContexto));
+
+// TEMPLATES KIT MANUAL
+ipcMain.handle('save-template-manual', (_, { nome, kitBase, materiais, observacao }) =>
+  db.saveTemplateManual(nome, kitBase, materiais, observacao));
+ipcMain.handle('get-template-manual', (_, nome) =>
+  db.getTemplateManual(nome));
+ipcMain.handle('get-all-templates-manuais', () =>
+  db.getAllTemplatesManuais());

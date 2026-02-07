@@ -64,4 +64,22 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('reajuste-em-massa', { empresaId, percentual, filtroSaps }),
   getHistoricoPrecos: (empresaId, limit) =>
     ipcRenderer.invoke('get-historico-precos', { empresaId, limit }),
+
+  // Sufixos Contextuais (Dynamic Kit Material Resolution)
+  resolverSufixo: (prefixo, tipoContexto, valorContexto) =>
+    ipcRenderer.invoke('resolver-sufixo', { prefixo, tipoContexto, valorContexto }),
+  upsertSufixo: (prefixo, tipoContexto, valorContexto, sufixo) =>
+    ipcRenderer.invoke('upsert-sufixo', { prefixo, tipoContexto, valorContexto, sufixo }),
+  getSufixosByPrefixo: (prefixo) =>
+    ipcRenderer.invoke('get-sufixos-by-prefixo', prefixo),
+  getSufixosByContexto: (tipoContexto, valorContexto) =>
+    ipcRenderer.invoke('get-sufixos-by-contexto', { tipoContexto, valorContexto }),
+
+  // Templates Kit Manual (PADRÕES from Excel)
+  saveTemplateManual: (nome, kitBase, materiais, observacao) =>
+    ipcRenderer.invoke('save-template-manual', { nome, kitBase, materiais, observacao }),
+  getTemplateManual: (nome) =>
+    ipcRenderer.invoke('get-template-manual', nome),
+  getAllTemplatesManuais: () =>
+    ipcRenderer.invoke('get-all-templates-manuais'),
 });

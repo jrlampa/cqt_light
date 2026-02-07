@@ -288,10 +288,28 @@ const Configurator = () => {
     else if (e.key === 'Enter') { e.preventDefault(); selectPoste(posteResults[nav.posteHighlight]); }
   };
 
+  // MT/BT Conductor Dropdown Navigation
+  const handleMTNav = (e) => {
+    if (!showMTDropdown) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); nav.setMtHighlight(prev => Math.min(prev + 1, CONDUTORES_MT.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); nav.setMtHighlight(prev => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); setCondutorMT(CONDUTORES_MT[nav.mtHighlight]); setShowMTDropdown(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setShowMTDropdown(false); }
+  };
+
+  const handleBTNav = (e) => {
+    if (!showBTDropdown) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); nav.setBtHighlight(prev => Math.min(prev + 1, CONDUTORES_BT.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); nav.setBtHighlight(prev => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); setCondutorBT(CONDUTORES_BT[nav.btHighlight]); setShowBTDropdown(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setShowBTDropdown(false); }
+  };
+
   const handleQtyNav = (e) => {
     if (e.key === 'Enter') { e.preventDefault(); confirmAddItem(); }
     if (e.key === 'Escape') { e.preventDefault(); setShowQtyPopup(false); }
   };
+
 
   const totalKits = estruturas.reduce((sum, e) => sum + (e.quantidade || 1), 0);
   const totalMats = materiaisAvulsos.reduce((sum, m) => sum + (m.quantidade || 1), 0);
@@ -366,7 +384,7 @@ const Configurator = () => {
           onCompanyChange={(empresa) => {
             setEmpresaAtiva(empresa);
             // Recalcular custos com nova empresa
-            calculateTotal(estruturas, materiaisAvulsos);
+            calculateTotal({ estruturas, materiaisAvulsos });
           }}
         />
 
@@ -394,7 +412,7 @@ const Configurator = () => {
           >
             <FileText className="w-3 h-3" /> Relatório
           </button>
-        </div >
+        </div>
 
         {/* Export Button */}
         {
@@ -447,8 +465,9 @@ const Configurator = () => {
               <Zap className="w-3 h-3 text-orange-500" /> MT
             </label>
             <button
-              onClick={() => setShowMTDropdown(!showMTDropdown)}
-              className="w-full text-left px-2 py-1.5 bg-orange-50 border border-orange-100 rounded-lg text-xs font-medium text-orange-700 truncate"
+              onClick={() => { nav.setMtHighlight(0); setShowMTDropdown(!showMTDropdown); }}
+              onKeyDown={handleMTNav}
+              className="w-full text-left px-2 py-1.5 bg-orange-50 border border-orange-100 rounded-lg text-xs font-medium text-orange-700 truncate focus:outline-none focus:ring-2 focus:ring-orange-300"
             >
               {condutorMT.label}
             </button>
@@ -456,17 +475,22 @@ const Configurator = () => {
               <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 <div className="p-1 space-y-0.5">
                   <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50">CONVENCIONAL</div>
-                  {CONDUTORES_MT.filter(c => c.tipo === 'Convencional').map((c) => (
-                    <button key={c.id} onClick={() => { setCondutorMT(c); setShowMTDropdown(false); }} className="w-full text-left px-2 py-1.5 text-xs hover:bg-orange-50 text-gray-700 rounded block">{c.label}</button>
+                  {CONDUTORES_MT.filter(c => c.tipo === 'Convencional').map((c, idx) => (
+                    <button key={c.id} onClick={() => { setCondutorMT(c); setShowMTDropdown(false); }} className={`w-full text-left px-2 py-1.5 text-xs text-gray-700 rounded block ${idx === nav.mtHighlight ? 'bg-orange-100' : 'hover:bg-orange-50'}`}>{c.label}</button>
                   ))}
                   <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50 mt-1">COMPACTA</div>
                   {CONDUTORES_MT.filter(c => c.tipo === 'Compacta').map((c) => (
                     <button key={c.id} onClick={() => { setCondutorMT(c); setShowMTDropdown(false); }} className="w-full text-left px-2 py-1.5 text-xs hover:bg-orange-50 text-gray-700 rounded block">{c.label}</button>
                   ))}
-                  <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50 mt-1">ISOLADA</div>
-                  {CONDUTORES_MT.filter(c => c.tipo === 'Isolada').map((c) => (
-                    <button key={c.id} onClick={() => { setCondutorMT(c); setShowMTDropdown(false); }} className="w-full text-left px-2 py-1.5 text-xs hover:bg-orange-50 text-gray-700 rounded block">{c.label}</button>
-                  ))}
+                  {/* ISOLADA - TODO: Adicionar condutores isolados ao CONDUTORES_MT se necessário */}
+                  {CONDUTORES_MT.filter(c => c.tipo === 'Isolada').length > 0 && (
+                    <>
+                      <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50 mt-1">ISOLADA</div>
+                      {CONDUTORES_MT.filter(c => c.tipo === 'Isolada').map((c) => (
+                        <button key={c.id} onClick={() => { setCondutorMT(c); setShowMTDropdown(false); }} className="w-full text-left px-2 py-1.5 text-xs hover:bg-orange-50 text-gray-700 rounded block">{c.label}</button>
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -478,8 +502,9 @@ const Configurator = () => {
               <Zap className="w-3 h-3 text-blue-500" /> BT
             </label>
             <button
-              onClick={() => setShowBTDropdown(!showBTDropdown)}
-              className="w-full text-left px-2 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-xs font-medium text-blue-700 truncate"
+              onClick={() => { nav.setBtHighlight(0); setShowBTDropdown(!showBTDropdown); }}
+              onKeyDown={handleBTNav}
+              className="w-full text-left px-2 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-xs font-medium text-blue-700 truncate focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               {condutorBT.label}
             </button>
@@ -487,8 +512,8 @@ const Configurator = () => {
               <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-xl border max-h-40 overflow-y-auto">
                 <div className="p-1 space-y-0.5">
                   <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50">MULTIPLEXADA</div>
-                  {CONDUTORES_BT.filter(c => c.tipo === 'Multiplexada').map((c) => (
-                    <button key={c.id} onClick={() => { setCondutorBT(c); setShowBTDropdown(false); }} className="w-full text-left px-2 py-1.5 text-xs hover:bg-blue-50 text-gray-700 rounded block">{c.label}</button>
+                  {CONDUTORES_BT.filter(c => c.tipo === 'Multiplexada').map((c, idx) => (
+                    <button key={c.id} onClick={() => { setCondutorBT(c); setShowBTDropdown(false); }} className={`w-full text-left px-2 py-1.5 text-xs text-gray-700 rounded block ${idx === nav.btHighlight ? 'bg-blue-100' : 'hover:bg-blue-50'}`}>{c.label}</button>
                   ))}
                   <div className="text-[9px] text-gray-400 px-2 py-1 font-bold bg-gray-50 mt-1">REDE NUA</div>
                   {CONDUTORES_BT.filter(c => c.tipo === 'Nua').map((c) => (
@@ -499,10 +524,10 @@ const Configurator = () => {
             )}
           </div>
         </div>
-      </div >
+      </div>
 
       {/* Main Content Area: Structure List or Material List */}
-      < div className="flex-1 flex flex-col bg-gray-50 border-r border-gray-200" >
+      <div className="flex-1 flex flex-col bg-gray-50 border-r border-gray-200">
         {/* Simple Tabs for switching if needed, though current design shows one based on activeTab state */}
         {/* Since StructureList handles structures and MaterialList handles activeTab check, we render both components
              but only one will display based on activeTab prop logic inside them (if wrapped nicely) or conditional render here.
@@ -550,10 +575,10 @@ const Configurator = () => {
             />
           )
         }
-      </div >
+      </div>
 
       {/* Footer */}
-      < SummaryFooter
+      <SummaryFooter
         custoData={custoData}
         condutorMT={condutorMT}
         condutorBT={condutorBT}
@@ -564,7 +589,7 @@ const Configurator = () => {
       />
 
       {/* Modals */}
-      < BudgetHistory
+      <BudgetHistory
         isOpen={showBudgetHistory}
         onClose={() => setShowBudgetHistory(false)}
         onLoad={loadBudget}
@@ -578,7 +603,7 @@ const Configurator = () => {
         }}
       />
 
-      < TemplateManager
+      <TemplateManager
         isOpen={showTemplateManager}
         onClose={() => setShowTemplateManager(false)}
         onApply={loadTemplate}
@@ -590,7 +615,7 @@ const Configurator = () => {
         }}
       />
 
-      < KitDetailsModal
+      <KitDetailsModal
         isOpen={showKitDetails}
         onClose={() => setShowKitDetails(false)}
         kit={selectedKit}
@@ -602,7 +627,7 @@ const Configurator = () => {
         onClose={() => setShowPriceManagement(false)}
         empresaAtiva={empresaAtiva}
       />
-    </div >
+    </div>
   );
 };
 

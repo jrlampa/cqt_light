@@ -34,18 +34,19 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
     setImportFile(file);
 
     try {
-      // Parse Excel file
-      const precos = await parseExcelPrecos(file);
+      // Parse Excel file - NOW RETURNS {success, ambiguous}
+      const result = await parseExcelPrecos(file);
 
       // Get existing SAPs from DB
       const allMaterials = await window.api.getAllMaterials();
       const existingSaps = allMaterials.map(m => m.sap);
 
-      // Validate and create preview
-      const preview = validateImportPreview(precos, existingSaps);
+      // Validate and create preview for SUCCESS cases
+      const preview = validateImportPreview(result.success, existingSaps);
       setImportPreview({
         ...preview,
-        precosData: precos // Store full data for import
+        precosData: result.success, // Store only success for import
+        ambiguous: result.ambiguous // Store ambiguous for manual resolution
       });
     } catch (error) {
       console.error('Erro ao processar Excel:', error);
@@ -199,28 +200,73 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
               </div>
 
               {importPreview && (
-                <div className="border border-blue-200 bg-blue-50 rounded-xl p-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-semibold text-blue-900">Preview da Importação</p>
-                      <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
-                        <div>
-                          <span className="text-gray-600">Total:</span>
-                          <span className="font-bold text-gray-800 ml-2">{importPreview.totalLinhas}</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-600">Novos:</span>
-                          <span className="font-bold text-green-600 ml-2">{importPreview.novos}</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-600">Atualizações:</span>
-                          <span className="font-bold text-blue-600 ml-2">{importPreview.atualizacoes}</span>
+                <>
+                  <div className="border border-blue-200 bg-blue-50 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-blue-900">✅ Detecção Automática</p>
+                        <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
+                          <div>
+                            <span className="text-gray-600">Total:</span>
+                            <span className="font-bold text-gray-800 ml-2">{importPreview.totalLinhas}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Novos:</span>
+                            <span className="font-bold text-green-600 ml-2">{importPreview.novos}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Atualizações:</span>
+                            <span className="font-bold text-blue-600 ml-2">{importPreview.atualizacoes}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+
+                  {importPreview.ambiguous && importPreview.ambiguous.length > 0 && (
+                    <div className="border border-amber-200 bg-amber-50 rounded-xl p-4 mt-4">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-amber-900">⚠️ Casos Ambíguos ({importPreview.ambiguous.length})</p>
+                          <p className="text-xs text-amber-700 mt-1">Preços encontrados mas códigos SAP não detectados automaticamente</p>
+
+                          <div className="mt-3 space-y-2 max-h-60 overflow-y-auto">
+                            {importPreview.ambiguous.map((item, idx) => (
+                              <div key={idx} className="bg-white rounded-lg p-3 text-sm border border-amber-200">
+                                <div className="font-semibold text-gray-800">
+                                  Linha {item.lineNum}: Preço R$ {item.price.toFixed(2)}
+                                </div>
+                                <div className="text-xs text-gray-600 mt-2 space-y-1">
+                                  <div className="font-semibold">Contexto (linhas próximas):</div>
+                                  {item.context.map((ctx, ctxIdx) => (
+                                    <div key={ctxIdx} className="font-mono text-xs">
+                                      L{ctx.lineNum}: {ctx.content || '(vazia)'}
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="mt-2 flex gap-2 items-center">
+                                  <input
+                                    type="text"
+                                    placeholder="Código SAP"
+                                    className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs"
+                                  />
+                                  <button className="px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">
+                                    Associar
+                                  </button>
+                                  <button className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-xs hover:bg-gray-400">
+                                    Ignorar
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}

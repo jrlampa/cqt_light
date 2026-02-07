@@ -1,0 +1,308 @@
+==============================================================================
+📘 ANÁLISE COMPLETA: PLAN MATERIAL LIGHT 2019.xls
+==============================================================================
+
+Total de Abas: 8
+Nomes das Abas: 
+  PADRÕES MT, BT, RURAL
+  PARTE A
+  PARTE A1
+  PARTE A (2)
+  PARTE A1 (2)
+  PARTE A (3)
+  PARTE A1 (3)
+  SAP
+
+
+================================================================================
+ABA 1: "PADRÕES MT, BT, RURAL" (1382 linhas)
+================================================================================
+L3: 13CE3T | ESTRUTURA P/ TRAFO EM FIM DE R | 1 | 13CE2JT2 | ESTRUTURA P/ DOIS TRAFOS NA RE | 1
+L4: E-10/ | 3 | E-10/ | 3 | E-10/ | 3
+L5: O-25/ | 3 | O-25/ | 3 | O-25/ | 3
+L6: A-35/13 | A-35/13  INST PLACA IDENT.LINH | 1 | A-35/13 | A-35/13  INST PLACA IDENT.LINH | 1
+L7: F-10/07 | F-10/07  INST CINTA P/ POSTE C | 3 | F-10/07 | F-10/07  INST CINTA P/ POSTE C | 5
+L8: F-10/06 | F-10/06  INST CINTA P/ POSTE C | 3 | F-10/06 | F-10/06  INST CINTA P/ POSTE C | 3
+L9: TR/ | 1 | TR/ | 2 | TR/ | 1
+L10: A-30/02 | A-30/02 INST SUPORTE P/TRAFO P | 2 | A-30/02 | A-30/02 INST SUPORTE P/TRAFO P | 4
+L11: A-15/02 | A-15/02  INST FITA ISOLANTE.AD | 1 | A-15/02 | A-15/02  INST FITA ISOLANTE.AD | 1
+L12: F-34S | F-34S    INST PARF.CAB.SEXT. P | 4 | F-34S | F-34S    INST PARF.CAB.SEXT. P | 8
+L13: C10 | 16 | C10 | 32 | C10 | 16
+L14: O-13 | 8 | O-13 | 16 | O-13 | 8
+L15: F-34T/ | 4 | F-34T/ | 8 | F-34T/ | 4
+L16: AT-3 | AT-3     INST ATERRAMENTO TIPO | 1 | AT-3 | AT-3     INST ATERRAMENTO TIPO | 1
+L17: A-22/P | A-22/P INST PROTETOR POLIMÉRIC | 2 | A-22/P | A-22/P INST PROTETOR POLIMÉRIC | 2
+L18: A-5/2 | A-5/2    INST FITA DE ACO INOX | 6 | A-5/2 | A-5/2    INST FITA DE ACO INOX | 6
+L19: A-5/4 | A-5/4    INST FECHO P/FITA ACO | 6 | A-5/4 | A-5/4    INST FECHO P/FITA ACO | 6
+L20: O-12/11 | O-12/11  INST CONECTOR CUNHA T | 2 | O-12/11 | O-12/11  INST CONECTOR CUNHA T | 2
+L21: O-80/ | 6 | O-80/ | 12 | O-80/ | 6
+L22: O-12/ | 2 | O-12/ | 4 | O-12/ | 2
+L23: 13CE3 | 13CE3    INST RD.AE.COMPACTA P | 1 | A-15/03 | A-15/03  INST FITA AUTO-AGLOME | 1
+L24: F-10/ | 3
+L25: M1/ | 3
+L26: A-15/03 | A-15/03  INST FITA AUTO-AGLOME | 1
+L27: I-5 | I-5      INST ISOLADOR DE PINO | 1
+L28: F-85 | F-85     INST PINO CURTO PARA  | 1
+L29: M-30 | M-30     INST FIO COBERTO P/ A | 1
+L38: 13CE3TA | ESTRUTURA P/ TRAFO AP FIM DE R | 1 | 13CE2JTA | ESTRUTURA P/ TRAFO AP NA RETA | 1
+L39: O-25/ | 3 | O-25/ | 3
+L40: A-35/13 | A-35/13  INST PLACA IDENT.LINH | 1 | A-35/13 | A-35/13  INST PLACA IDENT.LINH | 1
+
+Total linhas nesta aba: 1382
+
+
+================================================================================
+ABA 2: "PARTE A" (58 linhas)
+================================================================================
+L2: CADASTRAMENTO DE
+L3: ESTUDO DE REDE
+L6: Folha | 1 | /
+L7: 1 - Estudo de Rede - Identific
+L8: Definição do Projeto
+L9: OIO
+L11: Nº do pedido | Data da emissão do | OIO | Nº da Nota | Ordem no anteprojeto
+L12: Sigla | Cod. Orgão | Sequencial | Ano
+L14: Orgão emissor | Orgão solicitante | Orgão executante
+L15: DSO | DSO | DSO
+L17: 2 - Projetista   | FABIO SANTAREM | TÉCNICO | FABIO SANTAREM
+L19: 3 - Obras - Dados Básicos
+L21: Tipo de serviço
+L24: Logradouro | Bairro | Número | QT. DE CLIENTES
+L27: Descrição
+L29: LDA 13KV - 
+L30: SETD-
+L31: PTO ELETRICO-
+L35: HH DO PROJETISTA | HH
+L36: DISTÂNCIA PERCORRIDA PELO PROJ | KMS
+L37: DISTÂNCIA MÉDIA DO SETOR | KMS
+L38: HH TOTAL DO PROJETO | HH
+L39: VEÍCULO V1 | KMS
+L40: VEÍCULO V2 | KMS
+L41: VEÍCULO V4 | KMS
+L45: OIO | GECN
+L48: PARTE
+
+Total linhas nesta aba: 58
+
+
+================================================================================
+ABA 3: "PARTE A1" (1735 linhas)
+================================================================================
+L1: GECN
+L2: 0
+L3: 185AMX | 70AMX
+L8: OIO | S1 | ALINHAMENTO RETO | 1 | S1 | ALINHAMENTO RETO
+L9: SI1 | ALINHAMENTO RETO | 1 | SI1 | ALINHAMENTO RETO | 1
+L10: F-10/ | CINTA | 2 | F-10/ | CINTA | 2
+L11: O-80/10 | PERFURANTE 185/2,1AWG (RL IP)
+L12: PONTO/TRECHO | CÓDIGO DO KIT | DESCRIÇÃO | QUANT | QUANT | LOTE
+L13: INICIO | TERMINO | INST | RET | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L16: S1 | ALINHAMENTO RETO | 1
+L17: SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1 | S1 | ALINHAMENTO RETO | 1
+L18: M1/120 | ALÇAS 120 | 2 | SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1
+L19: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L20: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L21: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L22: O-80/10 | PERFURANTE 70/6AWG  (IP)
+L25: S1 | ALINHAMENTO RETO | 1
+L26: SI4 | DOIS FIM DE REDE | 1 | S1 | ALINHAMENTO RETO | 1
+L27: M1/120 | ALÇA 120 | 1 | SI4 | DOIS FIM DE REDE | 1
+L28: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L29: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L30: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L31: O-80/14 | PERFURANTE 185/70 | 3 | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L32: O-12/05 | AMPACT 120/53mm³ | 1 | O-80/9 | PERFURANTE 185/70 | 3
+L33: M1/50 | ALÇA 50 | 1 | O-12/05 | AMPACT 120/53mm³ | 1
+L34: M1/120 | ALÇA 120 | 1
+L35: S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L36: M1/120 | ALÇA 120 | 1 | S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L37: M1/1/0 | ALÇA 1/0 | 4 | M1/50 | ALÇA 50 | 1
+L38: F-10/ | CINTA | 3 | M1/1/0 | ALÇA 1/0 | 4
+
+Total linhas nesta aba: 1735
+
+
+================================================================================
+ABA 4: "PARTE A (2)" (58 linhas)
+================================================================================
+L2: CADASTRAMENTO DE
+L3: ESTUDO DE REDE
+L6: Folha | 1 | /
+L7: 1 - Estudo de Rede - Identific
+L8: Definição do Projeto
+L9: OIO
+L11: Nº do pedido | Data da emissão do | OIO | Nº da Nota | Ordem no anteprojeto
+L12: Sigla | Cod. Orgão | Sequencial | Ano | 0
+L13: 0
+L14: Orgão emissor | Orgão solicitante | Orgão executante
+L15: DSO | DSO | DSO
+L17: 2 - Projetista   | FABIO SANTAREM | TÉCNICO | FABIO SANTAREM
+L19: 3 - Obras - Dados Básicos
+L21: Tipo de serviço
+L22: 0
+L24: Logradouro | Bairro | Número | QT. DE CLIENTES
+L25: 0 | 0 | 0 | 0
+L27: Descrição
+L28: 0
+L29: LDA 13KV - 
+L30: SETD-
+L31: PTO ELETRICO-
+L35: HH DO PROJETISTA | HH
+L36: DISTÂNCIA PERCORRIDA PELO PROJ | KMS
+L37: DISTÂNCIA MÉDIA DO SETOR | KMS
+L38: HH TOTAL DO PROJETO | HH
+L39: VEÍCULO V1 | KMS
+L40: VEÍCULO V2 | KMS
+L41: VEÍCULO V4 | KMS
+L45: OIO | GECN
+
+Total linhas nesta aba: 58
+
+
+================================================================================
+ABA 5: "PARTE A1 (2)" (1735 linhas)
+================================================================================
+L1: GECN
+L2: 0
+L3: 185AMX | 70AMX
+L8: OIO | S1 | ALINHAMENTO RETO | 1 | S1 | ALINHAMENTO RETO
+L9: SI1 | ALINHAMENTO RETO | 1 | SI1 | ALINHAMENTO RETO | 1
+L10: F-10/ | CINTA | 2 | F-10/ | CINTA | 2
+L11: O-80/10 | PERFURANTE 185/2,1AWG (RL IP)
+L12: PONTO/TRECHO | CÓDIGO DO KIT | DESCRIÇÃO | QUANT | QUANT | LOTE
+L13: INICIO | TERMINO | INST | RET | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L16: S1 | ALINHAMENTO RETO | 1
+L17: SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1 | S1 | ALINHAMENTO RETO | 1
+L18: M1/120 | ALÇAS 120 | 2 | SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1
+L19: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L20: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L21: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L22: O-80/10 | PERFURANTE 70/6AWG  (IP)
+L25: S1 | ALINHAMENTO RETO | 1
+L26: SI4 | DOIS FIM DE REDE | 1 | S1 | ALINHAMENTO RETO | 1
+L27: M1/120 | ALÇA 120 | 1 | SI4 | DOIS FIM DE REDE | 1
+L28: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L29: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L30: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L31: O-80/14 | PERFURANTE 185/70 | 3 | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L32: O-12/05 | AMPACT 120/53mm³ | 1 | O-80/9 | PERFURANTE 185/70 | 3
+L33: M1/50 | ALÇA 50 | 1 | O-12/05 | AMPACT 120/53mm³ | 1
+L34: M1/120 | ALÇA 120 | 1
+L35: S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L36: M1/120 | ALÇA 120 | 1 | S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L37: M1/1/0 | ALÇA 1/0 | 4 | M1/50 | ALÇA 50 | 1
+L38: F-10/ | CINTA | 3 | M1/1/0 | ALÇA 1/0 | 4
+
+Total linhas nesta aba: 1735
+
+
+================================================================================
+ABA 6: "PARTE A (3)" (58 linhas)
+================================================================================
+L2: CADASTRAMENTO DE
+L3: ESTUDO DE REDE
+L6: Folha | 1 | /
+L7: 1 - Estudo de Rede - Identific
+L8: Definição do Projeto
+L9: OIO
+L11: Nº do pedido | Data da emissão do | OIO | Nº da Nota | Ordem no anteprojeto
+L12: Sigla | Cod. Orgão | Sequencial | Ano | 0
+L13: 0 | 0
+L14: Orgão emissor | Orgão solicitante | Orgão executante
+L15: DSO | DSO | DSO
+L17: 2 - Projetista   | FABIO SANTAREM | TÉCNICO | FABIO SANTAREM
+L19: 3 - Obras - Dados Básicos
+L21: Tipo de serviço
+L24: Logradouro | Bairro | Número | QT. DE CLIENTES
+L25: 0 | 0 | 0 | 0
+L27: Descrição
+L28: 0
+L29: LDA 13KV - 
+L30: SETD-
+L31: PTO ELETRICO-
+L35: HH DO PROJETISTA | HH
+L36: DISTÂNCIA PERCORRIDA PELO PROJ | KMS
+L37: DISTÂNCIA MÉDIA DO SETOR | KMS
+L38: HH TOTAL DO PROJETO | HH
+L39: VEÍCULO V1 | KMS
+L40: VEÍCULO V2 | KMS
+L41: VEÍCULO V4 | KMS
+L45: OIO | GECN
+L48: PARTE
+
+Total linhas nesta aba: 58
+
+
+================================================================================
+ABA 7: "PARTE A1 (3)" (1735 linhas)
+================================================================================
+L1: GECN
+L2: 0
+L3: 185AMX | 70AMX
+L8: OIO | S1 | ALINHAMENTO RETO | 1 | S1 | ALINHAMENTO RETO
+L9: SI1 | ALINHAMENTO RETO | 1 | SI1 | ALINHAMENTO RETO | 1
+L10: F-10/ | CINTA | 2 | F-10/ | CINTA | 2
+L11: O-80/10 | PERFURANTE 185/2,1AWG (RL IP)
+L12: PONTO/TRECHO | CÓDIGO DO KIT | DESCRIÇÃO | QUANT | QUANT | LOTE
+L13: INICIO | TERMINO | INST | RET | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L16: S1 | ALINHAMENTO RETO | 1
+L17: SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1 | S1 | ALINHAMENTO RETO | 1
+L18: M1/120 | ALÇAS 120 | 2 | SI3.SI3 | DEFLEXÕES MAIORES QUE 50º | 1
+L19: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L20: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L21: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L22: O-80/10 | PERFURANTE 70/6AWG  (IP)
+L25: S1 | ALINHAMENTO RETO | 1
+L26: SI4 | DOIS FIM DE REDE | 1 | S1 | ALINHAMENTO RETO | 1
+L27: M1/120 | ALÇA 120 | 1 | SI4 | DOIS FIM DE REDE | 1
+L28: F-10/ | CINTA | 1 | M1/50 | ALÇA 50 | 2
+L29: O-80/10 | PERFURANTE 185/2,1AWG (RL IP) | F-10/ | CINTA | 1
+L30: O-12/10 | AMPACT 120/6AWG | O-12/11 | AMPACT 50/6AWG
+L31: O-80/14 | PERFURANTE 185/70 | 3 | O-80/10 | PERFURANTE 70/6AWG  (IP)
+L32: O-12/05 | AMPACT 120/53mm³ | 1 | O-80/9 | PERFURANTE 185/70 | 3
+L33: M1/50 | ALÇA 50 | 1 | O-12/05 | AMPACT 120/53mm³ | 1
+L34: M1/120 | ALÇA 120 | 1
+L35: S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L36: M1/120 | ALÇA 120 | 1 | S3.SI3 | TRANS. ABERTO C/ MULTIPLEXADA | 1
+L37: M1/1/0 | ALÇA 1/0 | 4 | M1/50 | ALÇA 50 | 1
+L38: F-10/ | CINTA | 3 | M1/1/0 | ALÇA 1/0 | 4
+
+Total linhas nesta aba: 1735
+
+
+================================================================================
+ABA 8: "SAP" (33962 linhas)
+================================================================================
+L1: 06.09.2016                    
+L4: Descrição
+L6: AEREO - POSTES - CONCRETO/MADE
+L7: AEREO - CONDUTORES - 34,5KV
+L8: AEREO - CONDUTORES - 13,8KV
+L9: AEREO - CONDUTORES - BT
+L10: CONDUTORES-ATERRAMENTO/LEAD/TA
+L11: CONJUNTO ISOLADORES - PINO/SUS
+L12: AEREO - CHAVES - FACA/FUSIVEL/
+L13: AEREO - TRANSFORMADORES
+L14: AEREO - EQUIPAMENTOS
+L15: AEREO - URBANO - MONTAGENS BAS
+L16: URBANO-ESTRUTURAS PARA TRANSFO
+L17: URBANO-MONTAGENS COM CHAVES-FA
+L18: URBANO - ESTRUTURAS PARA EQUIP
+L19: AEREO - URBANO - MONTAGENS BAS
+L20: URBANO-MONTAG BASICAS-RET PADR
+L21: URBANO-MONT BASICAS-RET PADRAO
+L22: AEREO - ILUMINACAO PUBLICA
+L23: AEREO - FAVELA - REDE
+L24: FAVELA - MONTAGENS COM TRANSFO
+L25: FAVELA-MONTAGENS COM CHAVES-FA
+L26: AEREO - FAVELA - MONTAGENS RED
+L27: AEREO - CONDUTORES - 34,5KV - 
+L28: AEREO - CONDUTORES - 13,8KV - 
+L29: AEREO - CONDUTORES - BT - FORA
+L30: RURAL - TRIFASICO - MONTAGENS 
+L31: RURAL-TRIFASICO-MONT TRANSFORM
+L32: RURAL - TRIFASICO - MONTAGENS 
+L33: RURAL-TRIFASICO-MONTAGENS EQUI
+
+Total linhas nesta aba: 33962
+

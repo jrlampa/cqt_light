@@ -475,6 +475,85 @@ class DatabaseService {
       LIMIT ?
     `, [empresaId, limit]);
   }
+
+  // ========== SUFIXOS CONTEXTUAIS (Dynamic Material Resolution) ==========
+
+  /**
+   * Resolve a partial code (F-10/, M1/) to complete code based on context
+   * @param {string} prefixo - Partial code like 'F-10/' or 'M1/'
+   * @param {string} tipoContexto - 'poste' or 'condutor'
+   * @param {string} valorContexto - e.g., '11600B' or 'CAA 1/0'
+   * @returns {string|null} - Complete code or null if not found
+   */
+  resolverSufixo(prefixo, tipoContexto, valorContexto) {
+    const result = this.get(`
+      SELECT codigo_completo, prefixo || sufixo as resolved
+      FROM sufixos_contextuais
+      WHERE prefixo = ? AND tipo_contexto = ? AND valor_contexto = ?
+    `, [prefixo, tipoContexto, valorContexto]);
+
+    return result ? (result.codigo_completo || result.resolved) : null;
+  }
+
+  /**
+   * Add or update a suffix mapping
+   */
+  upsertSufixo(prefixo, tipoContexto, valorContexto, sufixo) {
+    const codigoCompleto = prefixo + sufixo;
+    this.run(`
+      INSERT INTO sufixos_contextuais (prefixo, tipo_contexto, valor_contexto, sufixo, codigo_completo)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(prefixo, tipo_contexto, valor_contexto) DO UPDATE SET
+        sufixo = excluded.sufixo,
+        codigo_completo = excluded.codigo_completo
+    `, [prefixo, tipoContexto, valorContexto, sufixo, codigoCompleto]);
+  }
+
+  /**
+   * Get all suffix mappings for a given prefix
+   */
+  getSufixosByPrefixo(prefixo) {
+    return this.all(`
+      SELECT * FROM sufixos_contextuais WHERE prefixo = ? ORDER BY valor_contexto
+    `, [prefixo]);
+  }
+
+  /**
+   * Get all suffix mappings for a context value (e.g., all for '11600B' pole)
+   */
+  getSufixosByContexto(tipoContexto, valorContexto) {
+    return this.all(`
+      SELECT * FROM sufixos_contextuais 
+      WHERE tipo_contexto = ? AND valor_contexto = ?
+    `, [tipoContexto, valorContexto]);
+  }
+
+  // ========== TEMPLATES KIT MANUAL ==========
+
+  saveTemplateManual(nomeTemplate, kitBase, materiaisArray, observacao = null) {
+    this.run(`
+      INSERT INTO templates_kit_manual (nome_template, kit_base, materiais_json, observacao)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(nome_template) DO UPDATE SET
+        kit_base = excluded.kit_base,
+        materiais_json = excluded.materiais_json,
+        observacao = excluded.observacao
+    `, [nomeTemplate, kitBase, JSON.stringify(materiaisArray), observacao]);
+  }
+
+  getTemplateManual(nomeTemplate) {
+    const tpl = this.get('SELECT * FROM templates_kit_manual WHERE nome_template = ?', [nomeTemplate]);
+    if (tpl) {
+      try { tpl.materiais = JSON.parse(tpl.materiais_json); }
+      catch { tpl.materiais = []; }
+    }
+    return tpl;
+  }
+
+  getAllTemplatesManuais() {
+    return this.all('SELECT nome_template, kit_base, observacao FROM templates_kit_manual ORDER BY nome_template');
+  }
 }
 
 module.exports = new DatabaseService();
+

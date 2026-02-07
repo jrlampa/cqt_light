@@ -1,9 +1,9 @@
 import * as XLSX from 'xlsx';
 
 /**
- * Parse Excel file and extract price data from "Custo Materiais" sheet
+ * Parse Excel file and extract price data from modular cost format
  * @param {File} file - Excel file (.xlsx, .xlsm)
- * @returns {Promise<Array>} - Array of {sap, preco_unitario}
+ * @returns {Promise<Object>} - {success: [...], ambiguous: [...]}
  */
 export async function parseExcelPrecos(file) {
   return new Promise((resolve, reject) => {
@@ -57,8 +57,19 @@ export async function parseExcelPrecos(file) {
             firstCell.includes('modulares');
         };
 
+        // Helper: Pega contexto (4 linhas acima/abaixo)
+        const getContext = (lineIndex) => {
+          const start = Math.max(0, lineIndex - 4);
+          const end = Math.min(jsonData.length - 1, lineIndex + 4);
+          return jsonData.slice(start, end + 1).map((row, idx) => ({
+            lineNum: start + idx + 1,
+            content: row.filter(cell => cell && cell !== '').join(' | ')
+          }));
+        };
+
         // Parse linha por linha
         const precos = [];
+        const ambiguous = [];
         let i = 0;
 
         while (i < jsonData.length) {
@@ -82,6 +93,7 @@ export async function parseExcelPrecos(file) {
               // Encontrou preço! Agora procura SAP nas próximas linhas
               let sapCode = null;
               let lookAhead = 1;
+              let sapFoundAtLine = null;
 
               while (lookAhead <= 5 && (i + lookAhead) < jsonData.length) {
                 const nextRow = jsonData[i + lookAhead];
@@ -91,7 +103,8 @@ export async function parseExcelPrecos(file) {
                 if (colB) {
                   sapCode = extractSAP(colB);
                   if (sapCode) {
-                    console.log(`✅ [Linha ${i + 1}] Preço: R$ ${precoNum.toFixed(2)} → SAP: ${sapCode} (encontrado na linha ${i + lookAhead + 1})`);
+                    sapFoundAtLine = i + lookAhead;
+                    console.log(`✅ [Linha ${i + 1}] Preço: R$ ${precoNum.toFixed(2)} → SAP: ${sapCode} (encontrado na linha ${sapFoundAtLine + 1})`);
                     break;
                   }
                 }
@@ -105,7 +118,15 @@ export async function parseExcelPrecos(file) {
                   preco_unitario: precoNum
                 });
               } else {
-                console.warn(`⚠️ [Linha ${i + 1}] Preço R$ ${precoNum.toFixed(2)} encontrado, mas SAP não detectado nas próximas 5 linhas`);
+                // AMBÍGUO: Preço sem SAP
+                console.warn(`⚠️ [Linha ${i + 1}] Preço R$ ${precoNum.toFixed(2)} encontrado, mas SAP não detectado`);
+                ambiguous.push({
+                  type: 'price_without_sap',
+                  lineNum: i + 1,
+                  price: precoNum,
+                  sap: null,
+                  context: getContext(i)
+                });
               }
             }
           }
@@ -113,19 +134,15 @@ export async function parseExcelPrecos(file) {
           i++;
         }
 
-        if (precos.length === 0) {
-          reject(new Error(
-            'Nenhum preço válido encontrado.\n\n' +
-            'Este parser procura:\n' +
-            '- Preços na coluna C\n' +
-            '- Códigos SAP no formato "TEXTO (NUMERO)" na coluna B das linhas seguintes\n\n' +
-            'Verifique se seu arquivo segue esse padrão.'
-          ));
-          return;
-        }
+        const result = {
+          success: precos,
+          ambiguous: ambiguous,
+          totalSuccess: precos.length,
+          totalAmbiguous: ambiguous.length
+        };
 
-        console.log(`✅ Importação concluída: ${precos.length} preços extraídos`);
-        resolve(precos);
+        console.log(`✅ Importação automática: ${precos.length} preços | ⚠️ Casos ambíguos: ${ambiguous.length}`);
+        resolve(result);
       } catch (error) {
         console.error('❌ Erro no parser:', error);
         reject(error);
@@ -133,6 +150,7 @@ export async function parseExcelPrecos(file) {
     };
 
     reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+    reader.readAsArrayBuffer(file);
   });
 }
 
