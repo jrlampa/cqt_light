@@ -14,7 +14,7 @@ export async function parseExcelPrecos(file) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
 
-        // Procurar aba "Custo Materiais" ou similar
+        // Procurar aba relevante ou usar primeira
         let sheetName = workbook.SheetNames.find(
           name => {
             const lower = name.toLowerCase();
@@ -25,95 +25,114 @@ export async function parseExcelPrecos(file) {
           }
         );
 
-        // Se não encontrar, usar primeira aba
         if (!sheetName) {
           console.warn('Aba "Custo Materiais" não encontrada, usando primeira aba:', workbook.SheetNames[0]);
           sheetName = workbook.SheetNames[0];
         }
 
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', blankrows: true });
 
         if (jsonData.length < 2) {
           reject(new Error('Planilha vazia ou sem dados'));
           return;
         }
 
-        // Detectar colunas SAP e Preço com múltiplos padrões
-        const headerRow = jsonData[0] || [];
+        console.log(`📊 Processando planilha "${sheetName}" com ${jsonData.length} linhas`);
 
-        // Padrões para SAP
-        const sapPatterns = ['sap', 'código', 'codigo', 'cod', 'material', 'item'];
-        const sapColIndex = headerRow.findIndex(h => {
-          if (!h) return false;
-          const str = h.toString().toLowerCase();
-          return sapPatterns.some(pattern => str.includes(pattern));
-        });
+        // Helper: Extrai SAP entre parênteses
+        const extractSAP = (text) => {
+          if (!text) return null;
+          const match = text.toString().match(/\((\d+)\)/);
+          return match ? match[1] : null;
+        };
 
-        // Padrões para Preço
-        const precoPatterns = ['preço', 'preco', 'valor', 'custo', 'unitário', 'unitario', 'price'];
-        const precoColIndex = headerRow.findIndex(h => {
-          if (!h) return false;
-          const str = h.toString().toLowerCase();
-          return precoPatterns.some(pattern => str.includes(pattern));
-        });
+        // Helper: Verifica se linha é subheader (ignora)
+        const isSubHeader = (row) => {
+          if (!row || row.length === 0) return false;
+          const firstCell = row[0]?.toString().toLowerCase() || '';
+          return firstCell.includes('custo') ||
+            firstCell.includes('equipamento') ||
+            firstCell.includes('estrutura') ||
+            firstCell.includes('modulares');
+        };
 
-        if (sapColIndex === -1 || precoColIndex === -1) {
-          // Criar mensagem de erro detalhada
-          const availableColumns = headerRow
-            .map((h, i) => h ? `${i}: "${h}"` : null)
-            .filter(Boolean)
-            .join(', ');
+        // Parse linha por linha
+        const precos = [];
+        let i = 0;
 
+        while (i < jsonData.length) {
+          const row = jsonData[i];
+
+          // Skip subheaders e linhas vazias iniciais
+          if (isSubHeader(row) || !row || row.every(cell => !cell || cell === '')) {
+            i++;
+            continue;
+          }
+
+          // Coluna C (índice 2) = Preço
+          const precoRaw = row[2];
+
+          if (precoRaw !== undefined && precoRaw !== null && precoRaw !== '') {
+            const precoNum = typeof precoRaw === 'number'
+              ? precoRaw
+              : parseFloat(precoRaw.toString().replace(',', '.'));
+
+            if (!isNaN(precoNum) && precoNum > 0) {
+              // Encontrou preço! Agora procura SAP nas próximas linhas
+              let sapCode = null;
+              let lookAhead = 1;
+
+              while (lookAhead <= 5 && (i + lookAhead) < jsonData.length) {
+                const nextRow = jsonData[i + lookAhead];
+
+                // Procura na coluna B (índice 1)
+                const colB = nextRow?.[1];
+                if (colB) {
+                  sapCode = extractSAP(colB);
+                  if (sapCode) {
+                    console.log(`✅ [Linha ${i + 1}] Preço: R$ ${precoNum.toFixed(2)} → SAP: ${sapCode} (encontrado na linha ${i + lookAhead + 1})`);
+                    break;
+                  }
+                }
+
+                lookAhead++;
+              }
+
+              if (sapCode) {
+                precos.push({
+                  sap: sapCode,
+                  preco_unitario: precoNum
+                });
+              } else {
+                console.warn(`⚠️ [Linha ${i + 1}] Preço R$ ${precoNum.toFixed(2)} encontrado, mas SAP não detectado nas próximas 5 linhas`);
+              }
+            }
+          }
+
+          i++;
+        }
+
+        if (precos.length === 0) {
           reject(new Error(
-            `Colunas não encontradas no cabeçalho.\n\n` +
-            `Procurando:\n` +
-            `- SAP: ${sapPatterns.join(', ')}\n` +
-            `- Preço: ${precoPatterns.join(', ')}\n\n` +
-            `Colunas disponíveis: ${availableColumns || 'nenhuma'}\n\n` +
-            `Certifique-se que a primeira linha contém os nomes das colunas.`
+            'Nenhum preço válido encontrado.\n\n' +
+            'Este parser procura:\n' +
+            '- Preços na coluna C\n' +
+            '- Códigos SAP no formato "TEXTO (NUMERO)" na coluna B das linhas seguintes\n\n' +
+            'Verifique se seu arquivo segue esse padrão.'
           ));
           return;
         }
 
-        console.log(`✅ Colunas detectadas: SAP="${headerRow[sapColIndex]}" (índice ${sapColIndex}), Preço="${headerRow[precoColIndex]}" (índice ${precoColIndex})`);
-
-        // Parse rows
-        const precos = [];
-        for (let i = 1; i < jsonData.length; i++) {
-          const row = jsonData[i];
-          const sap = row[sapColIndex];
-          const preco = row[precoColIndex];
-
-          // Skip empty rows
-          if (!sap || sap === '') continue;
-
-          if (preco !== undefined && preco !== null && preco !== '') {
-            let precoNum = typeof preco === 'number' ? preco : parseFloat(preco.toString().replace(',', '.'));
-
-            if (!isNaN(precoNum)) {
-              precos.push({
-                sap: sap.toString().trim(),
-                preco_unitario: precoNum
-              });
-            }
-          }
-        }
-
-        if (precos.length === 0) {
-          reject(new Error('Nenhum preço válido encontrado na planilha'));
-          return;
-        }
-
-        console.log(`✅ Parsed ${precos.length} preços`);
+        console.log(`✅ Importação concluída: ${precos.length} preços extraídos`);
         resolve(precos);
       } catch (error) {
+        console.error('❌ Erro no parser:', error);
         reject(error);
       }
     };
 
     reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
-    reader.readAsArrayBuffer(file);
   });
 }
 
