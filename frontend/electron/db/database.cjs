@@ -124,6 +124,15 @@ class DatabaseService {
     `, [`%${query}%`, `%${query}%`]);
   }
 
+  getMaterialsPrices(codes) {
+    if (!codes || codes.length === 0) return [];
+    const placeholders = codes.map(() => '?').join(',');
+    return this.all(`
+      SELECT sap, descricao, unidade, preco_unitario 
+      FROM materiais WHERE sap IN (${placeholders})
+    `, codes);
+  }
+
   upsertMaterial(sap, descricao, unidade, preco_unitario) {
     this.run(`
       INSERT INTO materiais (sap, descricao, unidade, preco_unitario)
@@ -142,10 +151,15 @@ class DatabaseService {
 
   searchKits(query) {
     return this.all(`
-      SELECT * FROM kits 
+      SELECT codigo_kit, descricao_kit, custo_servico, 'padrao' as tipo, NULL as materiais_json
+      FROM kits 
       WHERE codigo_kit LIKE ? OR descricao_kit LIKE ?
+      UNION ALL
+      SELECT nome_template as codigo_kit, observacao as descricao_kit, 0 as custo_servico, 'manual' as tipo, materiais_json
+      FROM templates_kit_manual
+      WHERE nome_template LIKE ? OR observacao LIKE ?
       ORDER BY codigo_kit LIMIT 30
-    `, [`%${query}%`, `%${query}%`]);
+    `, [`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`]);
   }
 
   getKit(codigoKit) {
@@ -530,7 +544,18 @@ class DatabaseService {
 
   // ========== TEMPLATES KIT MANUAL ==========
 
-  saveTemplateManual(nomeTemplate, kitBase, materiaisArray, observacao = null) {
+  saveTemplateManual(templateData) {
+    // Default values to prevent 'undefined' binding errors
+    const { nome_template, kit_base, materiais, observacao } = templateData;
+
+    // Sanitize inputs (SQL.js hates undefined)
+    const p_nome = nome_template || null;
+    const p_base = kit_base || null;
+    const p_materiais = JSON.stringify(materiais || []);
+    const p_obs = observacao || null;
+
+    if (!p_nome) throw new Error('Nome do template é obrigatório');
+
     this.run(`
       INSERT INTO templates_kit_manual (nome_template, kit_base, materiais_json, observacao)
       VALUES (?, ?, ?, ?)
@@ -538,7 +563,13 @@ class DatabaseService {
         kit_base = excluded.kit_base,
         materiais_json = excluded.materiais_json,
         observacao = excluded.observacao
-    `, [nomeTemplate, kitBase, JSON.stringify(materiaisArray), observacao]);
+    `, [p_nome, p_base, p_materiais, p_obs]);
+    return { success: true };
+  }
+
+  deleteTemplateManual(nome_template) {
+    this.run(`DELETE FROM templates_kit_manual WHERE nome_template = ?`, [nome_template]);
+    return { success: true };
   }
 
   getTemplateManual(nomeTemplate) {
@@ -551,7 +582,16 @@ class DatabaseService {
   }
 
   getAllTemplatesManuais() {
-    return this.all('SELECT nome_template, kit_base, observacao FROM templates_kit_manual ORDER BY nome_template');
+    const templates = this.all('SELECT * FROM templates_kit_manual ORDER BY nome_template');
+    return templates.map(t => {
+      try {
+        t.materiais = t.materiais_json ? JSON.parse(t.materiais_json) : [];
+      } catch (e) {
+        console.error(`Erro parse template ${t.nome_template}:`, e);
+        t.materiais = [];
+      }
+      return t;
+    });
   }
   getAllSufixos() {
     return this.all('SELECT * FROM sufixos_contextuais');

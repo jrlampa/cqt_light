@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('api', {
   // Materials
   getAllMaterials: () => ipcRenderer.invoke('get-all-materials'),
   searchMaterials: (query) => ipcRenderer.invoke('search-materials', query),
+  getMaterialsPrices: (codes) => ipcRenderer.invoke('get-materials-prices', codes),
   upsertMaterial: (data) => ipcRenderer.invoke('upsert-material', data),
 
   // Kits
@@ -76,8 +77,8 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('get-sufixos-by-contexto', { tipoContexto, valorContexto }),
 
   // Templates Kit Manual (PADRÕES from Excel)
-  saveTemplateManual: (nome, kitBase, materiais, observacao) =>
-    ipcRenderer.invoke('save-template-manual', { nome, kitBase, materiais, observacao }),
+  saveTemplateManual: (nome_template, kit_base, materiais, observacao) =>
+    ipcRenderer.invoke('save-template-manual', { nome_template, kit_base, materiais, observacao }),
   getTemplateManual: (nome) =>
     ipcRenderer.invoke('get-template-manual', nome),
   getAllTemplatesManuais: () =>

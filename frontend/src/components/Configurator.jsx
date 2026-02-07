@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap, DollarSign } from 'lucide-react';
+import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap, DollarSign, Edit2 } from 'lucide-react';
 
 // Hooks
 import { useBudgetCalculator } from '../hooks/useBudgetCalculator';
@@ -11,6 +11,8 @@ import { MaterialList } from './MaterialList';
 import { SummaryFooter } from './SummaryFooter';
 import BudgetHistory from './BudgetHistory';
 import TemplateManager from './TemplateManager';
+import ManualKitManager from './ManualKitManager';
+import { KitResolutionModal } from './KitResolutionModal';
 import { KitDetailsModal } from './KitDetailsModal';
 import { CompanySelector } from './CompanySelector';
 import { PriceManagementModal } from './PriceManagementModal';
@@ -91,10 +93,16 @@ const Configurator = () => {
 
   const [showBudgetHistory, setShowBudgetHistory] = useState(false);
   const [showTemplateManager, setShowTemplateManager] = useState(false);
+  const [showManualKitManager, setShowManualKitManager] = useState(false);
   const [showKitDetails, setShowKitDetails] = useState(false);
   const [selectedKit, setSelectedKit] = useState(null);
   const [showPriceManagement, setShowPriceManagement] = useState(false);
   const [empresaAtiva, setEmpresaAtiva] = useState(null);
+
+  // Resolution State
+  const [showResolutionModal, setShowResolutionModal] = useState(false);
+  const [pendingResolutionKit, setPendingResolutionKit] = useState(null);
+  const [pendingResolutionMaterials, setPendingResolutionMaterials] = useState([]);
 
   // Resolution Data
   const [sufixos, setSufixos] = useState([]);
@@ -151,6 +159,13 @@ const Configurator = () => {
       templates: manualTemplates
     });
   }, [estruturas, materiaisAvulsos, condutorMT, condutorBT, sufixos, manualTemplates, calculateTotal]);
+
+  // Reload data when ManualKitManager closes
+  useEffect(() => {
+    if (!showManualKitManager && window.api) {
+      window.api.getAllTemplatesManuais().then(setManualTemplates).catch(console.error);
+    }
+  }, [showManualKitManager]);
 
 
   // --- HANDLERS ---
@@ -234,6 +249,26 @@ const Configurator = () => {
     if (!pendingItem) return;
 
     if (pendingType === 'structure') {
+      // Check for Manual Template requiring resolution
+      if (pendingItem.tipo === 'manual' && pendingItem.materiais_json) {
+        let materials = [];
+        try {
+          materials = typeof pendingItem.materiais_json === 'string'
+            ? JSON.parse(pendingItem.materiais_json)
+            : pendingItem.materiais_json;
+        } catch (e) { console.error("Error parsing materials", e); }
+
+        const hasPartials = materials.some(m => m.isPartial || (m.codigo && m.codigo.trim().endsWith('/')));
+
+        if (hasPartials) {
+          setPendingResolutionKit(pendingItem);
+          setPendingResolutionMaterials(materials);
+          setShowResolutionModal(true);
+          setShowQtyPopup(false); // Close qty, open resolution
+          return; // Stop here, wait for resolution
+        }
+      }
+
       const entry = { ...pendingItem, id: Date.now(), quantidade: qty };
       setEstruturas(prev => [entry, ...prev]);
       setStructureQuery('');
@@ -250,6 +285,26 @@ const Configurator = () => {
     }
     setShowQtyPopup(false);
     setPendingItem(null);
+  };
+
+  const handleResolutionConfirm = (resolvedMaterials) => {
+    const entry = {
+      ...pendingResolutionKit,
+      id: Date.now(),
+      quantidade: qty,
+      materiaisResolvidos: resolvedMaterials
+    };
+
+    setEstruturas(prev => [entry, ...prev]);
+    setStructureQuery('');
+    setStructureResults([]);
+    setShowStructureDropdown(false);
+    nav.focusStructure();
+
+    setShowResolutionModal(false);
+    setPendingResolutionKit(null);
+    setPendingResolutionMaterials([]);
+    setPendingItem(null); // Clear pending item finally
   };
 
   const removeStructure = (id) => setEstruturas(prev => prev.filter(e => e.id !== id));
@@ -374,6 +429,11 @@ const Configurator = () => {
           </div>
         </div>
       )}
+
+      <ManualKitManager
+        isOpen={showManualKitManager}
+        onClose={() => setShowManualKitManager(false)}
+      />
 
       {/* Left Panel */}
       <div className="w-72 flex flex-col gap-2 overflow-y-auto pr-1">
@@ -563,24 +623,35 @@ const Configurator = () => {
          */}
         {
           activeTab === 'estruturas' ? (
-            <StructureList
-              estruturas={estruturas}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              searchStructure={searchStructure}
-              structureQuery={structureQuery}
-              structureResults={structureResults}
-              showStructureDropdown={showStructureDropdown}
-              structureHighlight={nav.structureHighlight}
-              handleStructureKeyDown={handleStructureNav}
-              selectStructure={(item) => openQtyPopup(item, 'structure')}
-              removeStructure={removeStructure}
-              onKitClick={openKitDetails}
-              structureRef={nav.structureRef}
-              setStructureQuery={setStructureQuery}
-              setShowStructureDropdown={setShowStructureDropdown}
-              setStructureHighlight={nav.setStructureHighlight}
-            />
+            <div className="flex-1 flex flex-col h-full">
+              <div className="px-4 py-2 bg-gray-50 flex justify-end">
+                <button
+                  onClick={() => setShowManualKitManager(true)}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition border border-transparent hover:border-blue-100 flex items-center gap-1"
+                >
+                  <Edit2 className="w-3 h-3" />
+                  Gerenciar Kits
+                </button>
+              </div>
+              <StructureList
+                estruturas={estruturas}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                searchStructure={searchStructure}
+                structureQuery={structureQuery}
+                structureResults={structureResults}
+                showStructureDropdown={showStructureDropdown}
+                structureHighlight={nav.structureHighlight}
+                handleStructureKeyDown={handleStructureNav}
+                selectStructure={(item) => openQtyPopup(item, 'structure')}
+                removeStructure={removeStructure}
+                onKitClick={openKitDetails}
+                structureRef={nav.structureRef}
+                setStructureQuery={setStructureQuery}
+                setShowStructureDropdown={setShowStructureDropdown}
+                setStructureHighlight={nav.setStructureHighlight}
+              />
+            </div>
           ) : (
             <MaterialList
               materiaisAvulsos={materiaisAvulsos}
@@ -652,6 +723,14 @@ const Configurator = () => {
         isOpen={showPriceManagement}
         onClose={() => setShowPriceManagement(false)}
         empresaAtiva={empresaAtiva}
+      />
+
+      <KitResolutionModal
+        isOpen={showResolutionModal}
+        onClose={() => setShowResolutionModal(false)}
+        kit={pendingResolutionKit}
+        materials={pendingResolutionMaterials}
+        onConfirm={handleResolutionConfirm}
       />
     </div>
   );

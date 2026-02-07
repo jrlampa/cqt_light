@@ -74,26 +74,39 @@ export function useBudgetCalculator() {
             for (let i = 0; i < count; i++) kitList.push(code);
           }
 
-          // 2. Add extra materials
-          if (manualTpl.materiais_json) { // it comes as string from DB usually, but preloaded might be parsed
-            let extras = [];
+          // 2. Add extra materials (Prioritize Resolved Instance Data)
+          let extras = [];
+
+          if (e.materiaisResolvidos) {
+            extras = e.materiaisResolvidos;
+          } else if (manualTpl.materiais_json) {
             try {
               extras = typeof manualTpl.materiais_json === 'string'
                 ? JSON.parse(manualTpl.materiais_json)
                 : manualTpl.materiais_json || [];
-            } catch (e) { extras = []; }
+            } catch (err) { extras = []; }
+          }
 
-            extras.forEach(item => {
+          extras.forEach(item => {
+            templateExtras.push({
+              ...item,
+              quantidade: (item.quantidade || 1) * count, // Multiply by templateqty
+              origem: `Template ${code}`
+            });
+          });
+        } else {
+          // Normal Kit or Manual Kit not found in global templates (fallback)
+          if (e.materiaisResolvidos) {
+            e.materiaisResolvidos.forEach(item => {
               templateExtras.push({
                 ...item,
-                quantidade: (item.quantidade || 1) * count, // Multiply by templateqty
+                quantidade: (item.quantidade || 1) * count,
                 origem: `Template ${code}`
               });
             });
+          } else {
+            for (let i = 0; i < count; i++) kitList.push(code);
           }
-        } else {
-          // Normal Kit
-          for (let i = 0; i < count; i++) kitList.push(code);
         }
       });
 
@@ -195,8 +208,30 @@ export function useBudgetCalculator() {
       // assuming they might be covered by loose materials logic or just displayed with 0 price for now. 
       // TODO: Fetch prices for manual template extras.
 
+      // Fetch prices for template extras (Resolved or Standard)
+      const extraCodes = [...new Set(templateExtras.map(e => e.codigo).filter(Boolean))];
+      if (extraCodes.length > 0) {
+        try {
+          const prices = await window.api.getMaterialsPrices(extraCodes);
+          const priceMap = new Map();
+          prices.forEach(p => priceMap.set(p.sap, p));
+
+          // Update templateExtras with fetched info
+          templateExtras.forEach(item => {
+            const info = priceMap.get(item.codigo);
+            if (info) {
+              item.preco_unitario = info.preco_unitario;
+              // Fill details if missing
+              if (!item.descricao) item.descricao = info.descricao;
+              if (!item.unidade) item.unidade = info.unidade;
+            }
+          });
+        } catch (e) { console.error("Error fetching extra prices", e); }
+      }
+
+      // Add Template Extras to consolidated map
       templateExtras.forEach(item => {
-        addMaterialToMap(item.codigo, item.quantidade, 0, item.descricao, item.origem);
+        addMaterialToMap(item.codigo, item.quantidade, item.preco_unitario || 0, item.descricao, item.origem);
       });
 
       // Add loose materials (excluding postes)

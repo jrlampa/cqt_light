@@ -83,7 +83,12 @@ async function main() {
     // Save to DB
     if (materials.length > 0) {
       // console.log(`Saving template: ${templateName} (Base: ${kitBase}) with ${materials.length} extras`);
-      Database.saveTemplateManual(templateName, kitBase, materials, `Imported from ${SHEET_NAME}`);
+      Database.saveTemplateManual({
+        nome_template: templateName,
+        kit_base: kitBase,
+        materiais: materials,
+        observacao: `Imported from ${SHEET_NAME}`
+      });
       templatesCount++;
     }
   }

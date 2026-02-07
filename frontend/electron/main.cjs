@@ -50,9 +50,8 @@ ipcMain.handle('get-custo-total', (_, kitCodes) => db.getCustoTotal(kitCodes));
 // Materials
 ipcMain.handle('get-all-materials', () => db.getAllMaterials());
 ipcMain.handle('search-materials', (_, query) => db.searchMaterials(query));
-ipcMain.handle('upsert-material', (_, { sap, descricao, unidade, preco_unitario }) =>
-  db.upsertMaterial(sap, descricao, unidade, preco_unitario));
-
+ipcMain.handle('get-materials-prices', (_, codes) => db.getMaterialsPrices(codes));
+ipcMain.handle('upsert-material', (_, m) => db.upsertMaterial(m.sap, m.descricao, m.unidade, m.preco_unitario));
 // Kits
 ipcMain.handle('get-all-kits', () => db.getAllKits());
 ipcMain.handle('search-kits', (_, query) => db.searchKits(query));
@@ -80,11 +79,10 @@ ipcMain.handle('get-templates', () => db.getTemplates());
 ipcMain.handle('get-template', (_, id) => db.getTemplate(id));
 ipcMain.handle('delete-template', (_, id) => db.deleteTemplate(id));
 
-ipcMain.handle('delete-kit', (_, codigo_kit) =>
-  db.deleteKit(codigo_kit));
+
 
 // Kit Composition
-ipcMain.handle('get-kit-composition', (_, codigoKit) => db.getKitComposition(codigoKit));
+
 ipcMain.handle('add-material-to-kit', (_, { codigoKit, sap, quantidade }) =>
   db.addMaterialToKit(codigoKit, sap, quantidade));
 ipcMain.handle('update-kit-material-qty', (_, { id, quantidade }) => db.updateKitMaterialQty(id, quantidade));
@@ -135,11 +133,14 @@ ipcMain.handle('get-sufixos-by-contexto', (_, { tipoContexto, valorContexto }) =
   db.getSufixosByContexto(tipoContexto, valorContexto));
 
 // TEMPLATES KIT MANUAL
-ipcMain.handle('save-template-manual', (_, { nome, kitBase, materiais, observacao }) =>
-  db.saveTemplateManual(nome, kitBase, materiais, observacao));
+ipcMain.handle('save-template-manual', (_, templateData) =>
+  db.saveTemplateManual(templateData));
 ipcMain.handle('get-template-manual', (_, nome) =>
   db.getTemplateManual(nome));
 ipcMain.handle('get-all-templates-manuais', () =>
   db.getAllTemplatesManuais());
+ipcMain.handle('delete-template-manual', async (_, nome_template) => {
+  return db.deleteTemplateManual(nome_template);
+});
 ipcMain.handle('get-all-sufixos', () =>
   db.getAllSufixos());

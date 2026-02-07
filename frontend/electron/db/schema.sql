@@ -135,3 +135,5 @@ CREATE TABLE IF NOT EXISTS templates_kit_manual (
   observacao TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_templates_manual_nome ON templates_kit_manual(nome_template);
+CREATE INDEX IF NOT EXISTS idx_templates_manual_base ON templates_kit_manual(kit_base);
+CREATE INDEX IF NOT EXISTS idx_sufixos_sufixo ON sufixos_contextuais(sufixo);
