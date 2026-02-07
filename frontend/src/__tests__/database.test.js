@@ -32,7 +32,18 @@ describe('Database Service Tests', () => {
       getOrcamento: (id) => Promise.resolve({
         id, nome: 'Orçamento Teste', total: 1000, dados_json: JSON.stringify({ itens: [] })
       }),
-      deleteOrcamento: (id) => Promise.resolve()
+      getOrcamento: (id) => Promise.resolve({
+        id, nome: 'Orçamento Teste', total: 1000, dados_json: JSON.stringify({ itens: [] })
+      }),
+      deleteOrcamento: (id) => Promise.resolve(),
+      saveTemplate: (nome, descricao, dados) => Promise.resolve({ success: true }),
+      getTemplates: () => Promise.resolve([
+        { id: 1, nome: 'Template Teste', descricao: 'Desc', is_default: 0 }
+      ]),
+      getTemplate: (id) => Promise.resolve({
+        id, nome: 'Template Teste', dados_json: JSON.stringify({ itens: [] })
+      }),
+      deleteTemplate: (id) => Promise.resolve()
     };
   });
 
@@ -89,6 +100,27 @@ describe('Database Service Tests', () => {
       expect(budget).toBeDefined();
       expect(budget.id).toBe(1);
       expect(budget.dados_json).toBeDefined();
+    });
+  });
+
+  describe('Template Management Tests', () => {
+    it('should save a new template', async () => {
+      const tpl = { nome: 'Modelo Padrão', descricao: 'Teste', dados: {} };
+      const result = await db.saveTemplate(tpl.nome, tpl.descricao, tpl.dados);
+      expect(result.success).toBe(true);
+    });
+
+    it('should list templates', async () => {
+      const templates = await db.getTemplates();
+      expect(templates).toBeDefined();
+      expect(templates.length).toBeGreaterThan(0);
+      expect(templates[0].nome).toBeDefined();
+    });
+
+    it('should load template details', async () => {
+      const tpl = await db.getTemplate(1);
+      expect(tpl).toBeDefined();
+      expect(tpl.dados_json).toBeDefined();
     });
   });
 });

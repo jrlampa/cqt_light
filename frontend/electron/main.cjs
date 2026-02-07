@@ -71,6 +71,14 @@ ipcMain.handle('save-orcamento', (_, { nome, total, dados }) =>
 ipcMain.handle('get-orcamentos', () => db.getOrcamentos());
 ipcMain.handle('get-orcamento', (_, id) => db.getOrcamento(id));
 ipcMain.handle('delete-orcamento', (_, id) => db.deleteOrcamento(id));
+
+// Templates
+ipcMain.handle('save-template', (_, { nome, descricao, dados }) =>
+  db.saveTemplate(nome, descricao, dados));
+ipcMain.handle('get-templates', () => db.getTemplates());
+ipcMain.handle('get-template', (_, id) => db.getTemplate(id));
+ipcMain.handle('delete-template', (_, id) => db.deleteTemplate(id));
+
 ipcMain.handle('delete-kit', (_, codigo_kit) =>
   db.deleteKit(codigo_kit));
 

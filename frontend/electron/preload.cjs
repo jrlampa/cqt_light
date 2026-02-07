@@ -24,6 +24,12 @@ contextBridge.exposeInMainWorld('api', {
   getOrcamento: (id) => ipcRenderer.invoke('get-orcamento', id),
   deleteOrcamento: (id) => ipcRenderer.invoke('delete-orcamento', id),
 
+  // Templates
+  saveTemplate: (data) => ipcRenderer.invoke('save-template', data),
+  getTemplates: () => ipcRenderer.invoke('get-templates'),
+  getTemplate: (id) => ipcRenderer.invoke('get-template', id),
+  deleteTemplate: (id) => ipcRenderer.invoke('delete-template', id),
+
   // Kit Composition
   getKitComposition: (codigoKit) => ipcRenderer.invoke('get-kit-composition', codigoKit),
   addMaterialToKit: (data) => ipcRenderer.invoke('add-material-to-kit', data),

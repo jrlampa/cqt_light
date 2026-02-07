@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench, Save, FileText, Trash2, Pencil, Download, FolderOpen } from 'lucide-react';
+import { Search, Package, Layers, X, Calculator, Zap, Plus, ChevronDown, Wrench, Save, FileText, Trash2, Pencil, Download, FolderOpen, LayoutTemplate } from 'lucide-react';
 import { exportBudgetToExcel } from '../utils/excelExporter';
 import BudgetHistory from './BudgetHistory';
+import TemplateManager from './TemplateManager';
 
 // Conductor options
 const CONDUTORES_MT = [
@@ -100,6 +101,18 @@ const Configurator = () => {
     setEstruturas(data.estruturas || []);
     setMateriaisAvulsos(data.materiaisAvulsos || []);
     alert('✅ Orçamento carregado com sucesso! Clique em "Calcular" para atualizar os valores.');
+  };
+
+  // Template Manager
+  const [showTemplateManager, setShowTemplateManager] = useState(false);
+
+  const loadTemplate = (data) => {
+    if (!data) return;
+    setCondutorMT(data.condutorMT);
+    setCondutorBT(data.condutorBT);
+    setEstruturas(data.estruturas || []);
+    setMateriaisAvulsos(data.materiaisAvulsos || []);
+    // Templates might not have full prices, but should structure the project
   };
 
   // Global shortcuts
@@ -510,10 +523,17 @@ const Configurator = () => {
             <h2 className="font-bold text-gray-800 text-sm">Configurador</h2>
             <button
               onClick={() => setShowBudgetHistory(true)}
-              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-blue-600 transition ml-2"
+              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-blue-600 transition ml-1"
               title="Histórico de Orçamentos"
             >
               <FolderOpen className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowTemplateManager(true)}
+              className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-purple-600 transition ml-1"
+              title="Gerenciar Templates"
+            >
+              <LayoutTemplate className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -875,6 +895,19 @@ const Configurator = () => {
         currentData={{
           materiais: custoData.materiais,
           totalGeral: custoData.totalGeral,
+          condutorMT,
+          condutorBT,
+          estruturas,
+          materiaisAvulsos
+        }}
+      />
+
+      {/* Template Manager Modal */}
+      <TemplateManager
+        isOpen={showTemplateManager}
+        onClose={() => setShowTemplateManager(false)}
+        onApply={loadTemplate}
+        currentData={{
           condutorMT,
           condutorBT,
           estruturas,

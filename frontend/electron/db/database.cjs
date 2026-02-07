@@ -279,6 +279,42 @@ class DatabaseService {
   deleteOrcamento(id) {
     this.run('DELETE FROM orcamentos WHERE id = ?', [id]);
   }
+
+  // ========== TEMPLATES (Project Templates) ==========
+  saveTemplate(nome, descricao, dados) {
+    try {
+      this.run(`
+        INSERT INTO templates (nome, descricao, dados_json)
+        VALUES (?, ?, ?)
+      `, [nome, descricao, JSON.stringify(dados)]);
+      return { success: true };
+    } catch (e) {
+      if (e.message.includes('UNIQUE constraint failed')) {
+        throw new Error('Já existe um template com este nome.');
+      }
+      throw e;
+    }
+  }
+
+  getTemplates() {
+    return this.all('SELECT id, nome, descricao, is_default FROM templates ORDER BY nome');
+  }
+
+  getTemplate(id) {
+    const tpl = this.get('SELECT * FROM templates WHERE id = ?', [id]);
+    if (tpl) {
+      try {
+        tpl.dados = JSON.parse(tpl.dados_json);
+      } catch (e) {
+        tpl.dados = null;
+      }
+    }
+    return tpl;
+  }
+
+  deleteTemplate(id) {
+    this.run('DELETE FROM templates WHERE id = ?', [id]);
+  }
 }
 
 module.exports = new DatabaseService();

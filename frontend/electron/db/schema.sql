@@ -50,3 +50,13 @@ CREATE TABLE IF NOT EXISTS orcamentos (
   dados_json TEXT NOT NULL -- Full state snapshot
 );
 CREATE INDEX IF NOT EXISTS idx_orcamentos_data ON orcamentos(data_criacao DESC);
+-- 6. templates (Project Templates)
+CREATE TABLE IF NOT EXISTS templates (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL UNIQUE,
+  descricao TEXT,
+  dados_json TEXT NOT NULL,
+  -- Configuration snapshot
+  is_default BOOLEAN DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_templates_nome ON templates(nome);
