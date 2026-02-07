@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Upload, TrendingUp, History, FileSpreadsheet, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { parseExcelPrecos, validateImportPreview } from '../utils/excelPriceParser';
 
 export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
   const [activeTab, setActiveTab] = useState('import');
@@ -32,34 +33,36 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
 
     setImportFile(file);
 
-    // TODO: Parse Excel file and show preview
-    // Por enquanto, simulação
-    setImportPreview({
-      totalLinhas: 150,
-      novos: 20,
-      atualizacoes: 130,
-      preview: [
-        { sap: '12345', descricao: 'Material Exemplo', preco: 25.50 },
-        { sap: '67890', descricao: 'Outro Material', preco: 18.75 }
-      ]
-    });
+    try {
+      // Parse Excel file
+      const precos = await parseExcelPrecos(file);
+
+      // Get existing SAPs from DB
+      const allMaterials = await window.api.getAllMaterials();
+      const existingSaps = allMaterials.map(m => m.sap);
+
+      // Validate and create preview
+      const preview = validateImportPreview(precos, existingSaps);
+      setImportPreview({
+        ...preview,
+        precosData: precos // Store full data for import
+      });
+    } catch (error) {
+      console.error('Erro ao processar Excel:', error);
+      alert(`❌ Erro ao processar arquivo: ${error.message}`);
+      setImportFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleImport = async () => {
-    if (!empresaAtiva || !importFile) return;
+    if (!empresaAtiva || !importFile || !importPreview) return;
 
     setImporting(true);
     try {
-      // TODO: Implementar parse real do Excel
-      // Por enquanto, mock
-      const mockPrecos = [
-        { sap: '12345', preco_unitario: 25.50 },
-        { sap: '67890', preco_unitario: 18.75 }
-      ];
-
       const contador = await window.api.importPrecosFromArray(
         empresaAtiva.id,
-        mockPrecos,
+        importPreview.precosData,
         'importacao'
       );
 
@@ -140,8 +143,8 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
             <button
               onClick={() => setActiveTab('import')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${activeTab === 'import'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:bg-white/30'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:bg-white/30'
                 }`}
             >
               <Upload className="w-4 h-4" />
@@ -150,8 +153,8 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
             <button
               onClick={() => setActiveTab('reajuste')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${activeTab === 'reajuste'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:bg-white/30'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:bg-white/30'
                 }`}
             >
               <TrendingUp className="w-4 h-4" />
@@ -160,8 +163,8 @@ export const PriceManagementModal = ({ isOpen, onClose, empresaAtiva }) => {
             <button
               onClick={() => setActiveTab('historico')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${activeTab === 'historico'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:bg-white/30'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:bg-white/30'
                 }`}
             >
               <History className="w-4 h-4" />
