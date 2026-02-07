@@ -60,3 +60,47 @@ CREATE TABLE IF NOT EXISTS templates (
   is_default BOOLEAN DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_templates_nome ON templates(nome);
+-- 7. empresas (Multi-Company Support)
+CREATE TABLE IF NOT EXISTS empresas (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL,
+  contrato TEXT,
+  regional TEXT,
+  ativa BOOLEAN DEFAULT 1,
+  data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_empresas_nome ON empresas(nome);
+-- 8. precos_empresa (Company-Specific Prices)
+CREATE TABLE IF NOT EXISTS precos_empresa (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  empresa_id INTEGER NOT NULL,
+  sap TEXT NOT NULL,
+  preco_unitario REAL NOT NULL DEFAULT 0,
+  data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+  origem TEXT DEFAULT 'manual',
+  -- 'importacao', 'manual', 'reajuste', 'sap'
+  FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
+  FOREIGN KEY (sap) REFERENCES materiais(sap) ON DELETE CASCADE,
+  UNIQUE(empresa_id, sap)
+);
+CREATE INDEX IF NOT EXISTS idx_precos_empresa_id ON precos_empresa(empresa_id);
+CREATE INDEX IF NOT EXISTS idx_precos_sap ON precos_empresa(sap);
+-- 9. historico_precos (Price Change History)
+CREATE TABLE IF NOT EXISTS historico_precos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  empresa_id INTEGER,
+  sap TEXT,
+  preco_anterior REAL,
+  preco_novo REAL,
+  tipo_alteracao TEXT,
+  -- 'importacao', 'reajuste_percentual', 'manual', 'inicial'
+  percentual REAL,
+  observacao TEXT,
+  data_alteracao DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE
+  SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_historico_empresa ON historico_precos(empresa_id);
+CREATE INDEX IF NOT EXISTS idx_historico_data ON historico_precos(data_alteracao DESC);
+-- 10. configuracao (App Configuration)
+CREATE TABLE IF NOT EXISTS configuracao (chave TEXT PRIMARY KEY, valor TEXT);

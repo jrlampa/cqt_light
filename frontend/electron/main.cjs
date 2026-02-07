@@ -98,3 +98,29 @@ ipcMain.handle('upsert-servico', (_, { codigo, descricao, precoBruto }) =>
 
 // Stats
 ipcMain.handle('get-stats', () => db.getStats());
+
+// EMPRESAS & PREÇOS (Multi-Company)
+ipcMain.handle('get-all-empresas', () => db.getAllEmpresas());
+ipcMain.handle('get-empresa', (_, id) => db.getEmpresa(id));
+ipcMain.handle('create-empresa', (_, { nome, contrato, regional }) =>
+  db.createEmpresa(nome, contrato, regional));
+ipcMain.handle('update-empresa', (_, { id, nome, contrato, regional }) =>
+  db.updateEmpresa(id, nome, contrato, regional));
+ipcMain.handle('delete-empresa', (_, id) => db.deleteEmpresa(id));
+
+ipcMain.handle('get-empresa-ativa', () => db.getEmpresaAtiva());
+ipcMain.handle('set-empresa-ativa', (_, empresaId) => db.setEmpresaAtiva(empresaId));
+
+ipcMain.handle('get-preco-by-empresa', (_, { empresaId, sap }) =>
+  db.getPrecoByEmpresa(empresaId, sap));
+ipcMain.handle('get-all-precos-by-empresa', (_, empresaId) =>
+  db.getAllPrecosByEmpresa(empresaId));
+ipcMain.handle('set-preco-empresa', (_, { empresaId, sap, precoNovo, origem }) =>
+  db.setPrecoEmpresa(empresaId, sap, precoNovo, origem));
+ipcMain.handle('import-precos-from-array', (_, { empresaId, precosArray, origem }) =>
+  db.importPrecosFromArray(empresaId, precosArray, origem));
+ipcMain.handle('reajuste-em-massa', (_, { empresaId, percentual, filtroSaps }) =>
+  db.reajusteEmMassa(empresaId, percentual, filtroSaps));
+ipcMain.handle('get-historico-precos', (_, { empresaId, limit }) =>
+  db.getHistoricoPrecos(empresaId, limit));
+

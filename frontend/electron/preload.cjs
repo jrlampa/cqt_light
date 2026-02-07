@@ -43,4 +43,25 @@ contextBridge.exposeInMainWorld('api', {
 
   // Stats
   getStats: () => ipcRenderer.invoke('get-stats'),
+
+  // Empresas & Preços (Multi-Company)
+  getAllEmpresas: () => ipcRenderer.invoke('get-all-empresas'),
+  getEmpresa: (id) => ipcRenderer.invoke('get-empresa', id),
+  createEmpresa: (data) => ipcRenderer.invoke('create-empresa', data),
+  updateEmpresa: (data) => ipcRenderer.invoke('update-empresa', data),
+  deleteEmpresa: (id) => ipcRenderer.invoke('delete-empresa', id),
+
+  getEmpresaAtiva: () => ipcRenderer.invoke('get-empresa-ativa'),
+  setEmpresaAtiva: (empresaId) => ipcRenderer.invoke('set-empresa-ativa', empresaId),
+
+  getPrecoByEmpresa: (empresaId, sap) => ipcRenderer.invoke('get-preco-by-empresa', { empresaId, sap }),
+  getAllPrecosByEmpresa: (empresaId) => ipcRenderer.invoke('get-all-precos-by-empresa', empresaId),
+  setPrecoEmpresa: (empresaId, sap, precoNovo, origem) =>
+    ipcRenderer.invoke('set-preco-empresa', { empresaId, sap, precoNovo, origem }),
+  importPrecosFromArray: (empresaId, precosArray, origem) =>
+    ipcRenderer.invoke('import-precos-from-array', { empresaId, precosArray, origem }),
+  reajusteEmMassa: (empresaId, percentual, filtroSaps) =>
+    ipcRenderer.invoke('reajuste-em-massa', { empresaId, percentual, filtroSaps }),
+  getHistoricoPrecos: (empresaId, limit) =>
+    ipcRenderer.invoke('get-historico-precos', { empresaId, limit }),
 });

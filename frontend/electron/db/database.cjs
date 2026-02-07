@@ -315,6 +315,166 @@ class DatabaseService {
   deleteTemplate(id) {
     this.run('DELETE FROM templates WHERE id = ?', [id]);
   }
+
+  // ============================================
+  // EMPRESAS (Multi-Company Management)
+  // ============================= ==============
+
+  getAllEmpresas() {
+    return this.all('SELECT * FROM empresas WHERE ativa = 1 ORDER BY nome');
+  }
+
+  getEmpresa(id) {
+    return this.get('SELECT * FROM empresas WHERE id = ?', [id]);
+  }
+
+  createEmpresa(nome, contrato, regional) {
+    this.run(
+      'INSERT INTO empresas (nome, contrato, regional) VALUES (?, ?, ?)',
+      [nome, contrato, regional]
+    );
+    return this.get('SELECT last_insert_rowid() as id').id;
+  }
+
+  updateEmpresa(id, nome, contrato, regional) {
+    this.run(
+      'UPDATE empresas SET nome = ?, contrato = ?, regional = ? WHERE id = ?',
+      [nome, contrato, regional, id]
+    );
+  }
+
+  deleteEmpresa(id) {
+    this.run('UPDATE empresas SET ativa = 0 WHERE id = ?', [id]);
+  }
+
+  // CONFIGURAÇÃO (App Settings)
+
+  getConfig(chave) {
+    const config = this.get('SELECT valor FROM configuracao WHERE chave = ?', [chave]);
+    return config ? config.valor : null;
+  }
+
+  setConfig(chave, valor) {
+    this.run(
+      'INSERT OR REPLACE INTO configuracao (chave, valor) VALUES (?, ?)',
+      [chave, valor]
+    );
+  }
+
+  getEmpresaAtiva() {
+    const empresaId = this.getConfig('empresa_ativa_id');
+    if (!empresaId) return null;
+    return this.getEmpresa(parseInt(empresaId));
+  }
+
+  setEmpresaAtiva(empresaId) {
+    this.setConfig('empresa_ativa_id', empresaId.toString());
+  }
+
+  // PREÇOS POR EMPRESA
+
+  getPrecoByEmpresa(empresaId, sap) {
+    const preco = this.get(
+      'SELECT preco_unitario FROM precos_empresa WHERE empresa_id = ? AND sap = ?',
+      [empresaId, sap]
+    );
+
+    // Fallback para tabela materiais se não encontrar preço específico
+    if (!preco) {
+      const material = this.get('SELECT preco_unitario FROM materiais WHERE sap = ?', [sap]);
+      return material ? material.preco_unitario : 0;
+    }
+
+    return preco.preco_unitario;
+  }
+
+  getAllPrecosByEmpresa(empresaId) {
+    return this.all(`
+      SELECT pe.sap, m.descricao, m.unidade, pe.preco_unitario, pe.data_atualizacao, pe.origem
+      FROM precos_empresa pe
+      LEFT JOIN materiais m ON pe.sap = m.sap
+      WHERE pe.empresa_id = ?
+      ORDER BY m.descricao
+    `, [empresaId]);
+  }
+
+  setPrecoEmpresa(empresaId, sap, precoNovo, origem = 'manual') {
+    // Buscar preço anterior para histórico
+    const precoAnterior = this.getPrecoByEmpresa(empresaId, sap);
+
+    // Inserir ou atualizar preço
+    this.run(`
+      INSERT INTO precos_empresa (empresa_id, sap, preco_unitario, origem, data_atualizacao)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(empresa_id, sap) DO UPDATE SET
+        preco_unitario = excluded.preco_unitario,
+        origem = excluded.origem,
+        data_atualizacao = CURRENT_TIMESTAMP
+    `, [empresaId, sap, precoNovo, origem]);
+
+    // Registrar no histórico
+    this.run(`
+      INSERT INTO historico_precos (empresa_id, sap, preco_anterior, preco_novo, tipo_alteracao)
+      VALUES (?, ?, ?, ?, ?)
+    `, [empresaId, sap, precoAnterior, precoNovo, origem]);
+  }
+
+  importPrecosFromArray(empresaId, precosArray, origem = 'importacao') {
+    let contador = 0;
+
+    precosArray.forEach(item => {
+      if (item.sap && item.preco_unitario !== undefined) {
+        this.setPrecoEmpresa(empresaId, item.sap, item.preco_unitario, origem);
+        contador++;
+      }
+    });
+
+    return contador;
+  }
+
+  reajusteEmMassa(empresaId, percentual, filtroSaps = null) {
+    let query = `SELECT sap, preco_unitario FROM precos_empresa WHERE empresa_id = ?`;
+    let params = [empresaId];
+
+    if (filtroSaps && filtroSaps.length > 0) {
+      const placeholders = filtroSaps.map(() => '?').join(',');
+      query += ` AND sap IN (${placeholders})`;
+      params = params.concat(filtroSaps);
+    }
+
+    const precos = this.all(query, params);
+    let contador = 0;
+
+    precos.forEach(item => {
+      const novoPreco = item.preco_unitario * (1 + percentual / 100);
+      this.run(`
+        UPDATE precos_empresa 
+        SET preco_unitario = ?, origem = 'reajuste', data_atualizacao = CURRENT_TIMESTAMP
+        WHERE empresa_id = ? AND sap = ?
+      `, [novoPreco, empresaId, item.sap]);
+
+      // Histórico
+      this.run(`
+        INSERT INTO historico_precos (empresa_id, sap, preco_anterior, preco_novo, tipo_alteracao, percentual)
+        VALUES (?, ?, ?, ?, 'reajuste_percentual', ?)
+      `, [empresaId, item.sap, item.preco_unitario, novoPreco, percentual]);
+
+      contador++;
+    });
+
+    return contador;
+  }
+
+  getHistoricoPrecos(empresaId, limit = 100) {
+    return this.all(`
+      SELECT h.*, m.descricao
+      FROM historico_precos h
+      LEFT JOIN materiais m ON h.sap = m.sap
+      WHERE h.empresa_id = ?
+      ORDER BY h.data_alteracao DESC
+      LIMIT ?
+    `, [empresaId, limit]);
+  }
 }
 
 module.exports = new DatabaseService();
