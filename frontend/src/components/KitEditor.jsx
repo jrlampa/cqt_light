@@ -17,6 +17,13 @@ const KitEditor = () => {
   const [newKitCode, setNewKitCode] = useState('');
   const [newKitDesc, setNewKitDesc] = useState('');
 
+  // Edit modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editKitDesc, setEditKitDesc] = useState('');
+
+  // Delete modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   // Load persisted state
   useEffect(() => {
     const saved = localStorage.getItem('kitEditor_state');
@@ -119,6 +126,33 @@ const KitEditor = () => {
     }
   };
 
+  // Edit kit handler
+  const handleEditKit = async () => {
+    if (!window.api || !selectedKit || !editKitDesc.trim()) return;
+    try {
+      await window.api.updateKitMetadata({ codigo_kit: selectedKit.codigo_kit, descricao_kit: editKitDesc });
+      setShowEditModal(false);
+      setSelectedKit({ ...selectedKit, descricao_kit: editKitDesc });
+      setKits(prev => prev.map(k => k.codigo_kit === selectedKit.codigo_kit ? { ...k, descricao_kit: editKitDesc } : k));
+    } catch (err) {
+      alert('Erro ao editar kit: ' + err.message);
+    }
+  };
+
+  // Delete kit handler
+  const handleDeleteKit = async () => {
+    if (!window.api || !selectedKit) return;
+    try {
+      await window.api.deleteKit(selectedKit.codigo_kit);
+      setShowDeleteModal(false);
+      setSelectedKit(null);
+      setComposition([]);
+      await loadKits();
+    } catch (err) {
+      alert('Erro ao excluir kit: ' + err.message);
+    }
+  };
+
   // Calculate kit total
   const kitTotal = composition.reduce((sum, c) => sum + (c.subtotal || 0), 0);
 
@@ -156,6 +190,66 @@ const KitEditor = () => {
             <div className="flex gap-2 mt-6">
               <button onClick={() => setShowCreateModal(false)} className="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">Cancelar</button>
               <button onClick={handleCreateKit} disabled={!newKitCode.trim() || !newKitDesc.trim()} className="flex-1 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed font-semibold">Criar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && selectedKit && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
+          <div className="bg-white rounded-2xl p-6 w-96 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Edit2 className="w-5 h-5 text-blue-500" /> Editar Kit
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Código do Kit</label>
+                <input
+                  type="text"
+                  value={selectedKit.codigo_kit}
+                  disabled
+                  className="w-full px-3 py-2 border rounded-lg font-mono bg-gray-100 text-gray-500"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Descrição</label>
+                <input
+                  type="text"
+                  value={editKitDesc}
+                  onChange={(e) => setEditKitDesc(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <button onClick={() => setShowEditModal(false)} className="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">Cancelar</button>
+              <button onClick={handleEditKit} disabled={!editKitDesc.trim()} className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed font-semibold">Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {showDeleteModal && selectedKit && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowDeleteModal(false)}>
+          <div className="bg-white rounded-2xl p-6 w-96 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+              <Trash2 className="w-5 h-5" /> Excluir Kit
+            </h3>
+            <p className="text-gray-700 mb-3">Tem certeza que deseja excluir o kit <span className="font-mono font-bold text-orange-600">{selectedKit.codigo_kit}</span>?</p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-yellow-800">⚠️ Esta ação <strong>não pode ser desfeita</strong>.</p>
+              {composition.length > 0 && (
+                <p className="text-sm text-yellow-800 mt-1">
+                  {composition.length} {composition.length === 1 ? 'material será removido' : 'materiais serão removidos'} deste kit.
+                </p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowDeleteModal(false)} className="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">Cancelar</button>
+              <button onClick={handleDeleteKit} className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-semibold">Excluir</button>
             </div>
           </div>
         </div>
@@ -212,15 +306,31 @@ const KitEditor = () => {
             <>
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <div>
+                  <div className="flex-1">
                     <span className="font-mono text-xl font-bold text-orange-600">{selectedKit.codigo_kit}</span>
                     <p className="text-gray-600">{selectedKit.descricao_kit}</p>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs text-gray-500 uppercase">Custo do Kit</span>
-                    <p className="text-xl font-bold text-gray-800">
-                      R$ {kitTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => { setEditKitDesc(selectedKit.descricao_kit); setShowEditModal(true); }}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                      title="Editar descrição"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                      title="Excluir kit"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <div className="text-right ml-4">
+                      <span className="text-xs text-gray-500 uppercase">Custo do Kit</span>
+                      <p className="text-xl font-bold text-gray-800">
+                        R$ {kitTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
