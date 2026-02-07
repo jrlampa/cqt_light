@@ -271,7 +271,7 @@ const Configurator = () => {
           <div className="bg-white rounded-2xl p-6 shadow-2xl w-80" onClick={e => e.stopPropagation()}>
             <h3 className="font-bold text-lg mb-2">Quantidade</h3>
             <p className="text-sm text-gray-600 mb-4">
-              <span className={`font - mono font - bold ${pendingType === 'structure' ? 'text-orange-600' : 'text-blue-600'} `}>
+              <span className={`font-mono font-bold ${pendingType === 'structure' ? 'text-orange-600' : 'text-blue-600'}`}>
                 {pendingType === 'structure' ? pendingItem.codigo_kit : pendingItem.sap}
               </span>
               <br />
@@ -322,25 +322,25 @@ const Configurator = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           <button
             onClick={clearAll}
             disabled={totalKits === 0 && totalMats === 0}
-            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <Trash2 className="w-3 h-3" /> Limpar
           </button>
           <button
             onClick={() => alert('Salvar como Kit - Em breve!')}
             disabled={totalKits === 0 && totalMats === 0}
-            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <Save className="w-3 h-3" /> Kit
           </button>
           <button
             onClick={() => alert('Relatório PDF - Em breve!')}
             disabled={totalKits === 0 && totalMats === 0}
-            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <FileText className="w-3 h-3" /> Relatório
           </button>
@@ -350,7 +350,7 @@ const Configurator = () => {
         {custoData.materiais.length > 0 && (
           <button
             onClick={() => exportMaterialsToExcel(custoData.materiais, custoData)}
-            className="w-full flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
           >
             <Download className="w-3 h-3" /> Exportar Excel
           </button>
@@ -358,9 +358,9 @@ const Configurator = () => {
 
         {/* Poste */}
         <div className="relative">
-          <label className="text-[10px] text-gray-500 uppercase font-bold">Poste (adiciona aos materiais)</label>
+          <label className="text-xs text-gray-500 uppercase font-bold">Poste (adiciona aos materiais)</label>
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               ref={nav.posteInputRef}
               type="text"
@@ -368,7 +368,7 @@ const Configurator = () => {
               onChange={(e) => searchPoste(e.target.value)}
               onKeyDown={handlePosteNav}
               placeholder="Buscar poste..."
-              className="w-full pl-7 pr-2 py-1.5 rounded-lg border border-gray-200 text-xs"
+              className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-100 outline-none transition"
             />
           </div>
           {showPosteDropdown && posteResults.length > 0 && (
@@ -377,7 +377,7 @@ const Configurator = () => {
                 <button
                   key={mat.sap}
                   onMouseDown={(e) => { e.preventDefault(); selectPoste(mat); }}
-                  className={`w - full text - left px - 2 py - 1.5 text - xs flex gap - 2 ${idx === nav.posteHighlight ? 'bg-green-100' : 'hover:bg-gray-50'} `}
+                  className={`w-full text-left px-2 py-1.5 text-xs flex gap-2 ${idx === nav.posteHighlight ? 'bg-green-100' : 'hover:bg-gray-50'}`}
                 >
                   <span className="font-mono font-bold text-green-600">{mat.sap}</span>
                   <span className="text-gray-500 truncate text-[10px]">{mat.descricao}</span>

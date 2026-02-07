@@ -36,7 +36,7 @@ export const StructureList = ({
       <div className="flex-1 flex flex-col p-4 overflow-hidden">
         {/* Search */}
         <div className="relative mb-4">
-          <label className="text-xs font-semibold text-gray-500 mb-1 block">Adicionar Estrutura (Ctrl+F)</label>
+          <label className="text-xs font-semibold text-gray-600 mb-2 block">Adicionar Estrutura (Ctrl+F)</label>
           <div className="relative group">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition" />
             <input
