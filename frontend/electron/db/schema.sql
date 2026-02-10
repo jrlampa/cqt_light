@@ -19,7 +19,10 @@ CREATE TABLE IF NOT EXISTS kits (
   descricao_kit TEXT NOT NULL,
   codigo_servico TEXT,
   -- Direct link to servicos_cm
-  custo_servico REAL DEFAULT 0 -- Cached price for fast queries
+  custo_servico REAL DEFAULT 0,
+  -- Cached price for fast queries
+  FOREIGN KEY (codigo_servico) REFERENCES servicos_cm(codigo) ON DELETE
+  SET NULL
 );
 -- 4. kit_composicao (kit → materials)
 CREATE TABLE IF NOT EXISTS kit_composicao (
@@ -136,4 +139,14 @@ CREATE TABLE IF NOT EXISTS templates_kit_manual (
 );
 CREATE INDEX IF NOT EXISTS idx_templates_manual_nome ON templates_kit_manual(nome_template);
 CREATE INDEX IF NOT EXISTS idx_templates_manual_base ON templates_kit_manual(kit_base);
+-- 13. normas_referencia (Construction Standards Mining Results)
+CREATE TABLE IF NOT EXISTS normas_referencia (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sap TEXT NOT NULL,
+  fonte TEXT NOT NULL,
+  pagina INTEGER,
+  contexto TEXT,
+  data_indexacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_normas_sap ON normas_referencia(sap);
 CREATE INDEX IF NOT EXISTS idx_sufixos_sufixo ON sufixos_contextuais(sufixo);
