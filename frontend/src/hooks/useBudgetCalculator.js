@@ -10,265 +10,147 @@ export function useBudgetCalculator() {
   const [calcTime, setCalcTime] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const calculateTotal = useCallback(async ({ estruturas, materiaisAvulsos, condutorMT, condutorBT, sufixos = [], templates = [] }) => {
+  const calculateTotal = useCallback(async ({ estruturas = [], materiaisAvulsos = [], condutorMT, condutorBT, sufixos = [], templates = [] }) => {
     if (!window.api) return;
     setIsCalculating(true);
     const start = performance.now();
 
     try {
-      // Helper to resolve suffixes
-      const resolveCode = (code, contextPosteCode) => {
-        if (!code || !code.endsWith('/')) return code;
+      // Maps for consolidation
+      const kitsMap = new Map();
+      const consolidatedMaterials = new Map();
+      const postes = [];
 
-        // Find matching suffix rule
-        // Priority: 1. Post Type (F-10/), 2. Conductor (M1/)
-
-        // F-10/ context: Pole Diameter
-        if (code.startsWith('F-10/') && contextPosteCode) {
-          const rule = sufixos.find(s => s.prefixo === 'F-10/' && s.tipo_contexto === 'poste' && s.valor_contexto === contextPosteCode);
-          if (rule) return rule.codigo_completo || (rule.prefixo + rule.sufixo);
-        }
-
-        // M1/ context: Conductor
-        if (code.startsWith('M1/')) {
-          // Try MT first, then BT? Usually M1 is MT? 
-          // Need to confirm. Assuming MT for now or passing both.
-          // Simplified logic: Check if we have a match for active conductors
-          const condCode = condutorMT?.codigo || condutorMT;
-          if (condCode) {
-            const rule = sufixos.find(s => s.prefixo === 'M1/' && s.tipo_contexto === 'condutor' && s.valor_contexto === condCode);
-            if (rule) return rule.codigo_completo || (rule.prefixo + rule.sufixo);
+      // Helper to consolidate materials
+      const addMaterialToMap = (sap, qty, price, desc, origin) => {
+        if (!sap) return;
+        if (consolidatedMaterials.has(sap)) {
+          const existing = consolidatedMaterials.get(sap);
+          existing.quantidade += qty;
+          existing.subtotal = existing.quantidade * (existing.preco_unitario || 0);
+          if (origin && !existing.origens.includes(origin)) {
+            existing.origens.push(origin);
           }
+        } else {
+          consolidatedMaterials.set(sap, {
+            sap,
+            descricao: desc,
+            quantidade: qty,
+            preco_unitario: price || 0,
+            subtotal: qty * (price || 0),
+            unidade: 'UN', // Default, will be updated if info exists
+            origens: [origin]
+          });
         }
-
-        return code; // Return original if no resolution
       };
+
+      // Pre-process suffixes for O(1) lookup
+      const suffixMap = new Map();
+      sufixos.forEach(s => {
+        const key = `${s.prefixo}|${s.tipo_contexto}|${s.valor_contexto}`;
+        suffixMap.set(key, s.codigo_completo || (s.prefixo + s.sufixo));
+      });
 
       // 0. Identify active Pole for context (take the first one found)
       let activePosteCode = null;
-      materiaisAvulsos.forEach(m => {
+      for (const m of materiaisAvulsos) {
         if (m.descricao?.toUpperCase().includes('POSTE') || m.sap?.endsWith('B')) {
           activePosteCode = m.sap;
+          break;
         }
-      });
+      }
 
-      // 1. Prepare list of kits from structures (Handling Manual Templates)
+      // 1. Prepare list of kits from structures
       const kitList = [];
-      const templateExtras = []; // Materials from manual templates
-      const templatesMap = new Map(); // To track qty of templates for reporting
+      const templateExtras = [];
+      const templateMap = new Map(templates.map(t => [t.nome_template, t]));
 
       estruturas.forEach(e => {
         const count = e.quantidade || 1;
         const code = e.codigo_kit;
-
-        // Check if it's a Manual Template
-        const manualTpl = templates.find(t => t.nome_template === code);
+        const manualTpl = templateMap.get(code);
 
         if (manualTpl) {
-          // It is a template! 
-          // 1. Add Base Kit to kitList (if accessible)
-          if (manualTpl.kit_base && manualTpl.kit_base !== code) {
-            for (let i = 0; i < count; i++) kitList.push(manualTpl.kit_base);
-          } else if (manualTpl.kit_base === code) {
-            // If base kit name == template name, assume it's a valid SAP kit too
-            for (let i = 0; i < count; i++) kitList.push(code);
+          if (manualTpl.kit_base) {
+            const base = manualTpl.kit_base;
+            for (let i = 0; i < count; i++) kitList.push(base);
           }
 
-          // 2. Add extra materials (Prioritize Resolved Instance Data)
-          let extras = [];
-
-          if (e.materiaisResolvidos) {
-            extras = e.materiaisResolvidos;
-          } else if (manualTpl.materiais_json) {
+          let extras = e.materiaisResolvidos || [];
+          if (!extras.length && manualTpl.materiais_json) {
             try {
               extras = typeof manualTpl.materiais_json === 'string'
                 ? JSON.parse(manualTpl.materiais_json)
-                : manualTpl.materiais_json || [];
-            } catch (err) { extras = []; }
+                : manualTpl.materiais_json;
+            } catch { }
           }
 
           extras.forEach(item => {
             templateExtras.push({
               ...item,
-              quantidade: (item.quantidade || 1) * count, // Multiply by templateqty
+              quantidade: (item.quantidade || 1) * count,
               origem: `Template ${code}`
             });
           });
         } else {
-          // Normal Kit or Manual Kit not found in global templates (fallback)
-          if (e.materiaisResolvidos) {
-            e.materiaisResolvidos.forEach(item => {
-              templateExtras.push({
-                ...item,
-                quantidade: (item.quantidade || 1) * count,
-                origem: `Template ${code}`
-              });
-            });
-          } else {
-            for (let i = 0; i < count; i++) kitList.push(code);
-          }
+          for (let i = 0; i < count; i++) kitList.push(code);
         }
       });
 
-      // 2. Get kit materials from Backend
-      let kitData = { materiais: [], totalMaterial: 0, totalServico: 0 };
-      if (kitList.length > 0) {
-        kitData = await window.api.getCustoTotal(kitList) || kitData;
+      // 2. PARALLEL DATA FETCHING
+      const extraCodes = new Set(templateExtras.map(e => e.codigo || e.sap).filter(Boolean));
+
+      const [kitResults, extraPricesResult] = await Promise.all([
+        kitList.length > 0 ? window.api.getCustoTotal(kitList) : Promise.resolve({ materiais: [], totalMaterial: 0, totalServico: 0 }),
+        extraCodes.size > 0 ? window.api.getMaterialsPrices(Array.from(extraCodes)) : Promise.resolve([])
+      ]);
+
+      const kitData = kitResults || { materiais: [], totalMaterial: 0, totalServico: 0 };
+      const priceMap = new Map();
+      extraPricesResult.forEach(p => priceMap.set(p.sap, p));
+
+      // 3. Process Standard Kit Materials
+      if (kitData.materiais) {
+        kitData.materiais.forEach(m => {
+          addMaterialToMap(m.sap, m.quantidade, m.preco_unitario, m.descricao, 'Kits');
+        });
       }
 
-      // 3. Process 'Postes' (special category in loose materials)
-      const postes = [];
-      materiaisAvulsos.forEach(mat => {
-        if (mat.descricao?.toUpperCase().includes('POSTE')) {
-          const qty = mat.quantidade || 1;
-          const price = mat.preco_unitario || 0;
-          postes.push({
-            sap: mat.sap,
-            descricao: mat.descricao,
-            unidade: mat.unidade,
-            preco_unitario: price,
-            quantidade: qty,
-            subtotal: qty * price,
-            categoria: 'POSTE'
-          });
-        }
-      });
-
-      // 4. Process Structures/Kits as line items (UI Display)
-      const kitsMap = new Map();
-      estruturas.forEach(e => {
-        const qty = e.quantidade || 1;
-        const price = e.preco_kit || 0;
-        const key = e.codigo_kit;
-
-        if (kitsMap.has(key)) {
-          const existing = kitsMap.get(key);
-          existing.quantidade += qty;
-          existing.subtotal += qty * price;
-        } else {
-          kitsMap.set(key, {
-            sap: e.codigo_kit,
-            descricao: e.descricao_kit || e.codigo_kit,
-            unidade: 'KIT',
-            preco_unitario: price,
-            quantidade: qty,
-            subtotal: qty * price,
-            categoria: 'KIT'
-          });
-        }
-      });
-
-      // 5. Consolidate Materials (Kit contents + Loose materials + Template Extras)
-      const consolidatedMaterials = new Map();
-
-      // Helper to add material to map
-      const addMaterialToMap = (sap, qty, price, desc, origin = null) => {
-        const resolvedSap = resolveCode(sap, activePosteCode); // RESOLVE SUFFIX HERE
-        const key = resolvedSap; // Use resolved SAP as key
-
-        // If we don't have price/desc for the resolved code, we might need to fetch it? 
-        // For now using what provided or 0. Ideally backend 'getCustoTotal' handles standard kits.
-        // For extras, we might miss price if not in cache.
-
-        if (consolidatedMaterials.has(key)) {
-          const existing = consolidatedMaterials.get(key);
-          existing.quantidade += qty;
-          // approximate subtotal if price available
-          existing.subtotal += (qty * (existing.preco_unitario || price));
-        } else {
-          consolidatedMaterials.set(key, {
-            sap: key,
-            descricao: desc || key, // Placeholder if missing
-            unidade: 'UN',
-            preco_unitario: price,
-            quantidade: qty,
-            subtotal: qty * price,
-            categoria: 'MATERIAL',
-            origem: origin
-          });
-        }
-      };
-
-      // Add Standard Kit materials
-      kitData.materiais.forEach(mat => {
-        // Standard kit materials usually already resolved codes? 
-        // But if DB has partials, we resolve them too.
-        addMaterialToMap(mat.sap, mat.quantidade, mat.preco_unitario, mat.descricao, 'Kit Padrão');
-      });
-
-      // Add Template Extras
-      // WARNING: We need prices for these extras. They are just {codigo, quantidade} usually.
-      // We'll need to fetch prices for them if possible. 
-      // For this iteration, we assume 0 or look up in next step.
-      // Actually, distinct Fetch step for extras would be ideal.
-      // But let's add them to map and rely on loose material logic or backend price update?
-      // Since `kitData` returns prices, we are good for standard kits.
-      // For extras, we might need a separate 'getPrices(codes)' call.
-      // Optimization: We'll skip fetching prices for extras in this step to keep it simple, 
-      // assuming they might be covered by loose materials logic or just displayed with 0 price for now. 
-      // TODO: Fetch prices for manual template extras.
-
-      // Fetch prices for template extras (Resolved or Standard)
-      const extraCodes = [...new Set(templateExtras.map(e => e.codigo).filter(Boolean))];
-      if (extraCodes.length > 0) {
-        try {
-          const prices = await window.api.getMaterialsPrices(extraCodes);
-          const priceMap = new Map();
-          prices.forEach(p => priceMap.set(p.sap, p));
-
-          // Update templateExtras with fetched info
-          templateExtras.forEach(item => {
-            const info = priceMap.get(item.codigo);
-            if (info) {
-              item.preco_unitario = info.preco_unitario;
-              // Fill details if missing
-              if (!item.descricao) item.descricao = info.descricao;
-              if (!item.unidade) item.unidade = info.unidade;
-            }
-          });
-        } catch (e) { console.error("Error fetching extra prices", e); }
-      }
-
-      // Add Template Extras to consolidated map
+      // 4. Process Template Extras
       templateExtras.forEach(item => {
-        addMaterialToMap(item.codigo, item.quantidade, item.preco_unitario || 0, item.descricao, item.origem);
+        const sap = item.codigo || item.sap;
+        const info = priceMap.get(sap);
+        const price = info?.preco_unitario || item.preco_unitario || 0;
+        const desc = info?.descricao || item.descricao || sap;
+        addMaterialToMap(sap, item.quantidade, price, desc, item.origem);
       });
 
-      // Add loose materials (excluding postes)
-      let looseTotal = 0;
+      // 5. Process Loose Materials
       materiaisAvulsos.forEach(mat => {
-        if (!mat.descricao?.toUpperCase().includes('POSTE')) {
-          const qty = mat.quantidade || 1;
-          const price = mat.preco_unitario || 0;
-          const subtotal = qty * price;
-          looseTotal += subtotal;
+        const qty = mat.quantidade || 1;
+        const price = mat.preco_unitario || 0;
+        const isPoste = mat.descricao?.toUpperCase().includes('POSTE') || mat.sap?.endsWith('B');
+
+        if (isPoste) {
+          postes.push({
+            ...mat,
+            quantidade: qty,
+            subtotal: qty * price,
+            origens: ['Avulso']
+          });
+        } else {
           addMaterialToMap(mat.sap, qty, price, mat.descricao, 'Avulso');
         }
       });
 
-      // Update totals/prices for consolidated map (async fetch potentially needed)
-      // For now, we trust what we have.
-
       // 6. Final Assembly
       const allMaterials = [
         ...postes,
-        ...Array.from(kitsMap.values()),
         ...Array.from(consolidatedMaterials.values())
       ];
 
-      // Recalculate totals based on map (to account for merged quantities)
-      // Note: Prices for extras might be missing.
-      const totalPostes = postes.reduce((sum, p) => sum + p.subtotal, 0);
-      const totalKits = Array.from(kitsMap.values()).reduce((sum, k) => sum + k.subtotal, 0);
-
-      // Recalculate material total from map
-      let calcTotalMaterial = 0;
-      consolidatedMaterials.forEach(m => {
-        calcTotalMaterial += m.subtotal;
-      });
-
-      const totalMaterial = calcTotalMaterial + totalPostes + totalKits;
-      const totalServico = kitData.totalServico; // Services from standard kits
+      const totalMaterial = allMaterials.reduce((sum, m) => sum + (m.subtotal || 0), 0);
+      const totalServico = kitData.totalServico || 0;
 
       const calcTimeMs = performance.now() - start;
       setCalcTime(calcTimeMs);
@@ -288,7 +170,7 @@ export function useBudgetCalculator() {
     } finally {
       setIsCalculating(false);
     }
-  }, []);
+  }, [setCalcTime, setCustoData]);
 
   return {
     custoData,
