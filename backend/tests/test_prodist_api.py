@@ -1,15 +1,14 @@
 """
-CQT Light — Testes ANEEL/PRODIST
-Cobre: services/prodist_service.py + api/prodist_router.py + domain constants
+CQT Light — Testes de serviço e API ANEEL/PRODIST (queda de tensão + integração REST)
+
+Referência normativa:
+  PRODIST Módulo 6 — Acesso ao Sistema de Distribuição
+  PRODIST Módulo 8 — Qualidade da Energia Elétrica (Rev. 11, 2022)
+  Resolução Normativa ANEEL nº 1.000/2021
 
 Coordenadas de referência (MEMORY.md):
   UTM 23K: 788547 E, 7634925 N
   Decimal: -22.15018, -42.92185
-
-Referência normativa:
-  PRODIST Módulo 8 — Qualidade da Energia Elétrica (Rev. 11, 2022)
-  PRODIST Módulo 6 — Acesso ao Sistema de Distribuição
-  Resolução Normativa ANEEL nº 1.000/2021
 """
 
 import sys
@@ -21,154 +20,18 @@ import pytest
 from fastapi.testclient import TestClient
 
 from domain.entities import (
-    FAIXAS_TENSAO_PRODIST_BT,
-    FAIXAS_TENSAO_PRODIST_MT,
-    LIMITE_QUEDA_PRODIST_PCT,
     CLASSIFICACAO_ADEQUADA,
     CLASSIFICACAO_PRECARIA,
     CLASSIFICACAO_CRITICA,
     NORMA_PRODIST,
 )
 from services.prodist_service import (
-    classificar_tensao_prodist,
     calcular_queda_alimentador_prodist,
     obter_limites_prodist,
 )
 from main import app
 
 client = TestClient(app)
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Testes de constantes de domínio
-# ─────────────────────────────────────────────────────────────────────────────
-
-class TestDomainConstantsPRODIST:
-    def test_faixas_bt_adequada(self):
-        assert FAIXAS_TENSAO_PRODIST_BT["ADEQUADA"] == (0.93, 1.05)
-
-    def test_faixas_bt_precaria(self):
-        assert FAIXAS_TENSAO_PRODIST_BT["PRECARIA"] == (0.90, 1.06)
-
-    def test_faixas_mt_adequada(self):
-        assert FAIXAS_TENSAO_PRODIST_MT["ADEQUADA"] == (0.95, 1.05)
-
-    def test_faixas_mt_precaria(self):
-        assert FAIXAS_TENSAO_PRODIST_MT["PRECARIA"] == (0.93, 1.06)
-
-    def test_limite_queda_bt_alimentador(self):
-        assert LIMITE_QUEDA_PRODIST_PCT["BT_ALIMENTADOR"] == 5.0
-
-    def test_limite_queda_bt_ramal(self):
-        assert LIMITE_QUEDA_PRODIST_PCT["BT_RAMAL"] == 2.0
-
-    def test_limite_queda_mt(self):
-        assert LIMITE_QUEDA_PRODIST_PCT["MT"] == 3.0
-
-    def test_norma_prodist_valor(self):
-        assert NORMA_PRODIST == "ANEEL_PRODIST"
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Testes de classificação de tensão BT
-# ─────────────────────────────────────────────────────────────────────────────
-
-class TestClassificacaoTensaoBT:
-    """Testa classificação PRODIST Módulo 8 para rede BT."""
-
-    def test_tensao_adequada_centro(self):
-        # Vc/Vr = 1.00 → ADEQUADA
-        r = classificar_tensao_prodist(220.0, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_ADEQUADA
-        assert r.aviso_toast is None
-
-    def test_tensao_adequada_limite_inferior(self):
-        # Vc/Vr = 0.93 → ADEQUADA (limite incluso)
-        r = classificar_tensao_prodist(220.0 * 0.93, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_ADEQUADA
-
-    def test_tensao_adequada_limite_superior(self):
-        # Vc/Vr = 1.05 → ADEQUADA (limite incluso)
-        r = classificar_tensao_prodist(220.0 * 1.05, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_ADEQUADA
-
-    def test_tensao_precaria_abaixo(self):
-        # Vc/Vr = 0.91 → PRECÁRIA (entre 0.90 e 0.93)
-        r = classificar_tensao_prodist(220.0 * 0.91, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_PRECARIA
-        assert r.aviso_toast is not None
-        assert "PRODIST" in r.aviso_toast
-        assert "ABNT" in r.aviso_toast
-
-    def test_tensao_precaria_acima(self):
-        # Vc/Vr = 1.055 → PRECÁRIA (entre 1.05 e 1.06)
-        r = classificar_tensao_prodist(220.0 * 1.055, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_PRECARIA
-
-    def test_tensao_critica_abaixo(self):
-        # Vc/Vr = 0.85 → CRÍTICA
-        r = classificar_tensao_prodist(220.0 * 0.85, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_CRITICA
-        assert "CRÍTICA" in r.aviso_toast
-        assert "obrigatória" in r.aviso_toast
-
-    def test_tensao_critica_acima(self):
-        # Vc/Vr = 1.10 → CRÍTICA
-        r = classificar_tensao_prodist(220.0 * 1.10, 220.0, "BT")
-        assert r.classificacao == CLASSIFICACAO_CRITICA
-
-    def test_norma_sempre_prodist(self):
-        r = classificar_tensao_prodist(220.0, 220.0, "BT")
-        assert r.norma_aplicada == NORMA_PRODIST
-
-    def test_relacao_calculada_corretamente(self):
-        r = classificar_tensao_prodist(209.0, 220.0, "BT")
-        assert abs(r.relacao_vc_vr - 209 / 220) < 0.001
-
-    def test_nivel_normalizado_para_maiuscula(self):
-        r = classificar_tensao_prodist(220.0, 220.0, "bt")
-        assert r.nivel == "BT"
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Testes de classificação de tensão MT
-# ─────────────────────────────────────────────────────────────────────────────
-
-class TestClassificacaoTensaoMT:
-    """Testa classificação PRODIST Módulo 8 para rede MT."""
-
-    def test_tensao_mt_adequada(self):
-        # Vc/Vr = 1.00 → ADEQUADA
-        r = classificar_tensao_prodist(13800.0, 13800.0, "MT")
-        assert r.classificacao == CLASSIFICACAO_ADEQUADA
-
-    def test_tensao_mt_precaria_abaixo_limite_menor(self):
-        # MT limite adequada inferior = 0.95; precária de 0.93 a 0.95
-        r = classificar_tensao_prodist(13800.0 * 0.94, 13800.0, "MT")
-        assert r.classificacao == CLASSIFICACAO_PRECARIA
-
-    def test_tensao_mt_critica_abaixo(self):
-        # Vc/Vr = 0.90 → CRÍTICA para MT
-        r = classificar_tensao_prodist(13800.0 * 0.90, 13800.0, "MT")
-        assert r.classificacao == CLASSIFICACAO_CRITICA
-
-    def test_tensao_mt_nivel_correto(self):
-        r = classificar_tensao_prodist(13800.0, 13800.0, "MT")
-        assert r.nivel == "MT"
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Testes de validação de entrada
-# ─────────────────────────────────────────────────────────────────────────────
-
-class TestClassificacaoValidacao:
-    def test_nivel_invalido(self):
-        with pytest.raises(ValueError, match="nivel deve ser"):
-            classificar_tensao_prodist(220.0, 220.0, "AT")
-
-    def test_tensao_referencia_zero(self):
-        with pytest.raises(ValueError, match="positiva"):
-            classificar_tensao_prodist(220.0, 0.0, "BT")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -179,7 +42,6 @@ class TestQuedaAlimentadorPRODIST:
     """Testa cálculo de queda com limites PRODIST (mais restritivos que ABNT)."""
 
     def test_bt_alimentador_conforme(self):
-        # Trecho curto → queda < 5%
         r = calcular_queda_alimentador_prodist(
             comprimento_m=100.0,
             corrente_a=10.0,
@@ -197,11 +59,6 @@ class TestQuedaAlimentadorPRODIST:
 
     def test_bt_alimentador_reprovado_prodist_mas_aprovado_abnt(self):
         """Caso crítico: queda entre 5% e 7% — reprovado pelo PRODIST, aprovado pela ABNT."""
-        # Forçar queda ~6%: I grande, trecho longo
-        # ΔU% = k × I × L × ρ/A × fp / Vn × 100
-        # Para 3F: k=√3, ρ_AL=0.028264, A=35, fp=0.92, Vn=220
-        # 6% de 220 = 13.2V; ΔU = √3 × I × 100 × (0.028264/35) × 0.92
-        # I ≈ 13.2 / (1.732 × 100 × 0.000808 × 0.92) ≈ 99.8 A
         r = calcular_queda_alimentador_prodist(
             comprimento_m=100.0,
             corrente_a=99.8,
@@ -211,11 +68,9 @@ class TestQuedaAlimentadorPRODIST:
             num_fases=3,
             tipo_alimentador="BT_ALIMENTADOR",
         )
-        # Deve reprovar pelo PRODIST (5%) mas aprovar pela ABNT (7%)
-        assert r.conforme is False          # falha PRODIST
-        assert r.abnt_conforme is True      # passaria na ABNT
+        assert r.conforme is False
+        assert r.abnt_conforme is True
         assert r.abnt_limite_pct == 7.0
-        # Toast deve mencionar ambas as normas
         assert "ABNT" in r.aviso_toast
         assert "PRODIST" in r.aviso_toast
         assert "REPROVADA" in r.aviso_toast or "PRODIST" in r.aviso_toast
@@ -368,7 +223,6 @@ class TestObterLimitesPRODIST:
         assert ramal["mais_restritivo"] == "PRODIST"
 
     def test_mt_mais_restritivo_abnt(self):
-        # ABNT NBR 14039 (2%) é mais restritiva que PRODIST (3%) para MT
         r = obter_limites_prodist()
         mt = next(l for l in r["limites_queda"] if l["tipo"] == "MT")
         assert mt["abnt_pct"] < mt["prodist_pct"]

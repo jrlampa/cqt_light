@@ -133,6 +133,8 @@ Usuário seleciona estruturas/materiais
 | `PosteSearch.jsx`              | Busca de postes                | 54     |
 | `QuantityPopup.jsx`            | Modal de quantidade            | 58     |
 | `utils/configuratorStorage.js` | Persistência localStorage      | 38     |
+| `hooks/useGeo.js`              | Conversão UTM↔decimal via API  | 91     |
+| `components/MapaRede.jsx`      | Mapa Leaflet/OSM 2.5D          | 198    |
 
 **Módulos do banco (electron/db/):**
 
@@ -154,6 +156,9 @@ Usuário seleciona estruturas/materiais
 | `services/voltage_drop_service.py` | Queda de tensão ABNT NBR 5410/14039       | 117    |
 | `services/kml_service.py`      | Importação KML/GPX (stdlib)                   | 210    |
 | `services/ifc_service.py`      | Exportação IFC2X3 STEP (Half-way BIM)         | 185    |
+| `tests/test_prodist_domain.py` | Domínio PRODIST: constantes + classificação    | 138    |
+| `tests/test_prodist_api.py`    | API PRODIST: queda + integração REST           | 298    |
+| `tests/test_e2e_workflow.py`   | E2E: 8 fluxos reais UTM→DXF→IFC               | 260    |
 
 ---
 
@@ -228,6 +233,11 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `Toast.jsx` — componente de notificação acessível          | Exibe aviso PRODIST/ABNT em pt-BR; role=alert, aria-live |
 | 2026-02-21 | `useProdist.js` — hook React para API PRODIST              | classificarTensao, calcularQuedaAlimentador, obterLimites |
 | 2026-02-21 | `backend/.coverage` removido do git tracking               | Estava rastreado por engano desde sessão 6 |
+| 2026-02-21 | `test_prodist_service.py` (536L) dividido em `test_prodist_domain.py` + `test_prodist_api.py` | Limite 500 linhas, SRP |
+| 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
+| 2026-02-21 | `MapaRede.jsx` — Leaflet via CDN (unpkg.com, gratuito) | Zero custo, sem npm leaflet, carregamento lazy |
+| 2026-02-21 | `test_e2e_workflow.py` — 8 fluxos E2E completos | Cobre pipeline real: UTM→geo→buffer→DXF→IFC→PRODIST |
+| 2026-02-21 | UTM refs (788547, 7634925) e decimal (-22.15018, -42.92185) são pontos distintos no MEMORY.md | E2E usa roundtrip (não absoluto); pyproj é preciso para EPSG:31983 |
 
 ---
 
@@ -239,23 +249,27 @@ Usuário seleciona estruturas/materiais
 | `database.test.js`                 | 17     | ✅ pass    | –         |
 | `useBudgetCalculator.test.js`      | 3      | ✅ pass    | 81%       |
 | `useKeyboardNav.test.js`           | 8      | ✅ pass    | 100%      |
+| `useGeo.test.js`                   | 18     | ✅ pass    | 100%      |
 | `configuratorStorage.test.js`      | 6      | ✅ pass    | 90%       |
 | `conductors.test.js`               | 8      | ✅ pass    | 100%      |
 | `excelPriceParser.test.js`         | 21     | ✅ pass    | 95%       |
 | `excelExporter.test.js`            | 16     | ✅ pass    | 95%       |
 | `App.test.jsx`                     | 13     | ✅ pass    | 97%       |
-| Componentes (25 arquivos .test.jsx)| 368    | ✅ pass    | ≥80% ✅   |
+| `MapaRede.test.jsx`                | 10     | ✅ pass    | 82%       |
+| Componentes (30+ arquivos .test.jsx)| 355   | ✅ pass    | ≥80% ✅   |
+| `test_prodist_domain.py`           | 22     | ✅ pass    | 100%      |
+| `test_prodist_api.py`              | 40     | ✅ pass    | 100%      |
 | `test_domain.py`                   | 20     | ✅ pass    | 100%      |
 | `test_api.py`                      | 40     | ✅ pass    | –         |
 | `test_dxf_service.py`              | 13     | ✅ pass    | 93%       |
 | `test_geo_service.py`              | 27     | ✅ pass    | 95%       |
 | `test_voltage_drop.py`             | 40     | ✅ pass    | 100%      |
-| `test_prodist_service.py`          | 59     | ✅ pass    | 100%      |
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
-| **Total frontend**                 | **456**| ✅ pass    | **≥80%** ✅|
-| **Total backend**                  | **270**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **726**| ✅ pass    | –         |
+| `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
+| **Total frontend**                 | **484**| ✅ pass    | **≥80%** ✅|
+| **Total backend**                  | **297**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **781**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -293,6 +307,11 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] FastAPI serve landing em `GET /`, 10 novos testes — total backend 228
 - [x] Half-way BIM: `ifc_service.py` + `ifc_router.py` — IFC2X3 STEP (sessão 10)
 - [x] `Toast.jsx` + `useProdist.js` — PRODIST/ABNT toast no frontend (sessão 10)
-- [x] 726 testes totais (270 backend + 456 frontend), 0 CodeQL alerts
-- [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)
-- [ ] Testes E2E com Playwright (Electron app)
+- [x] Modularizar `test_prodist_service.py` (536 linhas) → `test_prodist_domain.py` + `test_prodist_api.py` (sessão 11)
+- [x] `useGeo.js` hook — converte UTM↔decimal, buffer via API do backend (sessão 11)
+- [x] `MapaRede.jsx` — componente Leaflet/OSM 2.5D para visualização de rede elétrica (sessão 11)
+- [x] Testes E2E de workflow completo (`test_e2e_workflow.py`) — 27 testes, 8 fluxos reais (sessão 11)
+- [x] 781 testes totais (297 backend + 484 frontend), 0 CodeQL alerts (sessão 11)
+- [ ] Integrar MapaRede na aba de configurador (tab "Mapa" no App.jsx)
+- [ ] Testes E2E com Playwright para o Electron app (desktop)
+- [ ] Conectar useProdist + Toast ao fluxo de orçamentação (Configurator.jsx)
