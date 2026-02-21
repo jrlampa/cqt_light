@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.geo_router import router as geo_router
 from api.dxf_router import router as dxf_router
+from api.voltage_drop_router import router as voltage_drop_router
+from api.kml_router import router as kml_router
 
 app = FastAPI(
     title="CQT Light Backend",
@@ -27,6 +29,8 @@ app.add_middleware(
 
 app.include_router(geo_router, prefix="/api/geo", tags=["Georreferenciamento"])
 app.include_router(dxf_router, prefix="/api/dxf", tags=["Geração DXF"])
+app.include_router(voltage_drop_router, prefix="/api/queda-tensao", tags=["Cálculo Elétrico"])
+app.include_router(kml_router, prefix="/api/trace", tags=["Importação GPS"])
 
 
 @app.get("/health", tags=["Saúde"])

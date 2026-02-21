@@ -88,3 +88,104 @@ class RedeEletrica:
             if p.id == poste_id:
                 return p
         return None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Domínio: Cálculo Elétrico (Queda de Tensão — ABNT NBR 5410 / NBR 14039)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Resistividade por material de condutor a 70 °C (temperatura de operação)
+# Unidade: Ω·mm²/m
+RESISTIVIDADE_CONDUTOR: dict = {
+    "AL": 0.028264,   # Alumínio (CAA, ACSR, AAC)
+    "CU": 0.018510,   # Cobre
+}
+
+# Tensões nominais de rede mais comuns no Brasil
+TENSOES_NOMINAIS_V: dict = {
+    "BT_127":   127.0,   # Monofásico neutro (BT)
+    "BT_220":   220.0,   # Bifásico (BT)
+    "BT_380":   380.0,   # Trifásico (BT)
+    "MT_13800": 13800.0, # Média tensão 13,8 kV
+    "MT_34500": 34500.0, # Média tensão 34,5 kV
+}
+
+# Limite de queda de tensão por nível (ABNT NBR 5410 / PRODIST Módulo 8)
+LIMITE_QUEDA_PCT: dict = {
+    "BT": 7.0,   # % (da geração até o ponto de utilização)
+    "MT": 2.0,   # % (subtransmissão)
+}
+
+MATERIAIS_CONDUTOR_VALIDOS = set(RESISTIVIDADE_CONDUTOR.keys())
+
+
+@dataclass
+class TrechoEletrico:
+    """
+    Entidade de domínio: Trecho de rede com dados físicos para cálculo elétrico.
+    Representa um segmento de condutor com comprimento e seção transversal conhecidos.
+    """
+    id: str
+    poste_a: str
+    poste_b: str
+    comprimento_m: float          # Comprimento real do trecho (campo ou planta)
+    secao_mm2: float = 35.0       # Seção do condutor em mm² (ex: 35, 70, 120)
+    nivel: str = NIVEL_BT
+    material: str = "AL"          # "AL" (alumínio) ou "CU" (cobre)
+    num_fases: int = 3            # 1 = monofásico+N, 3 = trifásico
+
+    def __post_init__(self) -> None:
+        if self.nivel not in NIVEIS_VALIDOS:
+            raise ValueError(f"Nível inválido '{self.nivel}'. Aceitos: {sorted(NIVEIS_VALIDOS)}")
+        if self.material not in MATERIAIS_CONDUTOR_VALIDOS:
+            raise ValueError(f"Material inválido '{self.material}'. Aceitos: {sorted(MATERIAIS_CONDUTOR_VALIDOS)}")
+        if self.comprimento_m <= 0:
+            raise ValueError("comprimento_m deve ser positivo")
+        if self.secao_mm2 <= 0:
+            raise ValueError("secao_mm2 deve ser positiva")
+        if self.num_fases not in (1, 3):
+            raise ValueError("num_fases deve ser 1 (monofásico) ou 3 (trifásico)")
+
+
+@dataclass
+class CargaEletrica:
+    """
+    Entidade de domínio: Carga elétrica num nó da rede.
+    """
+    poste_id: str
+    potencia_w: float             # Potência ativa em W
+    fator_potencia: float = 0.92  # cos(φ) padrão ABNT
+
+    def __post_init__(self) -> None:
+        if self.potencia_w < 0:
+            raise ValueError("potencia_w não pode ser negativa")
+        if not (0.0 < self.fator_potencia <= 1.0):
+            raise ValueError("fator_potencia deve estar entre 0 (exclusive) e 1")
+
+
+@dataclass
+class ResultadoQuedaTensao:
+    """
+    Value Object: Resultado do cálculo de queda de tensão para um trecho.
+    """
+    trecho_id: str
+    poste_a: str
+    poste_b: str
+    queda_v: float      # Queda de tensão em Volts no trecho
+    queda_pct: float    # Queda percentual relativa à tensão nominal
+    corrente_a: float   # Corrente no trecho em A
+    conforme: bool      # True se dentro do limite ABNT
+
+
+@dataclass
+class ResultadoRedeEletrica:
+    """
+    Value Object: Resultado agregado do cálculo de queda de tensão da rede.
+    """
+    trechos: List[ResultadoQuedaTensao]
+    queda_maxima_pct: float
+    queda_total_v: float
+    tensao_nominal_v: float
+    limite_pct: float
+    rede_conforme: bool   # True se toda a rede está dentro do limite ABNT
+
