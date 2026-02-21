@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21  
+> **Atualizado em:** 2026-02-21 (sessão 3)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -144,6 +144,12 @@ Usuário seleciona estruturas/materiais
 | `modules/pricing.cjs`     | Empresas, preços, histórico         | 143    |
 | `modules/sufixos.cjs`     | Sufixos contextuais, templates manuais | 108 |
 
+**Módulos do backend (domain/):**
+
+| Arquivo              | Responsabilidade                          | Linhas |
+|----------------------|-------------------------------------------|--------|
+| `domain/entities.py` | Entidades DDD puras (Poste, Trecho, etc.) | 73     |
+
 ---
 
 ## 7. Backend FastAPI (Endpoints)
@@ -183,9 +189,13 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | accoreconsole.exe para testes DXF headless                 | Validação nativa AutoCAD              |
 | 2026-02-21 | Modularização: extrair constantes e toolbar do Configurator | Limite 500 linhas, SRP                |
 | 2026-02-21 | `database.cjs` dividido em 4 módulos de domínio            | Limite 500 linhas, SRP, manutenibilidade |
-| 2026-02-21 | `httpx TestClient` para testes de integração FastAPI        | Cobertura 95% backend, sem servidor real |
+| 2026-02-21 | `httpx TestClient` para testes de integração FastAPI        | Cobertura 95%→96% backend, sem servidor real |
 | 2026-02-21 | `field_validator` Pydantic v2 para validar `radius_m > 0`  | Sanitização de entrada na API         |
 | 2026-02-21 | `media_type="application/octet-stream"` no endpoint DXF    | Padrão IANA correto                   |
+| 2026-02-21 | Entidades de domínio em `backend/domain/entities.py`        | DDD: domínio puro sem infraestrutura  |
+| 2026-02-21 | `field_validator` para `nivel` ("MT"/"BT") e `potencia_kva` | Sanitização + domínio validado na API |
+| 2026-02-21 | CI/CD via GitHub Actions (`.github/workflows/ci.yml`)       | Automação: tests + coverage + Docker build |
+| 2026-02-21 | `LAYERS_CONFIG` movido para `domain/entities.py`            | Constantes de domínio com entidades   |
 
 ---
 
@@ -199,12 +209,15 @@ Usuário seleciona estruturas/materiais
 | `useKeyboardNav.test.js`      | 8      | ✅ pass    | 100%      |
 | `configuratorStorage.test.js` | 6      | ✅ pass    | 90%       |
 | `conductors.test.js`          | 8      | ✅ pass    | 100%      |
+| `excelPriceParser.test.js`    | 10     | ✅ pass    | 90%       |
+| `excelExporter.test.js`       | 11     | ✅ pass    | 85%       |
+| `test_domain.py`              | 20     | ✅ pass    | 100%      |
 | `test_api.py`                 | 30     | ✅ pass    | –         |
 | `test_dxf_service.py`         | 13     | ✅ pass    | 93%       |
 | `test_geo_service.py`         | 27     | ✅ pass    | 95%       |
-| **Total frontend**            | **51** | ✅ pass    | ~22%*     |
-| **Total backend**             | **67** | ✅ pass    | **95%**   |
-| **TOTAL GERAL**               | **118**| ✅ pass    | –         |
+| **Total frontend**            | **72** | ✅ pass    | ~25%*     |
+| **Total backend**             | **87** | ✅ pass    | **96%**   |
+| **TOTAL GERAL**               | **159**| ✅ pass    | –         |
 
 *Cobertura frontend baixa porque Configurator, KitEditor etc. precisam de mocks Electron mais aprofundados.
 
@@ -216,7 +229,7 @@ Usuário seleciona estruturas/materiais
 - [ ] Importação de traçado via KML/GPX (coordenadas reais)  
 - [ ] Cálculo de queda de tensão ao longo do traçado  
 - [ ] Half-way BIM: exportação IFC simplificada  
-- [ ] CI/CD pipeline (GitHub Actions)  
+- [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
 - [ ] Aumentar cobertura frontend (mocks do Electron para Configurator, KitEditor)
 - [ ] Roles: Tech Lead, Dev Fullstack Sênior, DevOps/QA, UI/UX, Estagiário  
 - [ ] Testes E2E com Playwright (Electron app)  

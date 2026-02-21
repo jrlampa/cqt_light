@@ -5,13 +5,11 @@ Endpoints para geração e validação de arquivos DXF 2.5D de redes elétricas.
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator
+from typing import List
 
-from services.dxf_service import (
-    RedeEletrica, Poste, TrechoRede, Transformador,
-    generate_dxf, validate_dxf,
-)
+from services.dxf_service import generate_dxf, validate_dxf
+from domain.entities import RedeEletrica, Poste, TrechoRede, Transformador, NIVEIS_VALIDOS
 
 router = APIRouter()
 
@@ -28,14 +26,31 @@ class PosteModel(BaseModel):
 class TrechoModel(BaseModel):
     poste_a: str
     poste_b: str
-    nivel: str = Field("MT", description="'MT' ou 'BT'")
+    nivel: str = Field("MT", description="'MT' (Média Tensão) ou 'BT' (Baixa Tensão)")
     condutor: str = ""
+
+    @field_validator("nivel")
+    @classmethod
+    def nivel_deve_ser_mt_ou_bt(cls, v: str) -> str:
+        v_upper = v.upper()
+        if v_upper not in NIVEIS_VALIDOS:
+            raise ValueError(
+                f"nivel deve ser 'MT' ou 'BT', recebido: '{v}'"
+            )
+        return v_upper
 
 
 class TransformadorModel(BaseModel):
     id: str
     poste_id: str
-    potencia_kva: float = 30.0
+    potencia_kva: float = Field(30.0, description="Potência em kVA (ex: 15, 30, 45, 75, 112.5, 150)")
+
+    @field_validator("potencia_kva")
+    @classmethod
+    def potencia_deve_ser_positiva(cls, v: float) -> float:
+        if v <= 0:
+            raise ValueError("potencia_kva deve ser positiva")
+        return v
 
 
 class RedeEletricaModel(BaseModel):

@@ -7,7 +7,6 @@ Usa ezdxf. Padrão de desenho: 2.5D (planta XY + cota Z como atributo).
 from __future__ import annotations
 
 import io
-from dataclasses import dataclass, field
 from typing import List, Optional
 
 try:
@@ -17,56 +16,13 @@ try:
 except ImportError:
     EZDXF_AVAILABLE = False
 
+from domain.entities import Poste, TrechoRede, Transformador, RedeEletrica, LAYERS_CONFIG
+
 # Camadas ABNT para redes elétricas
-LAYERS = {
-    "POSTES":        {"color": 2,  "linetype": "CONTINUOUS"},  # amarelo
-    "REDE_MT":       {"color": 1,  "linetype": "CONTINUOUS"},  # vermelho
-    "REDE_BT":       {"color": 3,  "linetype": "CONTINUOUS"},  # verde
-    "TRANSFORMADOR": {"color": 4,  "linetype": "CONTINUOUS"},  # ciano
-    "TEXTO":         {"color": 7,  "linetype": "CONTINUOUS"},  # branco/preto
-    "COTA":          {"color": 8,  "linetype": "CONTINUOUS"},  # cinza
-}
+LAYERS = LAYERS_CONFIG
 
 POSTE_RADIUS = 0.15       # m — raio do símbolo de poste em planta
 TRAFO_SIZE   = 0.5        # m — tamanho do símbolo de transformador
-
-
-@dataclass
-class Poste:
-    """Entidade poste de rede elétrica."""
-    id: str
-    x: float
-    y: float
-    altura_m: float = 11.0
-    carga_dan: int = 300
-    descricao: str = ""
-
-
-@dataclass
-class TrechoRede:
-    """Trecho de rede (linha entre dois postes)."""
-    poste_a: str
-    poste_b: str
-    nivel: str = "MT"   # "MT" ou "BT"
-    condutor: str = ""
-
-
-@dataclass
-class Transformador:
-    """Transformador de distribuição."""
-    id: str
-    poste_id: str
-    potencia_kva: float = 30.0
-
-
-@dataclass
-class RedeEletrica:
-    """Modelo de rede elétrica para geração DXF."""
-    postes: List[Poste] = field(default_factory=list)
-    trechos: List[TrechoRede] = field(default_factory=list)
-    transformadores: List[Transformador] = field(default_factory=list)
-    titulo: str = "REDE DE DISTRIBUIÇÃO"
-    escala: str = "S/E"
 
 
 def _setup_layers(doc) -> None:
@@ -78,12 +34,10 @@ def _setup_layers(doc) -> None:
             layer.linetype = props.get("linetype", "CONTINUOUS")
 
 
-def _get_poste_coords(postes: List[Poste], poste_id: str) -> Optional[tuple]:
-    """Retorna (x, y) de um poste pelo ID."""
-    for p in postes:
-        if p.id == poste_id:
-            return (p.x, p.y)
-    return None
+def _get_poste_coords(rede: RedeEletrica, poste_id: str) -> Optional[tuple]:
+    """Retorna (x, y) de um poste pelo ID via domain entity."""
+    poste = rede.get_poste(poste_id)
+    return (poste.x, poste.y) if poste else None
 
 
 def generate_dxf(rede: RedeEletrica) -> bytes:
@@ -139,8 +93,8 @@ def generate_dxf(rede: RedeEletrica) -> bytes:
 
     # 2. Desenha trechos de rede
     for trecho in rede.trechos:
-        coords_a = _get_poste_coords(rede.postes, trecho.poste_a)
-        coords_b = _get_poste_coords(rede.postes, trecho.poste_b)
+        coords_a = _get_poste_coords(rede, trecho.poste_a)
+        coords_b = _get_poste_coords(rede, trecho.poste_b)
         if not coords_a or not coords_b:
             continue
 
@@ -164,7 +118,7 @@ def generate_dxf(rede: RedeEletrica) -> bytes:
 
     # 3. Desenha transformadores
     for trafo in rede.transformadores:
-        coords = _get_poste_coords(rede.postes, trafo.poste_id)
+        coords = _get_poste_coords(rede, trafo.poste_id)
         if not coords:
             continue
         cx, cy = coords
