@@ -168,8 +168,8 @@
           <div class="text-sm text-indigo-200 mt-1">Endpoints API</div>
         </div>
         <div class="bg-white/10 border border-white/20 rounded-xl p-5 text-center">
-          <div class="text-3xl font-extrabold text-accent-400">ANEEL</div>
-          <div class="text-sm text-indigo-200 mt-1">PRODIST Módulo 6+8</div>
+          <div class="text-3xl font-extrabold text-accent-400">IFC2X3</div>
+          <div class="text-sm text-indigo-200 mt-1">Half-way BIM</div>
         </div>
       </div>
     </div>
@@ -283,7 +283,27 @@
           </div>
         </div>
 
-        <!-- Card 6: Testes -->
+        <!-- Card 6: Half-way BIM -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Half-way BIM (IFC2X3)</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Exporta rede elétrica em formato IFC2X3 STEP (ISO 16739) sem bibliotecas externas.
+            Postes → IFCCOLUMN · Trechos → IFCFLOWSEGMENT · Transformadores → IFCELECTRICALDISTRIBUTIONELEMENT.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-teal-100 text-teal-700">IFC2X3</span>
+            <span class="badge bg-teal-100 text-teal-700">BIM Viewer</span>
+            <span class="badge bg-teal-100 text-teal-700">Zero custo</span>
+          </div>
+        </div>
+
+        <!-- Card 7: Testes -->
         <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
           <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-5">
             <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -293,13 +313,13 @@
           </div>
           <h3 class="text-lg font-bold text-gray-900 mb-2">Cobertura de Testes ≥80%</h3>
           <p class="text-gray-600 text-sm leading-relaxed">
-            657+ testes automatizados (Vitest + pytest). Backend com 97% de cobertura.
+            726+ testes automatizados (Vitest + pytest). Backend com 97% de cobertura.
             Testes de DXF headless via accoreconsole.exe. CI/CD com GitHub Actions.
           </p>
           <div class="mt-4 flex flex-wrap gap-2">
             <span class="badge bg-red-100 text-red-700">pytest</span>
             <span class="badge bg-red-100 text-red-700">Vitest</span>
-            <span class="badge bg-red-100 text-red-700">657+ testes</span>
+            <span class="badge bg-red-100 text-red-700">726+ testes</span>
           </div>
         </div>
 
@@ -604,6 +624,16 @@
               <td class="px-6 py-3"><span class="badge bg-blue-100 text-blue-700">GET</span></td>
               <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/prodist/limites</td>
               <td class="px-6 py-3 text-gray-600">Lista limites PRODIST + comparação ABNT</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-purple-100 text-purple-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/ifc/export</td>
+              <td class="px-6 py-3 text-gray-600">Exporta rede como IFC2X3 BIM (postes, trechos, trafos)</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-purple-100 text-purple-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/ifc/validate</td>
+              <td class="px-6 py-3 text-gray-600">Valida estrutura de arquivo IFC2X3 gerado</td>
             </tr>
             <tr class="hover:bg-gray-50">
               <td class="px-6 py-3"><span class="badge bg-blue-100 text-blue-700">GET</span></td>

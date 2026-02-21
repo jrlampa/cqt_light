@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 9)  
+> **Atualizado em:** 2026-02-21 (sessão 10)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -153,6 +153,7 @@ Usuário seleciona estruturas/materiais
 | `services/geo_service.py`      | Conversão UTM ↔ decimal (pyproj + fallback)   | 167    |
 | `services/voltage_drop_service.py` | Queda de tensão ABNT NBR 5410/14039       | 117    |
 | `services/kml_service.py`      | Importação KML/GPX (stdlib)                   | 210    |
+| `services/ifc_service.py`      | Exportação IFC2X3 STEP (Half-way BIM)         | 185    |
 
 ---
 
@@ -172,6 +173,8 @@ Usuário seleciona estruturas/materiais
 | `/api/prodist/classificar-tensao`     | POST   | Classifica tensão: ADEQUADA/PRECÁRIA/CRÍTICA (PRODIST Módulo 8) |
 | `/api/prodist/queda-alimentador`      | POST   | Queda de tensão com limites PRODIST (Módulo 6)   |
 | `/api/prodist/limites`                | GET    | Lista limites PRODIST + comparação ABNT          |
+| `/api/ifc/export`                     | POST   | Exporta rede elétrica em IFC2X3 STEP (Half-way BIM) |
+| `/api/ifc/validate`                   | POST   | Valida arquivo IFC2X3 gerado                     |
 | `/health`                             | GET    | Health check                                     |
 | `/landing`                            | GET    | Serve arquivos estáticos da landing page         |
 
@@ -221,7 +224,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | Frontend coverage 52.71% → 80.28% linhas em sessão 8 (+140 testes, 12 novos arquivos) | Target ≥80% atingido ✅ |
 | 2026-02-21 | Landing page `/landing/index.html` — Tailwind CDN, pt-BR, zero custo | Sessão 9: novo requisito "landpage" adicionado ao enunciado |
 | 2026-02-21 | FastAPI serve landing via `HTMLResponse` em `GET /` | `Path(__file__).resolve()` obrigatório — `__file__` pode ser relativo em contexto pytest |
-| 2026-02-21 | `app.mount("/landing", StaticFiles(...))` após rotas API | StaticFiles para assets futuros (imagens, CSS custom) da landing |
+| 2026-02-21 | `ifc_service.py` — IFC2X3 STEP sem dependências externas   | Half-way BIM; GUIDs determinísticos (uuid5); zero custo |
+| 2026-02-21 | `Toast.jsx` — componente de notificação acessível          | Exibe aviso PRODIST/ABNT em pt-BR; role=alert, aria-live |
+| 2026-02-21 | `useProdist.js` — hook React para API PRODIST              | classificarTensao, calcularQuedaAlimentador, obterLimites |
+| 2026-02-21 | `backend/.coverage` removido do git tracking               | Estava rastreado por engano desde sessão 6 |
 
 ---
 
@@ -246,9 +252,10 @@ Usuário seleciona estruturas/materiais
 | `test_voltage_drop.py`             | 40     | ✅ pass    | 100%      |
 | `test_prodist_service.py`          | 59     | ✅ pass    | 100%      |
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
-| **Total frontend**                 | **429**| ✅ pass    | **≥80%** ✅|
-| **Total backend**                  | **228**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **657**| ✅ pass    | –         |
+| `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
+| **Total frontend**                 | **456**| ✅ pass    | **≥80%** ✅|
+| **Total backend**                  | **270**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **726**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -284,7 +291,8 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] Frontend coverage ≥80% atingida (sessão 8) — 80.28% lines, 429 testes
 - [x] Landing page `landing/index.html` — pt-BR, Tailwind CDN, enterprise quality (sessão 9)
 - [x] FastAPI serve landing em `GET /`, 10 novos testes — total backend 228
-- [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
-- [ ] Half-way BIM: exportação IFC simplificada  
-- [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
+- [x] Half-way BIM: `ifc_service.py` + `ifc_router.py` — IFC2X3 STEP (sessão 10)
+- [x] `Toast.jsx` + `useProdist.js` — PRODIST/ABNT toast no frontend (sessão 10)
+- [x] 726 testes totais (270 backend + 456 frontend), 0 CodeQL alerts
+- [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)
 - [ ] Testes E2E com Playwright (Electron app)
