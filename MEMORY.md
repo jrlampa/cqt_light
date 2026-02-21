@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 6)  
+> **Atualizado em:** 2026-02-21 (sessão 7)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -213,48 +213,67 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `vitest setup.js` com `window.api` mock via atribuição direta (não Object.defineProperty) | Preserva `window.addEventListener` que useKeyboardNav precisa |
 | 2026-02-21 | `vi.mock('xlsx')` + dynamic import para testar `parseExcelPrecos` com FileReader | Sem deps de browser real, cobertura 9% → 95% |
 | 2026-02-21 | `vi.mock('xlsx', importOriginal)` spread para preservar `XLSX.utils.*` ao mock `writeFile` | downloadWorkbook testável sem I/O real |
-| 2026-02-21 | `vi.clearAllMocks()` em `beforeEach` nos testes com shared mocks de setup.js | Evita poluição de call counts entre testes do mesmo arquivo |
+| 2026-02-21 | `vi.mock('../components/X')` pattern para testar Configurator isolado de sub-componentes pesados | Cobre lógica de orquestração sem precisar instanciar Electron-dependent children |
+| 2026-02-21 | `getStats` adicionado ao mock `setup.js` | App.jsx chama `window.api.getStats()` no useEffect — era undefined antes |
+| 2026-02-21 | Frontend coverage 20% → 53% em sessão 7 (+119 testes, 12 novos arquivos de teste) | Target 80% ainda não atingido — gap em componentes grandes (Configurator 486L, KitEditor 430L) |
 
 ---
 
 ## 10. Status dos Testes
 
-| Suite                         | Testes | Status     | Cobertura |
-|-------------------------------|--------|------------|-----------|
-| `components.test.js`          | 9      | ✅ pass    | –         |
-| `database.test.js`            | 17     | ✅ pass    | –         |
-| `useBudgetCalculator.test.js` | 3      | ✅ pass    | 81%       |
-| `useKeyboardNav.test.js`      | 8      | ✅ pass    | 100%      |
-| `configuratorStorage.test.js` | 6      | ✅ pass    | 90%       |
-| `conductors.test.js`          | 8      | ✅ pass    | 100%      |
-| `excelPriceParser.test.js`    | 10     | ✅ pass    | 90%       |
-| `excelExporter.test.js`       | 11     | ✅ pass    | 85%       |
-| `test_domain.py`              | 20     | ✅ pass    | 100%      |
-| `test_api.py`                 | 30     | ✅ pass    | –         |
-| `test_dxf_service.py`         | 13     | ✅ pass    | 93%       |
-| `test_geo_service.py`         | 27     | ✅ pass    | 95%       |
-| `test_voltage_drop.py`        | 40     | ✅ pass    | 100%      |
-| `test_prodist_service.py`     | 59     | ✅ pass    | 100%      |
-| **Total frontend**            | **170**| ✅ pass    | ~20%*     |
-| **Total backend**             | **218**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**               | **388**| ✅ pass    | –         |
+| Suite                              | Testes | Status     | Cobertura |
+|------------------------------------|--------|------------|-----------|
+| `components.test.js`               | 9      | ✅ pass    | –         |
+| `database.test.js`                 | 17     | ✅ pass    | –         |
+| `useBudgetCalculator.test.js`      | 3      | ✅ pass    | 81%       |
+| `useKeyboardNav.test.js`           | 8      | ✅ pass    | 100%      |
+| `configuratorStorage.test.js`      | 6      | ✅ pass    | 90%       |
+| `conductors.test.js`               | 8      | ✅ pass    | 100%      |
+| `excelPriceParser.test.js`         | 21     | ✅ pass    | 95%       |
+| `excelExporter.test.js`            | 16     | ✅ pass    | 95%       |
+| `App.test.jsx`                     | 13     | ✅ pass    | 97%       |
+| `LaborManager.test.jsx`            | 12     | ✅ pass    | 71%       |
+| `BudgetHistory.test.jsx`           | 9      | ✅ pass    | 59%       |
+| `TemplateManager.test.jsx`         | 9      | ✅ pass    | 45%       |
+| `KitResolutionModal.test.jsx`      | 8      | ✅ pass    | 79%       |
+| `PriceManager.test.jsx`            | 8      | ✅ pass    | 54%       |
+| `MaterialManager.test.jsx`         | 11     | ✅ pass    | 56%       |
+| `KitDetailsModal.test.jsx`         | 10     | ✅ pass    | 53%       |
+| `KitEditor.test.jsx`               | 8      | ✅ pass    | 34%       |
+| `ManualKitManager.test.jsx`        | 10     | ✅ pass    | 30%       |
+| `Configurator.test.jsx`            | 10     | ✅ pass    | 28%       |
+| `PriceManagementModal.test.jsx`    | 9      | ✅ pass    | 34%       |
+| `test_domain.py`                   | 20     | ✅ pass    | 100%      |
+| `test_api.py`                      | 30     | ✅ pass    | –         |
+| `test_dxf_service.py`              | 13     | ✅ pass    | 93%       |
+| `test_geo_service.py`              | 27     | ✅ pass    | 95%       |
+| `test_voltage_drop.py`             | 40     | ✅ pass    | 100%      |
+| `test_prodist_service.py`          | 59     | ✅ pass    | 100%      |
+| `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
+| **Total frontend**                 | **289**| ✅ pass    | **53%**   |
+| **Total backend**                  | **218**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **507**| ✅ pass    | –         |
 
-*Cobertura frontend: utils=90%, constants=100%, hooks=78%, components=6% (componentes grandes como Configurator, KitEditor, ManualKitManager exigem mocks Electron complexos).
+### Nota sobre cobertura frontend:
+O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
 
-### Ganhos sessão 6 (frontend coverage)
+### Ganhos sessão 7 (cobertura frontend — componentes)
 
-| Arquivo                     | Antes | Depois |
-|-----------------------------|-------|--------|
-| `excelPriceParser.js`       | 9.87% | 95%    |
-| `excelExporter.js`          | 76%   | ~95%   |
-| `SummaryFooter.jsx`         | 0%    | 100%   |
-| `PosteSearch.jsx`           | 0%    | 100%   |
-| `CompanySelector.jsx`       | 0%    | 75%    |
-| `StructureList.jsx`         | 0%    | 73%    |
-| `MaterialList.jsx`          | 0%    | 70%    |
-| `ConfiguratorToolbar.jsx`   | 0%    | 33%    |
-| `ConductorSelector.jsx`     | 0%    | 62%    |
-| `QuantityPopup.jsx`         | 0%    | 80%    |
+| Componente                  | Antes | Depois | Testes adicionados |
+|-----------------------------|-------|--------|--------------------|
+| `App.jsx`                   | 0%    | 97%    | 13                 |
+| `LaborManager.jsx`          | 0%    | 71%    | 12                 |
+| `BudgetHistory.jsx`         | 0%    | 59%    | 9                  |
+| `TemplateManager.jsx`       | 0%    | 45%    | 9                  |
+| `KitResolutionModal.jsx`    | 0%    | 79%    | 8                  |
+| `PriceManager.jsx`          | 0%    | 54%    | 8                  |
+| `MaterialManager.jsx`       | 0%    | 56%    | 11                 |
+| `KitDetailsModal.jsx`       | 0%    | 53%    | 10                 |
+| `KitEditor.jsx`             | 0%    | 34%    | 8                  |
+| `ManualKitManager.jsx`      | 0%    | 30%    | 10                 |
+| `Configurator.jsx`          | 0%    | 28%    | 10                 |
+| `PriceManagementModal.jsx`  | 0%    | 34%    | 9                  |
+| **Overall frontend**        | **20%**| **53%** | **+119**          |
 
 ---
 
@@ -265,8 +284,9 @@ Usuário seleciona estruturas/materiais
 - [x] ANEEL/PRODIST — `prodist_service.py` + `prodist_router.py` (sessão 5)  
 - [x] Aumentar cobertura utils/hooks frontend — `excelPriceParser.js` 95%, `excelExporter.js` ~95% (sessão 6)
 - [x] Adicionar testes de componentes com mock `window.api` (sessão 6)
+- [x] Testes para todos os componentes principais (sessão 7) — frontend 20% → 53%
 - [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
 - [ ] Half-way BIM: exportação IFC simplificada  
 - [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
-- [ ] Aumentar cobertura componentes grandes (Configurator, KitEditor, ManualKitManager)
+- [ ] Aumentar cobertura componentes grandes (Configurator, KitEditor, ManualKitManager) até ≥80%
 - [ ] Testes E2E com Playwright (Electron app)  

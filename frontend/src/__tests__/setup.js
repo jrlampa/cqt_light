@@ -58,6 +58,9 @@ const defaultApi = {
   getEmpresaAtiva: vi.fn().mockResolvedValue(null),
   setEmpresaAtiva: vi.fn().mockResolvedValue({ changes: 1 }),
   getHistoricoPrecos: vi.fn().mockResolvedValue([]),
+
+  // Stats
+  getStats: vi.fn().mockResolvedValue({ materials: 0, kits: 0, servicos: 0 }),
 };
 
 // Add window.api without overwriting the whole window object (preserves addEventListener etc.)
