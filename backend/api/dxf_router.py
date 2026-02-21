@@ -68,7 +68,7 @@ async def generate_dxf_endpoint(body: RedeEletricaModel):
         dxf_bytes = generate_dxf(rede)
         return Response(
             content=dxf_bytes,
-            media_type="application/dxf",
+            media_type="application/octet-stream",
             headers={"Content-Disposition": "attachment; filename=rede_eletrica.dxf"},
         )
     except RuntimeError as e:

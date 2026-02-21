@@ -118,20 +118,31 @@ Usuário seleciona estruturas/materiais
 
 ## 6. Módulos do Frontend (Responsabilidades)
 
-| Arquivo                      | Responsabilidade              | Linhas |
-|------------------------------|-------------------------------|--------|
-| `Configurator.jsx`           | Orquestrador principal        | ~400*  |
-| `StructureList.jsx`          | Lista de estruturas           | 119    |
-| `MaterialList.jsx`           | Lista de materiais avulsos    | 106    |
-| `SummaryFooter.jsx`          | Rodapé com totais             | 79     |
-| `useBudgetCalculator.js`     | Cálculo de custo total        | 182    |
-| `useKeyboardNav.js`          | Navegação por teclado         | 89     |
-| `excelExporter.js`           | Exportação Excel              | 123    |
-| `ConfiguratorConstants.js`   | Constantes de condutores      | ~30*   |
-| `ConfiguratorToolbar.jsx`    | Barra de ferramentas          | ~80*   |
-| `ConductorSelector.jsx`      | Dropdown condutores MT/BT     | ~80*   |
+| Arquivo                        | Responsabilidade               | Linhas |
+|--------------------------------|--------------------------------|--------|
+| `Configurator.jsx`             | Orquestrador principal         | 486    |
+| `StructureList.jsx`            | Lista de estruturas            | 119    |
+| `MaterialList.jsx`             | Lista de materiais avulsos     | 106    |
+| `SummaryFooter.jsx`            | Rodapé com totais              | 79     |
+| `useBudgetCalculator.js`       | Cálculo de custo total         | 182    |
+| `useKeyboardNav.js`            | Navegação por teclado          | 89     |
+| `excelExporter.js`             | Exportação Excel               | 123    |
+| `constants/conductors.js`      | Constantes de condutores       | 28     |
+| `ConfiguratorToolbar.jsx`      | Barra de ferramentas           | 84     |
+| `ConductorSelector.jsx`        | Dropdown condutores MT/BT      | 110    |
+| `PosteSearch.jsx`              | Busca de postes                | 54     |
+| `QuantityPopup.jsx`            | Modal de quantidade            | 58     |
+| `utils/configuratorStorage.js` | Persistência localStorage      | 38     |
 
-*Após modularização
+**Módulos do banco (electron/db/):**
+
+| Arquivo                   | Responsabilidade                    | Linhas |
+|---------------------------|-------------------------------------|--------|
+| `database.cjs`            | Orquestrador + helpers base + stats | 119    |
+| `modules/materialsKits.cjs` | CRUD materiais, kits, composição  | 155    |
+| `modules/budget.cjs`      | Serviços, orçamentos, templates     | 103    |
+| `modules/pricing.cjs`     | Empresas, preços, histórico         | 143    |
+| `modules/sufixos.cjs`     | Sufixos contextuais, templates manuais | 108 |
 
 ---
 
@@ -171,19 +182,31 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | 2.5D via Z como atributo (não extrusão)                    | Compatibilidade DWG/AutoCAD           |
 | 2026-02-21 | accoreconsole.exe para testes DXF headless                 | Validação nativa AutoCAD              |
 | 2026-02-21 | Modularização: extrair constantes e toolbar do Configurator | Limite 500 linhas, SRP                |
+| 2026-02-21 | `database.cjs` dividido em 4 módulos de domínio            | Limite 500 linhas, SRP, manutenibilidade |
+| 2026-02-21 | `httpx TestClient` para testes de integração FastAPI        | Cobertura 95% backend, sem servidor real |
+| 2026-02-21 | `field_validator` Pydantic v2 para validar `radius_m > 0`  | Sanitização de entrada na API         |
+| 2026-02-21 | `media_type="application/octet-stream"` no endpoint DXF    | Padrão IANA correto                   |
 
 ---
 
 ## 10. Status dos Testes
 
-| Suite                         | Testes | Status |
-|-------------------------------|--------|--------|
-| `components.test.js`          | 9      | ✅ pass |
-| `database.test.js`            | 17     | ✅ pass |
-| `useBudgetCalculator.test.js` | 3      | ✅ pass |
-| `geo_service_test.py`         | 8      | ✅ pass |
-| `dxf_service_test.py`         | 10     | ✅ pass |
-| **Cobertura total (FE hooks)** | -     | ~81%   |
+| Suite                         | Testes | Status     | Cobertura |
+|-------------------------------|--------|------------|-----------|
+| `components.test.js`          | 9      | ✅ pass    | –         |
+| `database.test.js`            | 17     | ✅ pass    | –         |
+| `useBudgetCalculator.test.js` | 3      | ✅ pass    | 81%       |
+| `useKeyboardNav.test.js`      | 8      | ✅ pass    | 100%      |
+| `configuratorStorage.test.js` | 6      | ✅ pass    | 90%       |
+| `conductors.test.js`          | 8      | ✅ pass    | 100%      |
+| `test_api.py`                 | 30     | ✅ pass    | –         |
+| `test_dxf_service.py`         | 13     | ✅ pass    | 93%       |
+| `test_geo_service.py`         | 27     | ✅ pass    | 95%       |
+| **Total frontend**            | **51** | ✅ pass    | ~22%*     |
+| **Total backend**             | **67** | ✅ pass    | **95%**   |
+| **TOTAL GERAL**               | **118**| ✅ pass    | –         |
+
+*Cobertura frontend baixa porque Configurator, KitEditor etc. precisam de mocks Electron mais aprofundados.
 
 ---
 
@@ -194,4 +217,6 @@ Usuário seleciona estruturas/materiais
 - [ ] Cálculo de queda de tensão ao longo do traçado  
 - [ ] Half-way BIM: exportação IFC simplificada  
 - [ ] CI/CD pipeline (GitHub Actions)  
+- [ ] Aumentar cobertura frontend (mocks do Electron para Configurator, KitEditor)
 - [ ] Roles: Tech Lead, Dev Fullstack Sênior, DevOps/QA, UI/UX, Estagiário  
+- [ ] Testes E2E com Playwright (Electron app)  

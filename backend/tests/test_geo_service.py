@@ -18,6 +18,8 @@ from services.geo_service import (
     decimal_to_utm,
     calculate_buffer_bbox,
     DecimalCoordinate,
+    _utm_to_decimal_manual,
+    _decimal_to_utm_manual,
 )
 
 # Coordenadas de referência do projeto (MEMORY.md)
@@ -106,3 +108,57 @@ class TestCalculateBufferBbox:
         result = calculate_buffer_bbox(REF_LAT, REF_LON, 500)
         assert result["center"]["latitude"] == REF_LAT
         assert result["center"]["longitude"] == REF_LON
+
+
+class TestManualUtmToDecimal:
+    """Testa a implementação manual (fallback sem pyproj) de UTM→decimal."""
+
+    def test_returns_decimal_coordinate(self):
+        result = _utm_to_decimal_manual(714315.67, 7549084.21, 23, False)
+        assert isinstance(result, DecimalCoordinate)
+
+    def test_southern_hemisphere_negative_lat(self):
+        result = _utm_to_decimal_manual(714315.67, 7549084.21, 23, False)
+        assert result.latitude < 0
+
+    def test_precision_six_decimal_places(self):
+        result = _utm_to_decimal_manual(714315.67, 7549084.21, 23, False)
+        assert result.latitude == round(result.latitude, 6)
+        assert result.longitude == round(result.longitude, 6)
+
+    def test_northern_hemisphere(self):
+        # Zona 31N, Paris aprox.
+        result = _utm_to_decimal_manual(448600, 5411700, 31, True)
+        assert result.latitude > 0
+
+    def test_roundtrip_consistency(self):
+        """Manual: decimal→UTM→decimal deve ser consistente."""
+        e, n, zone, northern = _decimal_to_utm_manual(REF_LAT, REF_LON, 23, False)
+        dec = _utm_to_decimal_manual(e, n, zone, northern)
+        assert abs(dec.latitude - REF_LAT) < 0.01
+        assert abs(dec.longitude - REF_LON) < 0.01
+
+
+class TestManualDecimalToUtm:
+    """Testa a implementação manual (fallback sem pyproj) de decimal→UTM."""
+
+    def test_returns_tuple_4(self):
+        result = _decimal_to_utm_manual(REF_LAT, REF_LON, 23, False)
+        assert len(result) == 4
+
+    def test_southern_hemisphere(self):
+        _, _, _, northern = _decimal_to_utm_manual(REF_LAT, REF_LON, 23, False)
+        assert not northern
+
+    def test_northern_hemisphere(self):
+        _, _, _, northern = _decimal_to_utm_manual(48.8566, 2.3522, 31, True)
+        assert northern
+
+    def test_easting_positive(self):
+        easting, _, _, _ = _decimal_to_utm_manual(REF_LAT, REF_LON, 23, False)
+        assert easting > 0
+
+    def test_northing_positive_south(self):
+        """Hemisfério sul: northing retornado é positivo (falso norte já aplicado)."""
+        _, northing, _, _ = _decimal_to_utm_manual(REF_LAT, REF_LON, 23, False)
+        assert northing > 0

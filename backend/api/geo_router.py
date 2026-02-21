@@ -4,7 +4,7 @@ Endpoints para conversão UTM↔decimal e cálculo de buffer.
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from services.geo_service import (
     utm_to_decimal,
@@ -16,21 +16,28 @@ router = APIRouter()
 
 
 class UTMInput(BaseModel):
-    easting: float = Field(..., example=788547.0, description="Coordenada E em metros")
-    northing: float = Field(..., example=7634925.0, description="Coordenada N em metros")
+    easting: float = Field(..., description="Coordenada E em metros", json_schema_extra={"example": 788547.0})
+    northing: float = Field(..., description="Coordenada N em metros", json_schema_extra={"example": 7634925.0})
     zone_number: int = Field(23, description="Número da faixa UTM")
     northern: bool = Field(False, description="True para hemisfério norte")
 
 
 class DecimalInput(BaseModel):
-    latitude: float = Field(..., example=-22.15018, description="Latitude em graus decimais")
-    longitude: float = Field(..., example=-42.92185, description="Longitude em graus decimais")
+    latitude: float = Field(..., description="Latitude em graus decimais", json_schema_extra={"example": -22.15018})
+    longitude: float = Field(..., description="Longitude em graus decimais", json_schema_extra={"example": -42.92185})
 
 
 class BufferInput(BaseModel):
-    latitude: float = Field(..., example=-22.15018)
-    longitude: float = Field(..., example=-42.92185)
-    radius_m: float = Field(..., example=500.0, description="Raio em metros (100, 500, 1000)")
+    latitude: float = Field(..., json_schema_extra={"example": -22.15018})
+    longitude: float = Field(..., json_schema_extra={"example": -42.92185})
+    radius_m: float = Field(..., description="Raio em metros (100, 500, 1000)", json_schema_extra={"example": 500.0})
+
+    @field_validator("radius_m")
+    @classmethod
+    def radius_must_be_positive(cls, v: float) -> float:
+        if v <= 0:
+            raise ValueError("radius_m deve ser positivo (> 0)")
+        return v
 
 
 @router.post("/utm-to-decimal", summary="Converter UTM → Decimal")
