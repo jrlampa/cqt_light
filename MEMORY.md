@@ -1,0 +1,197 @@
+# CQT Light — RAG / Memória de Trabalho
+
+> **Atualizado em:** 2026-02-21  
+> **Branch ativa:** `dev`  
+> **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
+
+---
+
+## 1. Visão Geral do Projeto
+
+**CQT Light** é uma ferramenta de orçamentação para redes de distribuição de energia elétrica de baixa/média tensão (BT/MT), seguindo normas **ABNT** e padrões construtivos de concessionárias brasileiras.
+
+### Objetivo Estratégico
+Nível enterprise / dominância de mercado → SotA (State of the Art) em orçamentação elétrica 2.5D.
+
+### Usuário-Alvo
+Engenheiros/técnicos de concessionárias e empreiteiras que projetam e orçam obras de redes de distribuição.
+
+---
+
+## 2. Tecnologias
+
+| Camada       | Stack                                       |
+|--------------|---------------------------------------------|
+| Frontend     | React 19, Tailwind CSS, Lucide React, Vite  |
+| Desktop shell| Electron 34 (IPC main/preload/renderer)     |
+| Banco local  | SQLite via `better-sqlite3`                 |
+| Backend API  | Python 3.11 · FastAPI · Uvicorn             |
+| DXF          | `ezdxf` (geração 2.5D headless)             |
+| Testes FE    | Vitest + @testing-library/react             |
+| Testes BE    | pytest + pytest-asyncio                     |
+| Containers   | Docker + docker-compose                     |
+| Geo          | Conversão UTM↔decimal via `pyproj`          |
+
+---
+
+## 3. Arquitetura DDD
+
+```
+cqt_light/
+├── frontend/               # Thin client (Electron + React)
+│   ├── electron/           # Main process (IPC handlers, SQLite)
+│   │   ├── db/             # Database layer (schema.sql, database.cjs)
+│   │   ├── main.cjs        # IPC handlers
+│   │   └── preload.cjs     # Context bridge
+│   └── src/                # React app
+│       ├── components/     # UI components (max 500 linhas cada)
+│       ├── hooks/          # Custom hooks (lógica reutilizável)
+│       └── utils/          # Utilitários (export, parse)
+├── backend/                # Smart backend (FastAPI)
+│   ├── api/                # Rotas HTTP
+│   ├── domain/             # Entidades e regras de negócio
+│   ├── services/           # Serviços de aplicação
+│   │   ├── dxf_service.py  # Geração DXF 2.5D (ezdxf)
+│   │   └── geo_service.py  # Conversão UTM ↔ decimal (pyproj)
+│   ├── tests/              # pytest
+│   └── main.py             # Entrypoint FastAPI
+├── data/                   # Dados estruturados (kits, catálogo)
+├── scripts/                # Scripts de extração/seed
+├── docker-compose.yml
+├── .gitignore
+├── .dockerignore
+└── MEMORY.md               # Este arquivo (RAG)
+```
+
+---
+
+## 4. Regras de Negócio Críticas
+
+### 4.1 Coordenadas de Referência para Testes
+| Sistema        | Valor                          |
+|----------------|--------------------------------|
+| UTM (23K)      | 788547 E, 7634925 N (Zona 23K) |
+| Decimal        | -22.15018, -42.92185           |
+| SIRGAS2000     | EPSG:31983 (UTM 23S)           |
+
+Raios de teste: **100 m · 500 m · 1 km**
+
+### 4.2 Projeção 2.5D (Não 3D)
+- Todos os desenhos DXF usam 2.5D: planta baixa (XY) com cota Z como atributo de texto.
+- Sem entidades 3D (extrusões, sólidos).
+- Postes: círculos no plano XY com elevação anotada.
+
+### 4.3 Estruturas de Kits
+- `codigo_kit` → referência ao catálogo de kits SAP.
+- `kit_composicao` → lista de SAP + quantidade.
+- `templates_kit_manual` → kits com materiais parciais (sufixos contextuais).
+
+### 4.4 Condutores
+| Nível | Tipos                            |
+|-------|----------------------------------|
+| MT    | Convencional (CAA), Compacta (Spacer) |
+| BT    | Multiplexada (Multiplex), Rede Nua     |
+
+### 4.5 ABNT Aplicáveis
+- NBR 5410 (instalações de BT)  
+- NBR 14039 (instalações de MT)  
+- ABNT NBR 6492 (representação de projetos de arquitetura)  
+- Padrões construtivos da concessionária local
+
+---
+
+## 5. Fluxo Principal (Orçamentação)
+
+```
+Usuário seleciona estruturas/materiais
+    → useBudgetCalculator (hook React)
+    → IPC: getCustoTotal(kitCodes)
+    → electron/main.cjs → db.getCustoTotal()
+    → SQL: JOIN kits + kit_composicao + materiais + servicos_cm
+    → Retorna: { materiais[], totalMaterial, totalServico }
+    → Agrega materiais avulsos
+    → Exibe na SummaryFooter
+    → Exporta Excel ou gera DXF (backend FastAPI)
+```
+
+---
+
+## 6. Módulos do Frontend (Responsabilidades)
+
+| Arquivo                      | Responsabilidade              | Linhas |
+|------------------------------|-------------------------------|--------|
+| `Configurator.jsx`           | Orquestrador principal        | ~400*  |
+| `StructureList.jsx`          | Lista de estruturas           | 119    |
+| `MaterialList.jsx`           | Lista de materiais avulsos    | 106    |
+| `SummaryFooter.jsx`          | Rodapé com totais             | 79     |
+| `useBudgetCalculator.js`     | Cálculo de custo total        | 182    |
+| `useKeyboardNav.js`          | Navegação por teclado         | 89     |
+| `excelExporter.js`           | Exportação Excel              | 123    |
+| `ConfiguratorConstants.js`   | Constantes de condutores      | ~30*   |
+| `ConfiguratorToolbar.jsx`    | Barra de ferramentas          | ~80*   |
+| `ConductorSelector.jsx`      | Dropdown condutores MT/BT     | ~80*   |
+
+*Após modularização
+
+---
+
+## 7. Backend FastAPI (Endpoints)
+
+| Endpoint                 | Método | Descrição                                      |
+|--------------------------|--------|------------------------------------------------|
+| `/api/dxf/generate`      | POST   | Gera DXF 2.5D de rede elétrica                |
+| `/api/dxf/validate`      | POST   | Valida DXF gerado (entidades, camadas)         |
+| `/api/geo/utm-to-decimal`| POST   | Converte UTM SIRGAS2000 → decimal              |
+| `/api/geo/decimal-to-utm`| POST   | Converte decimal → UTM SIRGAS2000              |
+| `/api/geo/buffer`        | POST   | Calcula área de influência (100/500/1000m)     |
+| `/health`                | GET    | Health check                                   |
+
+---
+
+## 8. Regras de Qualidade
+
+- Arquivos > 500 linhas → modularizar  
+- Cobertura de testes ≥ 80%  
+- Sem dados mockados em produção (apenas em testes)  
+- Zero custo monetário (APIs públicas/gratuitas)  
+- Interface em **pt-BR**  
+- Docker first: toda execução deve funcionar em container  
+- Segurança: sanitização de inputs em todas as entradas de dados  
+- Thin frontend / Smart backend  
+
+---
+
+## 9. Decisões Técnicas Registradas
+
+| Data       | Decisão                                                     | Motivo                                |
+|------------|-------------------------------------------------------------|---------------------------------------|
+| 2026-02-21 | `ezdxf` para geração DXF                                   | Grátis, suporta DXF R2010+, headless  |
+| 2026-02-21 | `pyproj` para conversão UTM                                 | SIRGAS2000 (EPSG:31983), padrão IBGE  |
+| 2026-02-21 | FastAPI como backend                                        | Async, tipado, docs automáticas       |
+| 2026-02-21 | 2.5D via Z como atributo (não extrusão)                    | Compatibilidade DWG/AutoCAD           |
+| 2026-02-21 | accoreconsole.exe para testes DXF headless                 | Validação nativa AutoCAD              |
+| 2026-02-21 | Modularização: extrair constantes e toolbar do Configurator | Limite 500 linhas, SRP                |
+
+---
+
+## 10. Status dos Testes
+
+| Suite                         | Testes | Status |
+|-------------------------------|--------|--------|
+| `components.test.js`          | 9      | ✅ pass |
+| `database.test.js`            | 17     | ✅ pass |
+| `useBudgetCalculator.test.js` | 3      | ✅ pass |
+| `geo_service_test.py`         | 8      | ✅ pass |
+| `dxf_service_test.py`         | 10     | ✅ pass |
+| **Cobertura total (FE hooks)** | -     | ~81%   |
+
+---
+
+## 11. Próximos Passos
+
+- [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
+- [ ] Importação de traçado via KML/GPX (coordenadas reais)  
+- [ ] Cálculo de queda de tensão ao longo do traçado  
+- [ ] Half-way BIM: exportação IFC simplificada  
+- [ ] CI/CD pipeline (GitHub Actions)  
+- [ ] Roles: Tech Lead, Dev Fullstack Sênior, DevOps/QA, UI/UX, Estagiário  

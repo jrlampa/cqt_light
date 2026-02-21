@@ -39,6 +39,14 @@ logs/
 # React
 frontend/dist/
 frontend/node_modules/
+frontend/coverage/
+
+# Python backend
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/venv/
+backend/.env
 Padrões construtivos/ANEXO B - RECON.zip
 Padrões construtivos/OPO-25-0008 - RUA MANUEL BECKMAM.zip
 Padrões construtivos/Padrões.zip
