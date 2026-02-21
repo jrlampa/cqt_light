@@ -278,3 +278,57 @@ class TestDxfValidate:
         data = resp.json()
         assert "dxf_version" in data
         assert data["dxf_version"] is not None
+
+
+class TestLandingPage:
+    """Testes da landing page servida em /"""
+
+    def test_landing_returns_200(self):
+        resp = client.get("/")
+        assert resp.status_code == 200
+
+    def test_landing_content_type_html(self):
+        resp = client.get("/")
+        assert "text/html" in resp.headers.get("content-type", "")
+
+    def test_landing_contains_brand(self):
+        resp = client.get("/")
+        html = resp.text
+        assert "CQT Light" in html
+
+    def test_landing_contains_abnt_reference(self):
+        resp = client.get("/")
+        assert "ABNT" in resp.text
+
+    def test_landing_contains_prodist_reference(self):
+        resp = client.get("/")
+        assert "PRODIST" in resp.text
+
+    def test_landing_contains_api_endpoints(self):
+        resp = client.get("/")
+        html = resp.text
+        assert "/api/dxf/generate" in html
+        assert "/api/prodist/classificar-tensao" in html
+
+    def test_landing_is_ptbr(self):
+        resp = client.get("/")
+        html = resp.text
+        assert 'lang="pt-BR"' in html
+
+    def test_landing_features_section(self):
+        resp = client.get("/")
+        html = resp.text
+        assert "Geração DXF 2.5D" in html
+        assert "Georreferenciamento" in html
+
+    def test_landing_normas_section(self):
+        resp = client.get("/")
+        html = resp.text
+        assert "NBR 5410" in html
+        assert "NBR 14039" in html
+        assert "PRODIST Módulo 6" in html
+        assert "PRODIST Módulo 8" in html
+
+    def test_landing_docker_mention(self):
+        resp = client.get("/")
+        assert "Docker" in resp.text

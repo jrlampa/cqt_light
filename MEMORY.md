@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 7)  
+> **Atualizado em:** 2026-02-21 (sessão 9)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -160,6 +160,7 @@ Usuário seleciona estruturas/materiais
 
 | Endpoint                              | Método | Descrição                                        |
 |---------------------------------------|--------|--------------------------------------------------|
+| `/`                                   | GET    | Landing page (HTML, pt-BR)                       |
 | `/api/dxf/generate`                   | POST   | Gera DXF 2.5D de rede elétrica                  |
 | `/api/dxf/validate`                   | POST   | Valida DXF gerado (entidades, camadas)           |
 | `/api/geo/utm-to-decimal`             | POST   | Converte UTM SIRGAS2000 → decimal                |
@@ -172,6 +173,7 @@ Usuário seleciona estruturas/materiais
 | `/api/prodist/queda-alimentador`      | POST   | Queda de tensão com limites PRODIST (Módulo 6)   |
 | `/api/prodist/limites`                | GET    | Lista limites PRODIST + comparação ABNT          |
 | `/health`                             | GET    | Health check                                     |
+| `/landing`                            | GET    | Serve arquivos estáticos da landing page         |
 
 ---
 
@@ -216,6 +218,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `vi.mock('../components/X')` pattern para testar Configurator isolado de sub-componentes pesados | Cobre lógica de orquestração sem precisar instanciar Electron-dependent children |
 | 2026-02-21 | `getStats` adicionado ao mock `setup.js` | App.jsx chama `window.api.getStats()` no useEffect — era undefined antes |
 | 2026-02-21 | Frontend coverage 20% → 53% em sessão 7 (+119 testes, 12 novos arquivos de teste) | Target 80% ainda não atingido — gap em componentes grandes (Configurator 486L, KitEditor 430L) |
+| 2026-02-21 | Frontend coverage 52.71% → 80.28% linhas em sessão 8 (+140 testes, 12 novos arquivos) | Target ≥80% atingido ✅ |
+| 2026-02-21 | Landing page `/landing/index.html` — Tailwind CDN, pt-BR, zero custo | Sessão 9: novo requisito "landpage" adicionado ao enunciado |
+| 2026-02-21 | FastAPI serve landing via `HTMLResponse` em `GET /` | `Path(__file__).resolve()` obrigatório — `__file__` pode ser relativo em contexto pytest |
+| 2026-02-21 | `app.mount("/landing", StaticFiles(...))` após rotas API | StaticFiles para assets futuros (imagens, CSS custom) da landing |
 
 ---
 
@@ -232,27 +238,17 @@ Usuário seleciona estruturas/materiais
 | `excelPriceParser.test.js`         | 21     | ✅ pass    | 95%       |
 | `excelExporter.test.js`            | 16     | ✅ pass    | 95%       |
 | `App.test.jsx`                     | 13     | ✅ pass    | 97%       |
-| `LaborManager.test.jsx`            | 12     | ✅ pass    | 71%       |
-| `BudgetHistory.test.jsx`           | 9      | ✅ pass    | 59%       |
-| `TemplateManager.test.jsx`         | 9      | ✅ pass    | 45%       |
-| `KitResolutionModal.test.jsx`      | 8      | ✅ pass    | 79%       |
-| `PriceManager.test.jsx`            | 8      | ✅ pass    | 54%       |
-| `MaterialManager.test.jsx`         | 11     | ✅ pass    | 56%       |
-| `KitDetailsModal.test.jsx`         | 10     | ✅ pass    | 53%       |
-| `KitEditor.test.jsx`               | 8      | ✅ pass    | 34%       |
-| `ManualKitManager.test.jsx`        | 10     | ✅ pass    | 30%       |
-| `Configurator.test.jsx`            | 10     | ✅ pass    | 28%       |
-| `PriceManagementModal.test.jsx`    | 9      | ✅ pass    | 34%       |
+| Componentes (25 arquivos .test.jsx)| 368    | ✅ pass    | ≥80% ✅   |
 | `test_domain.py`                   | 20     | ✅ pass    | 100%      |
-| `test_api.py`                      | 30     | ✅ pass    | –         |
+| `test_api.py`                      | 40     | ✅ pass    | –         |
 | `test_dxf_service.py`              | 13     | ✅ pass    | 93%       |
 | `test_geo_service.py`              | 27     | ✅ pass    | 95%       |
 | `test_voltage_drop.py`             | 40     | ✅ pass    | 100%      |
 | `test_prodist_service.py`          | 59     | ✅ pass    | 100%      |
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
-| **Total frontend**                 | **289**| ✅ pass    | **53%**   |
-| **Total backend**                  | **218**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **507**| ✅ pass    | –         |
+| **Total frontend**                 | **429**| ✅ pass    | **≥80%** ✅|
+| **Total backend**                  | **228**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **657**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -285,8 +281,10 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] Aumentar cobertura utils/hooks frontend — `excelPriceParser.js` 95%, `excelExporter.js` ~95% (sessão 6)
 - [x] Adicionar testes de componentes com mock `window.api` (sessão 6)
 - [x] Testes para todos os componentes principais (sessão 7) — frontend 20% → 53%
+- [x] Frontend coverage ≥80% atingida (sessão 8) — 80.28% lines, 429 testes
+- [x] Landing page `landing/index.html` — pt-BR, Tailwind CDN, enterprise quality (sessão 9)
+- [x] FastAPI serve landing em `GET /`, 10 novos testes — total backend 228
 - [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
 - [ ] Half-way BIM: exportação IFC simplificada  
 - [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
-- [ ] Aumentar cobertura componentes grandes (Configurator, KitEditor, ManualKitManager) até ≥80%
-- [ ] Testes E2E com Playwright (Electron app)  
+- [ ] Testes E2E com Playwright (Electron app)
