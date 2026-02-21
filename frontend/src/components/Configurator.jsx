@@ -31,6 +31,8 @@ import { KitResolutionModal } from './KitResolutionModal';
 import { KitDetailsModal } from './KitDetailsModal';
 import { CompanySelector } from './CompanySelector';
 import { PriceManagementModal } from './PriceManagementModal';
+import Toast from './Toast';
+import useProdistToast from '../hooks/useProdistToast';
 
 /**
  * Configurator — Orquestrador principal da tela de montagem de orçamentos.
@@ -84,6 +86,7 @@ const Configurator = () => {
 
   // --- HOOKS ---
   const { custoData, setCustoData, calculateTotal } = useBudgetCalculator();
+  const { toast: toastProdist, clearToast: clearToastProdist } = useProdistToast();
 
   const closeAllDropdowns = () => {
     setShowStructureDropdown(false);
@@ -479,6 +482,14 @@ const Configurator = () => {
         materials={pendingResolutionMaterials}
         onConfirm={handleResolutionConfirm}
       />
+
+      {toastProdist && (
+        <Toast
+          mensagem={toastProdist.mensagem}
+          tipo={toastProdist.tipo}
+          onFechar={clearToastProdist}
+        />
+      )}
     </div>
   );
 };

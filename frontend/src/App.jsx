@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, Layers, Package, DollarSign, Keyboard } from 'lucide-react';
+import { Calculator, Layers, Package, DollarSign, Map } from 'lucide-react';
 import Configurator from './components/Configurator';
 import MaterialManager from './components/MaterialManager';
 import KitEditor from './components/KitEditor';
 import LaborManager from './components/LaborManager';
+import MapaRede from './components/MapaRede';
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
@@ -20,6 +21,7 @@ function App() {
           case '2': e.preventDefault(); setActiveTab('materials'); break;
           case '3': e.preventDefault(); setActiveTab('kits'); break;
           case '4': e.preventDefault(); setActiveTab('labor'); break;
+          case '5': e.preventDefault(); setActiveTab('mapa'); break;
         }
       }
     };
@@ -39,6 +41,7 @@ function App() {
     { id: 'materials', label: 'Materiais', icon: Layers, shortcut: '2' },
     { id: 'kits', label: 'Kits', icon: Package, shortcut: '3' },
     { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4' },
+    { id: 'mapa', label: 'Mapa', icon: Map, shortcut: '5' },
   ];
 
   const renderContent = () => {
@@ -47,6 +50,7 @@ function App() {
       case 'materials': return <MaterialManager />;
       case 'kits': return <KitEditor />;
       case 'labor': return <LaborManager />;
+      case 'mapa': return <MapaRede />;
       default: return <Configurator />;
     }
   };

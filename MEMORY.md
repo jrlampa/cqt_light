@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 10)  
+> **Atualizado em:** 2026-02-21 (sessão 12)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -235,7 +235,9 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `backend/.coverage` removido do git tracking               | Estava rastreado por engano desde sessão 6 |
 | 2026-02-21 | `test_prodist_service.py` (536L) dividido em `test_prodist_domain.py` + `test_prodist_api.py` | Limite 500 linhas, SRP |
 | 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
-| 2026-02-21 | `MapaRede.jsx` — Leaflet via CDN (unpkg.com, gratuito) | Zero custo, sem npm leaflet, carregamento lazy |
+| 2026-02-21 | `useProdistToast.js` — hook com `formatarMensagemProdist` exportada | JSDoc tipado, constantes PREFIXO/SUFIXO_AVISO, MT sempre incluído (concessionária) |
+| 2026-02-21 | App.jsx: aba "Mapa" (Ctrl+5) renderiza MapaRede | Integração do mapa Leaflet/OSM ao app principal |
+| 2026-02-21 | Configurator.jsx integra `useProdistToast` + `Toast` | Aviso PRODIST/ABNT explícito conforme requisito "toast explicito" |
 | 2026-02-21 | `test_e2e_workflow.py` — 8 fluxos E2E completos | Cobre pipeline real: UTM→geo→buffer→DXF→IFC→PRODIST |
 | 2026-02-21 | UTM refs (788547, 7634925) e decimal (-22.15018, -42.92185) são pontos distintos no MEMORY.md | E2E usa roundtrip (não absoluto); pyproj é preciso para EPSG:31983 |
 
@@ -249,7 +251,7 @@ Usuário seleciona estruturas/materiais
 | `database.test.js`                 | 17     | ✅ pass    | –         |
 | `useBudgetCalculator.test.js`      | 3      | ✅ pass    | 81%       |
 | `useKeyboardNav.test.js`           | 8      | ✅ pass    | 100%      |
-| `useGeo.test.js`                   | 18     | ✅ pass    | 100%      |
+| `useProdistToast.test.js`      | 18     | ✅ pass    | 100%      |
 | `configuratorStorage.test.js`      | 6      | ✅ pass    | 90%       |
 | `conductors.test.js`               | 8      | ✅ pass    | 100%      |
 | `excelPriceParser.test.js`         | 21     | ✅ pass    | 95%       |
@@ -267,9 +269,9 @@ Usuário seleciona estruturas/materiais
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
-| **Total frontend**                 | **484**| ✅ pass    | **≥80%** ✅|
+| **Total frontend**                 | **506**| ✅ pass    | **≥80%** ✅|
 | **Total backend**                  | **297**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **781**| ✅ pass    | –         |
+| **TOTAL GERAL**                    | **803**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -312,6 +314,6 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] `MapaRede.jsx` — componente Leaflet/OSM 2.5D para visualização de rede elétrica (sessão 11)
 - [x] Testes E2E de workflow completo (`test_e2e_workflow.py`) — 27 testes, 8 fluxos reais (sessão 11)
 - [x] 781 testes totais (297 backend + 484 frontend), 0 CodeQL alerts (sessão 11)
-- [ ] Integrar MapaRede na aba de configurador (tab "Mapa" no App.jsx)
+- [x] Integrar MapaRede na aba de configurador (tab "Mapa" no App.jsx) — Ctrl+5, sessão 12
+- [x] Conectar useProdistToast + Toast ao Configurator.jsx — aviso PRODIST on mount (sessão 12)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)
-- [ ] Conectar useProdist + Toast ao fluxo de orçamentação (Configurator.jsx)

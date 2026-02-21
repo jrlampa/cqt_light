@@ -13,6 +13,7 @@ vi.mock('../components/Configurator', () => ({ default: () => <div data-testid="
 vi.mock('../components/MaterialManager', () => ({ default: () => <div data-testid="materialmanager">MaterialManager</div> }));
 vi.mock('../components/KitEditor', () => ({ default: () => <div data-testid="kiteditor">KitEditor</div> }));
 vi.mock('../components/LaborManager', () => ({ default: () => <div data-testid="labormanager">LaborManager</div> }));
+vi.mock('../components/MapaRede', () => ({ default: () => <div data-testid="maparede">MapaRede</div> }));
 
 describe('App', () => {
   beforeEach(() => {
@@ -31,6 +32,11 @@ describe('App', () => {
     expect(screen.getByText('Materiais')).toBeTruthy();
     expect(screen.getByText('Kits')).toBeTruthy();
     expect(screen.getByText('Mão de Obra')).toBeTruthy();
+  });
+
+  it('renderiza o botão da aba Mapa', () => {
+    render(<App />);
+    expect(screen.getByText('Mapa')).toBeTruthy();
   });
 
   it('exibe Configurator por padrão (aba Montagem)', () => {
@@ -99,5 +105,17 @@ describe('App', () => {
     const { unmount } = render(<App />);
     unmount();
     expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+  });
+
+  it('troca para MapaRede ao clicar em Mapa', async () => {
+    render(<App />);
+    fireEvent.click(screen.getByText('Mapa'));
+    await waitFor(() => expect(screen.getByTestId('maparede')).toBeTruthy());
+  });
+
+  it('tecla Ctrl+5 muda para aba Mapa', async () => {
+    render(<App />);
+    fireEvent.keyDown(window, { key: '5', ctrlKey: true });
+    await waitFor(() => expect(screen.getByTestId('maparede')).toBeTruthy());
   });
 });
