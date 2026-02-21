@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 5)  
+> **Atualizado em:** 2026-02-21 (sessão 6)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -210,8 +210,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `kml_service.py` — xml.etree.ElementTree stdlib             | Zero custo, suporte KML+GPX           |
 | 2026-02-21 | Haversine para comprimento de traçado GPS                   | Sem deps externas, ≈0.5% erro < 100km |
 | 2026-02-21 | `prodist_service.py` — ANEEL/PRODIST Módulo 6 e 8          | Norma concessionária sobrepõe ABNT; toast aviso explícito |
-| 2026-02-21 | `aviso_toast` em respostas PRODIST                          | Requisito: "ignorar ABNT com toast explícito" quando concessionária aplicada |
-| 2026-02-21 | `NORMA_ABNT` / `NORMA_PRODIST` como strings no domínio     | Evita enum de infraestrutura em entidades puras (DDD) |
+| 2026-02-21 | `vitest setup.js` com `window.api` mock via atribuição direta (não Object.defineProperty) | Preserva `window.addEventListener` que useKeyboardNav precisa |
+| 2026-02-21 | `vi.mock('xlsx')` + dynamic import para testar `parseExcelPrecos` com FileReader | Sem deps de browser real, cobertura 9% → 95% |
+| 2026-02-21 | `vi.mock('xlsx', importOriginal)` spread para preservar `XLSX.utils.*` ao mock `writeFile` | downloadWorkbook testável sem I/O real |
+| 2026-02-21 | `vi.clearAllMocks()` em `beforeEach` nos testes com shared mocks de setup.js | Evita poluição de call counts entre testes do mesmo arquivo |
 
 ---
 
@@ -233,11 +235,26 @@ Usuário seleciona estruturas/materiais
 | `test_geo_service.py`         | 27     | ✅ pass    | 95%       |
 | `test_voltage_drop.py`        | 40     | ✅ pass    | 100%      |
 | `test_prodist_service.py`     | 59     | ✅ pass    | 100%      |
-| **Total frontend**            | **72** | ✅ pass    | ~25%*     |
+| **Total frontend**            | **170**| ✅ pass    | ~20%*     |
 | **Total backend**             | **218**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**               | **290**| ✅ pass    | –         |
+| **TOTAL GERAL**               | **388**| ✅ pass    | –         |
 
-*Cobertura frontend baixa porque Configurator, KitEditor etc. precisam de mocks Electron mais aprofundados.
+*Cobertura frontend: utils=90%, constants=100%, hooks=78%, components=6% (componentes grandes como Configurator, KitEditor, ManualKitManager exigem mocks Electron complexos).
+
+### Ganhos sessão 6 (frontend coverage)
+
+| Arquivo                     | Antes | Depois |
+|-----------------------------|-------|--------|
+| `excelPriceParser.js`       | 9.87% | 95%    |
+| `excelExporter.js`          | 76%   | ~95%   |
+| `SummaryFooter.jsx`         | 0%    | 100%   |
+| `PosteSearch.jsx`           | 0%    | 100%   |
+| `CompanySelector.jsx`       | 0%    | 75%    |
+| `StructureList.jsx`         | 0%    | 73%    |
+| `MaterialList.jsx`          | 0%    | 70%    |
+| `ConfiguratorToolbar.jsx`   | 0%    | 33%    |
+| `ConductorSelector.jsx`     | 0%    | 62%    |
+| `QuantityPopup.jsx`         | 0%    | 80%    |
 
 ---
 
@@ -246,8 +263,10 @@ Usuário seleciona estruturas/materiais
 - [x] Integrar cálculo de queda de tensão (ABNT NBR 5410/14039) — `voltage_drop_service.py`  
 - [x] Importação de traçado via KML/GPX — `kml_service.py` (zero custo, stdlib)  
 - [x] ANEEL/PRODIST — `prodist_service.py` + `prodist_router.py` (sessão 5)  
+- [x] Aumentar cobertura utils/hooks frontend — `excelPriceParser.js` 95%, `excelExporter.js` ~95% (sessão 6)
+- [x] Adicionar testes de componentes com mock `window.api` (sessão 6)
 - [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
 - [ ] Half-way BIM: exportação IFC simplificada  
 - [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
-- [ ] Aumentar cobertura frontend (mocks do Electron para Configurator, KitEditor)
+- [ ] Aumentar cobertura componentes grandes (Configurator, KitEditor, ManualKitManager)
 - [ ] Testes E2E com Playwright (Electron app)  

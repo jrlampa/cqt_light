@@ -2,8 +2,20 @@
  * Tests for excelExporter utility
  * Tests createProfessionalWorkbook and related export logic.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createProfessionalWorkbook } from '../utils/excelExporter';
+
+// Mock XLSX.writeFile to avoid actual filesystem writes
+vi.mock('xlsx', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    writeFile: vi.fn(),
+  };
+});
+
+import * as XLSX from 'xlsx';
+import { downloadWorkbook, exportBudgetToExcel, exportMaterialsToExcel } from '../utils/excelExporter';
 
 const sampleMaterials = [
   { sap: 'MAT001', descricao: 'Poste 11m', unidade: 'UN', quantidade: 5, preco_unitario: 250.00, subtotal: 1250.00 },
@@ -71,14 +83,10 @@ describe('createProfessionalWorkbook', () => {
 });
 
 describe('exportBudgetToExcel', () => {
+  beforeEach(() => vi.clearAllMocks());
+
   it('não lança erro ao exportar orçamento completo', () => {
-    // XLSX.writeFile tentará gravar - em ambiente JSDOM isso pode lançar.
-    // Verificamos que a lógica de workbook funciona sem erro até o writeFile.
-    const wb = createProfessionalWorkbook(
-      sampleMaterials,
-      sampleTotals,
-      sampleEstruturas
-    );
+    const wb = createProfessionalWorkbook(sampleMaterials, sampleTotals, sampleEstruturas);
     expect(wb).toBeDefined();
     expect(wb.SheetNames.length).toBeGreaterThanOrEqual(2);
   });
@@ -87,12 +95,58 @@ describe('exportBudgetToExcel', () => {
     const wb = createProfessionalWorkbook([], { totalMaterial: 0, totalServico: 0, totalGeral: 0 });
     expect(wb.SheetNames).toContain('Resumo');
   });
+
+  it('exportBudgetToExcel chama XLSX.writeFile com filename correto', () => {
+    exportBudgetToExcel(
+      { materiais: sampleMaterials, ...sampleTotals },
+      sampleEstruturas,
+      'Teste_CQT'
+    );
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+    const [, filename] = XLSX.writeFile.mock.calls[0];
+    expect(filename).toMatch(/^Teste_CQT_\d{4}-\d{2}-\d{2}\.xlsx$/);
+  });
+
+  it('exportBudgetToExcel usa nome padrão "Orcamento_CQT" quando não fornecido', () => {
+    exportBudgetToExcel({ materiais: [], totalMaterial: 0, totalServico: 0, totalGeral: 0 });
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+    const [, filename] = XLSX.writeFile.mock.calls[0];
+    expect(filename).toMatch(/^Orcamento_CQT_/);
+  });
+
+  it('exportBudgetToExcel funciona sem estruturas', () => {
+    exportBudgetToExcel({ materiais: sampleMaterials, ...sampleTotals });
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('downloadWorkbook', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('chama XLSX.writeFile com filename formatado corretamente', () => {
+    const fakeWb = { SheetNames: ['S1'], Sheets: {} };
+    downloadWorkbook(fakeWb, 'MeuArquivo');
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+    const [wb, filename] = XLSX.writeFile.mock.calls[0];
+    expect(wb).toBe(fakeWb);
+    expect(filename).toMatch(/^MeuArquivo_\d{4}-\d{2}-\d{2}\.xlsx$/);
+  });
 });
 
 describe('exportMaterialsToExcel (legacy)', () => {
-  it('cria workbook via legacy wrapper', () => {
-    // Valida que a lógica interna (createProfessionalWorkbook) funciona
-    const wb = createProfessionalWorkbook(sampleMaterials, sampleTotals, []);
-    expect(wb.SheetNames).toContain('Materiais');
+  beforeEach(() => vi.clearAllMocks());
+
+  it('cria workbook via legacy wrapper e chama writeFile', () => {
+    exportMaterialsToExcel(sampleMaterials, sampleTotals, 'legado');
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+    const [, filename] = XLSX.writeFile.mock.calls[0];
+    expect(filename).toMatch(/^legado_/);
+  });
+
+  it('funciona sem filename (usa padrão "configurador")', () => {
+    exportMaterialsToExcel(sampleMaterials, sampleTotals);
+    expect(XLSX.writeFile).toHaveBeenCalledTimes(1);
+    const [, filename] = XLSX.writeFile.mock.calls[0];
+    expect(filename).toMatch(/^configurador_/);
   });
 });
