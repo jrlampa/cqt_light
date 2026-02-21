@@ -118,6 +118,43 @@ LIMITE_QUEDA_PCT: dict = {
 
 MATERIAIS_CONDUTOR_VALIDOS = set(RESISTIVIDADE_CONDUTOR.keys())
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Domínio: ANEEL / PRODIST — Qualidade de Tensão e Limites de Queda
+# Referência: PRODIST Módulo 8 (Rev. 11, 2022) e Módulo 6
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Faixas de tensão PRODIST Módulo 8 — relativas à tensão de referência (Vr)
+# Pontos de entrega BT (até 1 kV), faixa de tensão de atendimento (TAN)
+FAIXAS_TENSAO_PRODIST_BT: dict = {
+    # (limite_inferior_relativo, limite_superior_relativo)
+    "ADEQUADA":  (0.93, 1.05),   # Vc/Vr ∈ [0.93, 1.05]
+    "PRECARIA":  (0.90, 1.06),   # 0.90≤Vc/Vr<0.93 ou 1.05<Vc/Vr≤1.06
+    # "CRITICA" = fora das duas faixas acima
+}
+
+# Faixas de tensão PRODIST Módulo 8 — MT (acima de 1 kV até 69 kV)
+FAIXAS_TENSAO_PRODIST_MT: dict = {
+    "ADEQUADA":  (0.95, 1.05),   # Vc/Vr ∈ [0.95, 1.05]
+    "PRECARIA":  (0.93, 1.06),   # 0.93≤Vc/Vr<0.95 ou 1.05<Vc/Vr≤1.06
+}
+
+# Limites de queda de tensão PRODIST / ANEEL (mais restritivos que ABNT)
+# Referência: PRODIST Módulo 6 (Acesso ao Sistema) e Módulo 8
+LIMITE_QUEDA_PRODIST_PCT: dict = {
+    "BT_ALIMENTADOR": 5.0,  # Alimentador BT: máx 5% (PRODIST Módulo 6)
+    "BT_RAMAL":       2.0,  # Ramal de ligação BT: máx 2%
+    "MT":             3.0,  # Subtransmissão MT: máx 3% (PRODIST Módulo 6)
+}
+
+# Classificação de tensão (constante de domínio)
+CLASSIFICACAO_ADEQUADA = "ADEQUADA"
+CLASSIFICACAO_PRECARIA = "PRECÁRIA"
+CLASSIFICACAO_CRITICA  = "CRÍTICA"
+
+# Enum-like para norma aplicada (evita dependência de enum stdlib em entidades puras)
+NORMA_ABNT    = "ABNT"
+NORMA_PRODIST = "ANEEL_PRODIST"
+
 
 @dataclass
 class TrechoEletrico:

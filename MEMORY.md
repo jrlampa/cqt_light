@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 4)  
+> **Atualizado em:** 2026-02-21 (sessão 5)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -158,17 +158,20 @@ Usuário seleciona estruturas/materiais
 
 ## 7. Backend FastAPI (Endpoints)
 
-| Endpoint                         | Método | Descrição                                        |
-|----------------------------------|--------|--------------------------------------------------|
-| `/api/dxf/generate`              | POST   | Gera DXF 2.5D de rede elétrica                  |
-| `/api/dxf/validate`              | POST   | Valida DXF gerado (entidades, camadas)           |
-| `/api/geo/utm-to-decimal`        | POST   | Converte UTM SIRGAS2000 → decimal                |
-| `/api/geo/decimal-to-utm`        | POST   | Converte decimal → UTM SIRGAS2000                |
-| `/api/geo/buffer`                | POST   | Calcula área de influência (100/500/1000m)       |
-| `/api/queda-tensao/calcular`     | POST   | Calcula queda de tensão (ABNT NBR 5410/14039)    |
-| `/api/queda-tensao/tensoes`      | GET    | Lista tensões nominais disponíveis               |
-| `/api/trace/importar`            | POST   | Importa traçado GPS (KML/GPX → lista de pontos) |
-| `/health`                        | GET    | Health check                                     |
+| Endpoint                              | Método | Descrição                                        |
+|---------------------------------------|--------|--------------------------------------------------|
+| `/api/dxf/generate`                   | POST   | Gera DXF 2.5D de rede elétrica                  |
+| `/api/dxf/validate`                   | POST   | Valida DXF gerado (entidades, camadas)           |
+| `/api/geo/utm-to-decimal`             | POST   | Converte UTM SIRGAS2000 → decimal                |
+| `/api/geo/decimal-to-utm`             | POST   | Converte decimal → UTM SIRGAS2000                |
+| `/api/geo/buffer`                     | POST   | Calcula área de influência (100/500/1000m)       |
+| `/api/queda-tensao/calcular`          | POST   | Calcula queda de tensão (ABNT NBR 5410/14039)    |
+| `/api/queda-tensao/tensoes`           | GET    | Lista tensões nominais disponíveis               |
+| `/api/trace/importar`                 | POST   | Importa traçado GPS (KML/GPX → lista de pontos) |
+| `/api/prodist/classificar-tensao`     | POST   | Classifica tensão: ADEQUADA/PRECÁRIA/CRÍTICA (PRODIST Módulo 8) |
+| `/api/prodist/queda-alimentador`      | POST   | Queda de tensão com limites PRODIST (Módulo 6)   |
+| `/api/prodist/limites`                | GET    | Lista limites PRODIST + comparação ABNT          |
+| `/health`                             | GET    | Health check                                     |
 
 ---
 
@@ -206,6 +209,9 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `voltage_drop_service.py` — ABNT NBR 5410/14039             | Cálculo de queda de tensão por trecho |
 | 2026-02-21 | `kml_service.py` — xml.etree.ElementTree stdlib             | Zero custo, suporte KML+GPX           |
 | 2026-02-21 | Haversine para comprimento de traçado GPS                   | Sem deps externas, ≈0.5% erro < 100km |
+| 2026-02-21 | `prodist_service.py` — ANEEL/PRODIST Módulo 6 e 8          | Norma concessionária sobrepõe ABNT; toast aviso explícito |
+| 2026-02-21 | `aviso_toast` em respostas PRODIST                          | Requisito: "ignorar ABNT com toast explícito" quando concessionária aplicada |
+| 2026-02-21 | `NORMA_ABNT` / `NORMA_PRODIST` como strings no domínio     | Evita enum de infraestrutura em entidades puras (DDD) |
 
 ---
 
@@ -226,10 +232,10 @@ Usuário seleciona estruturas/materiais
 | `test_dxf_service.py`         | 13     | ✅ pass    | 93%       |
 | `test_geo_service.py`         | 27     | ✅ pass    | 95%       |
 | `test_voltage_drop.py`        | 40     | ✅ pass    | 100%      |
-| `test_kml_service.py`         | 39     | ✅ pass    | 97%       |
+| `test_prodist_service.py`     | 59     | ✅ pass    | 100%      |
 | **Total frontend**            | **72** | ✅ pass    | ~25%*     |
-| **Total backend**             | **156**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**               | **228**| ✅ pass    | –         |
+| **Total backend**             | **218**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**               | **290**| ✅ pass    | –         |
 
 *Cobertura frontend baixa porque Configurator, KitEditor etc. precisam de mocks Electron mais aprofundados.
 
@@ -239,6 +245,7 @@ Usuário seleciona estruturas/materiais
 
 - [x] Integrar cálculo de queda de tensão (ABNT NBR 5410/14039) — `voltage_drop_service.py`  
 - [x] Importação de traçado via KML/GPX — `kml_service.py` (zero custo, stdlib)  
+- [x] ANEEL/PRODIST — `prodist_service.py` + `prodist_router.py` (sessão 5)  
 - [ ] Integrar DXF com mapa visual (Leaflet.js, OpenStreetMap)  
 - [ ] Half-way BIM: exportação IFC simplificada  
 - [x] CI/CD pipeline (GitHub Actions) — `.github/workflows/ci.yml`  
