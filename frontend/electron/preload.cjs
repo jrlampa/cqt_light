@@ -92,6 +92,11 @@ contextBridge.exposeInMainWorld('api', {
   updateMaterialPrice: (sap, price) => ipcRenderer.invoke('update-material-price', { sap, price }),
   updateAllKitsServiceCost: (amount) => ipcRenderer.invoke('update-all-kits-service-cost', amount),
 
+  // Intelligence & Norms (Cycle 8)
+  getNormsBySap: (sap) => ipcRenderer.invoke('get-norms-by-sap', sap),
+  calculateStructureHealth: (poleData) => ipcRenderer.invoke('calculate-structure-health', poleData),
+  searchNorms: (query) => ipcRenderer.invoke('search-norms', query),
+
   // Auditoria (Python Engine Bridge)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
 
