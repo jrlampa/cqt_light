@@ -1,0 +1,702 @@
+{
+    "metadata": {
+        "total_matches": 99,
+        "unique_saps": 65,
+        "unknown_saps": 21
+    },
+    "details": [
+        {
+            "sap": "850100",
+            "is_known": false,
+            "context": "850100",
+            "source": "122125 - Blindagem de rede - Estrutura para blindagem superior.pdf",
+            "page": 1
+        },
+        {
+            "sap": "200794",
+            "is_known": false,
+            "context": "200794",
+            "source": "122125 - Blindagem de rede - Estrutura para blindagem superior.pdf",
+            "page": 1
+        },
+        {
+            "sap": "150850",
+            "is_known": false,
+            "context": "150850",
+            "source": "122126 - Blindagem de rede - Estrutura para blindagem inferior.pdf",
+            "page": 1
+        },
+        {
+            "sap": "900100",
+            "is_known": false,
+            "context": "900100",
+            "source": "122126 - Blindagem de rede - Estrutura para blindagem inferior.pdf",
+            "page": 1
+        },
+        {
+            "sap": "323012",
+            "is_known": true,
+            "context": "M-30   Fio Al para amarração 4 AWG - XLPE 323012 m 1,5",
+            "source": "122136 fls.1a3 - Estrutura de transição rede MBNM  RCSN em derivação - MBNMRCSN.pdf",
+            "page": 3
+        },
+        {
+            "sap": "335053",
+            "is_known": true,
+            "context": "335053 (N)",
+            "source": "Padrão RCSN revisão 03 de 31102011.pdf",
+            "page": 11
+        },
+        {
+            "sap": "335053",
+            "is_known": true,
+            "context": "335053",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 11
+        },
+        {
+            "sap": "335131",
+            "is_known": true,
+            "context": "335131 para o número 1;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335132",
+            "is_known": true,
+            "context": "335132 para o número 2;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335133",
+            "is_known": true,
+            "context": "335133 para o número 3;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335134",
+            "is_known": true,
+            "context": "335134 para o número 4;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335135",
+            "is_known": true,
+            "context": "335135 para o número 5;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335136",
+            "is_known": true,
+            "context": "335136 para o número 6;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335137",
+            "is_known": true,
+            "context": "335137 para o número 7;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335138",
+            "is_known": true,
+            "context": "335138 para o número 8;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335139",
+            "is_known": true,
+            "context": "335139 para o número 9;",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "335140",
+            "is_known": true,
+            "context": "335140 para o número 0.",
+            "source": "Padrão Rede RCSN - REVISÃO 04 - 2016.pdf",
+            "page": 58
+        },
+        {
+            "sap": "323012",
+            "is_known": true,
+            "context": "M-30   Fio Al para amarração 4 AWG - XLPE 323012 m 1,5",
+            "source": "122136 fls.1a3 - Estrutura de transição rede MBNM  RCSN em derivação - MBNMRCSN.pdf",
+            "page": 3
+        },
+        {
+            "sap": "335053",
+            "is_known": true,
+            "context": "335053",
+            "source": "Padrão MBN - Revisão 03 - 30012008.pdf",
+            "page": 10
+        },
+        {
+            "sap": "323005",
+            "is_known": true,
+            "context": "323005. Essa interligação deve ser rígida através d e conector tipo cunha. A derivação da",
+            "source": "Padrão MBN - Revisão 03 - 30012008.pdf",
+            "page": 14
+        },
+        {
+            "sap": "335053",
+            "is_known": true,
+            "context": "335053",
+            "source": "Padrão Rede MBNM - REVISÃO 04 - 2016.pdf",
+            "page": 10
+        },
+        {
+            "sap": "323005",
+            "is_known": true,
+            "context": "323005. Essa interligação deve ser rígida através d e conector tipo cunha. A derivação da",
+            "source": "Padrão Rede MBNM - REVISÃO 04 - 2016.pdf",
+            "page": 14
+        },
+        {
+            "sap": "121998",
+            "is_known": false,
+            "context": "90 x 90 x 7500 mm P675200 121998",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 1
+        },
+        {
+            "sap": "122005",
+            "is_known": false,
+            "context": "deflexões até 40° em vila  SIV1 122005",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 1
+        },
+        {
+            "sap": "122004",
+            "is_known": false,
+            "context": "que 40° em vila  SIV3-3 122004",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 1
+        },
+        {
+            "sap": "122006",
+            "is_known": false,
+            "context": "ancoragem simples em vila  SIV3 122006",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 1
+        },
+        {
+            "sap": "122003",
+            "is_known": false,
+            "context": "ancoragem dupla em vila  SIV4 122003",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 2
+        },
+        {
+            "sap": "122002",
+            "is_known": false,
+            "context": "Estrutura para derivação em vila  SIV3-1 122002",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 2
+        },
+        {
+            "sap": "122007",
+            "is_known": false,
+            "context": "SIV1R 122007",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 2
+        },
+        {
+            "sap": "122066",
+            "is_known": false,
+            "context": "suporte afastador em vila  SIV1A 122066",
+            "source": "ALERTA DDE 025-18.pdf",
+            "page": 2
+        },
+        {
+            "sap": "122066",
+            "is_known": false,
+            "context": "desenho 122066.",
+            "source": "PADRÃO VILA.pdf",
+            "page": 6
+        },
+        {
+            "sap": "121998",
+            "is_known": false,
+            "context": "24 / 04 / 2017 121998 fl.1/3 r.1 S/E mm",
+            "source": "POSTE METALICO - PADRÃO VILA.pdf",
+            "page": 1
+        },
+        {
+            "sap": "121998",
+            "is_known": false,
+            "context": "121998 fl.2/3 r.1",
+            "source": "POSTE METALICO - PADRÃO VILA.pdf",
+            "page": 2
+        },
+        {
+            "sap": "327269",
+            "is_known": true,
+            "context": "10 - Item de estoque: 327269",
+            "source": "POSTE METALICO - PADRÃO VILA.pdf",
+            "page": 3
+        },
+        {
+            "sap": "121998",
+            "is_known": false,
+            "context": "121998 fl.3/3 r.1",
+            "source": "POSTE METALICO - PADRÃO VILA.pdf",
+            "page": 3
+        },
+        {
+            "sap": "327166",
+            "is_known": true,
+            "context": "Item: 327166",
+            "source": "Padrão de Rede Secundaria Blindada com Telemedição.pdf",
+            "page": 33
+        },
+        {
+            "sap": "399151",
+            "is_known": true,
+            "context": "Item: 399151",
+            "source": "Padrão de Rede Secundaria Blindada com Telemedição.pdf",
+            "page": 35
+        },
+        {
+            "sap": "392131",
+            "is_known": true,
+            "context": "Item: 392131",
+            "source": "Padrão de Rede Secundaria Blindada com Telemedição.pdf",
+            "page": 38
+        },
+        {
+            "sap": "327184",
+            "is_known": true,
+            "context": "F-9 Cantoneira auxiliar para braço tipo C  327184  pç  01",
+            "source": "Padrão Compacta - REVISÃO 2016 - REVISÃO 3.pdf",
+            "page": 154
+        },
+        {
+            "sap": "357989",
+            "is_known": true,
+            "context": "O-4 Conector para haste de aterramento  357989  pç  01",
+            "source": "Padrão Compacta - REVISÃO 2016 - REVISÃO 3.pdf",
+            "page": 155
+        },
+        {
+            "sap": "941205",
+            "is_known": true,
+            "context": "F-34t/2 Parafuso sextavado ½” x 1” x 2” com porca ( 941205)",
+            "source": "Padrão de redes secundárias multiplexadas.pdf",
+            "page": 26
+        },
+        {
+            "sap": "949858",
+            "is_known": true,
+            "context": "Arruela de aço 9/16” x 1 ¼” x 12 BWG (949858)",
+            "source": "Padrão de redes secundárias multiplexadas.pdf",
+            "page": 26
+        },
+        {
+            "sap": "949893",
+            "is_known": true,
+            "context": "Arruela de pressão galvanizada para parafuso de 1/ 2 “ (949893)",
+            "source": "Padrão de redes secundárias multiplexadas.pdf",
+            "page": 26
+        },
+        {
+            "sap": "324605",
+            "is_known": true,
+            "context": "324605",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "324604",
+            "is_known": true,
+            "context": "324604",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "324606",
+            "is_known": true,
+            "context": "324606",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "329881",
+            "is_known": true,
+            "context": "Conector Perfurante 329881 1 peça",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "347756",
+            "is_known": true,
+            "context": "Fita Isolante 347756 variável",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "327151",
+            "is_known": true,
+            "context": "Manta de EPR 327151 1/3",
+            "source": "ALERTA DDE 014_17 - Maio2017 - Orientação para Instalação de Aterramento Temporário de BT.pdf",
+            "page": 2
+        },
+        {
+            "sap": "121218",
+            "is_known": false,
+            "context": "As estruturas de rede compreendem os desenhos 12121 7, 121218 e 121219, sendo que",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121219",
+            "is_known": false,
+            "context": "As estruturas de rede compreendem os desenhos 12121 7, 121218 e 121219, sendo que",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121217",
+            "is_known": false,
+            "context": "121217 121218 121219",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121218",
+            "is_known": false,
+            "context": "121217 121218 121219",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121219",
+            "is_known": false,
+            "context": "121217 121218 121219",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121217",
+            "is_known": false,
+            "context": "No caso das estruturas dos desenhos 121217 e 121218 , não sendo possível a nível de",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121218",
+            "is_known": false,
+            "context": "No caso das estruturas dos desenhos 121217 e 121218 , não sendo possível a nível de",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121246",
+            "is_known": false,
+            "context": "excepcionalmente pelas estruturas dos desenhos 121246 e 121247, respectivamente, que",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121247",
+            "is_known": false,
+            "context": "excepcionalmente pelas estruturas dos desenhos 121246 e 121247, respectivamente, que",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 7
+        },
+        {
+            "sap": "121239",
+            "is_known": false,
+            "context": "respectivamente aos desenhos 121239 e 121240, sendo  que a primeira opção deve ser",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 8
+        },
+        {
+            "sap": "121240",
+            "is_known": false,
+            "context": "respectivamente aos desenhos 121239 e 121240, sendo  que a primeira opção deve ser",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 8
+        },
+        {
+            "sap": "121109",
+            "is_known": false,
+            "context": "máxima de 200 metros entre aterramentos obedecendo ao desenho 121109 na sua",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 8
+        },
+        {
+            "sap": "121141",
+            "is_known": false,
+            "context": "d) Caso seja necessário, utilizar o afastador de re de do desenho 121141 na sua",
+            "source": "Padrão Rede MTX MT - REVISÃO 02 - 2016.pdf",
+            "page": 10
+        },
+        {
+            "sap": "329183",
+            "is_known": true,
+            "context": "397,5 CA (201A) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 2
+        },
+        {
+            "sap": "329473",
+            "is_known": true,
+            "context": "556,5 CA (282A) O-25/01 (329473)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329473",
+            "is_known": true,
+            "context": "397,5 CA (201A) O-25/01 (329473)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329472",
+            "is_known": true,
+            "context": "1/0 CAA (53AA) O-25/02 (329472)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329823",
+            "is_known": true,
+            "context": "4AWG CAA (21mm²) O-25/03 (329823)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329473",
+            "is_known": true,
+            "context": "397,5 CA (201ASI) O-25/01 (329473)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329472",
+            "is_known": true,
+            "context": "O-25/02 (329472)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329870",
+            "is_known": true,
+            "context": "O-25/31 (329870)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329823",
+            "is_known": true,
+            "context": "4AWG (21ASI) O-25/03 (329823)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 3
+        },
+        {
+            "sap": "329183",
+            "is_known": true,
+            "context": "397,5 CA (Rede Aberta) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 5
+        },
+        {
+            "sap": "329183",
+            "is_known": true,
+            "context": "397,5 CA (Rede Aberta) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 5
+        },
+        {
+            "sap": "329183",
+            "is_known": true,
+            "context": "(Multiplex) O-12/03 (329 714) O-10/01 (329 602) O-11/09 (329183) O-12/03 (329 714)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 5
+        },
+        {
+            "sap": "312728",
+            "is_known": true,
+            "context": "(312728)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "329728",
+            "is_known": true,
+            "context": "4 x O-13/1/0  (329728)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "324664",
+            "is_known": true,
+            "context": "(324664)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "312798",
+            "is_known": true,
+            "context": "(312798)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "329727",
+            "is_known": true,
+            "context": "4 X O-13/397 (329727)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "312895",
+            "is_known": true,
+            "context": "(312895)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "324665",
+            "is_known": true,
+            "context": "(324665)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "329728",
+            "is_known": true,
+            "context": "4 x O-13/1/0  (329728)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "324664",
+            "is_known": true,
+            "context": "(324664)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "324664",
+            "is_known": true,
+            "context": "(324664)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "309222",
+            "is_known": true,
+            "context": "(309222)30kVA - 3Ø",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 6
+        },
+        {
+            "sap": "309350",
+            "is_known": true,
+            "context": "(309350)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "329727",
+            "is_known": true,
+            "context": "12 X O-13/397 (329727)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "324665",
+            "is_known": true,
+            "context": "(324665)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "312800",
+            "is_known": true,
+            "context": "(312800)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "329727",
+            "is_known": true,
+            "context": "12 X O-13/397 (329727)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "324665",
+            "is_known": true,
+            "context": "(324665)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "312799",
+            "is_known": true,
+            "context": "(312799)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "329727",
+            "is_known": true,
+            "context": "8 X O-13/397 (329727)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "324665",
+            "is_known": true,
+            "context": "(324665)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "312799",
+            "is_known": true,
+            "context": "(312799)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "329727",
+            "is_known": true,
+            "context": "8 X O-13/397 (329727)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "324665",
+            "is_known": true,
+            "context": "(324665)",
+            "source": "ALERTA - DTE 002 -22 - TABELA DE CONEXÕES - JANEIRO 2022 1- env (2) 1.pdf",
+            "page": 7
+        },
+        {
+            "sap": "327184",
+            "is_known": true,
+            "context": "F-9 Cantoneira auxiliar para braço tipo C  327184  pç  01",
+            "source": "Padrão Compacta - REVISÃO 2016 - REVISÃO 3.pdf",
+            "page": 154
+        },
+        {
+            "sap": "357989",
+            "is_known": true,
+            "context": "O-4 Conector para haste de aterramento  357989  pç  01",
+            "source": "Padrão Compacta - REVISÃO 2016 - REVISÃO 3.pdf",
+            "page": 155
+        }
+    ]
+}
