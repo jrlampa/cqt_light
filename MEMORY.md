@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-22 (sessão 14)  
+> **Atualizado em:** 2026-02-22 (sessão 16)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -133,7 +133,9 @@ Usuário seleciona estruturas/materiais
 | `PosteSearch.jsx`              | Busca de postes                | 54     |
 | `QuantityPopup.jsx`            | Modal de quantidade            | 58     |
 | `utils/configuratorStorage.js` | Persistência localStorage      | 38     |
-| `hooks/useGeo.js`              | Conversão UTM↔decimal via API  | 91     |
+| `hooks/useIfc.js`              | Exportação IFC2X3 STEP via API (BIM)        | 82     |
+| `hooks/useRedeAnalise.js`      | Análise de topologia de rede via API        | 72     |
+| `hooks/useGeo.js`              | Conversão UTM↔decimal via API               | 91     |
 | `hooks/useKml.js`              | Importação KML/GPX via API     | 87     |
 | `hooks/useQuedaTensao.js`      | Cálculo queda de tensão via API | 90    |
 | `components/MapaRede.jsx`      | Mapa Leaflet/OSM 2.5D + GPS    | 232    |
@@ -242,7 +244,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
 | 2026-02-22 | `pytest-cov>=5.0.0` adicionado a requirements.txt + pytest.ini addopts | CI garante ≥80% backend coverage automaticamente |
 | 2026-02-22 | `PriceManagementModalImport.test.jsx` — trigger fileInput change com File mock + act() | Cobre linha 108 (reajuste error), 145 (tab re-click), 237-244 (ambiguous map) |
-| 2026-02-22 | `KitEditorDelete.test.jsx` — `input[type="number"][step="0.01"]` selector para qty inputs | Cobre linha 251 (cancel delete), 389 (qty onChange), 398 (remove onClick) |
+| 2026-02-22 | `useIfc.js` hook — thin frontend para IFC export + validate | Padrão dos outros hooks (useGeo, useKml, useQuedaTensao); SRP |
+| 2026-02-22 | `useRedeAnalise.js` hook — thin frontend para network topology analysis | Endpoint /api/rede/analisar; BFS conectividade, comprimentos MT/BT |
+| 2026-02-22 | Landing page atualizada: 936+ testes, 17+ endpoints | Contagem real após sessão 16 |
+| 2026-02-22 | `useIfc` e `useRedeAnalise` seguem padrão exato de `useGeo` — postJson + loading/error/clearError | Consistência de código; facilita onboarding |
 | 2026-02-22 | `MapaRede.jsx` prop `tracado` — GPS points como circleMarker roxo, incluídos em fitBounds | Integração visual KML/GPX na aba Mapa |
 | 2026-02-22 | `rede_analysis_service.py` — BFS conectividade, distância euclidiana, estatísticas | Topologia SotA — ABNT NBR 14565, PRODIST Módulo 6 |
 | 2026-02-22 | `rede_router.py` — POST /api/rede/analisar com validação Pydantic | id, nivel (MT/BT), potencia_kva > 0 sanitizados |
@@ -287,9 +292,17 @@ Usuário seleciona estruturas/materiais
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
 | `test_rede_service.py`             | 31     | ✅ pass    | 100%      |
-| **Total frontend**                 | **575**| ✅ pass    | **87.91%** lines ✅|
+| **Total frontend**                 | **603**| ✅ pass    | **≥80%** ✅|
 | **Total backend**                  | **333**| ✅ pass    | **98.10%** ✅|
-| **TOTAL GERAL**                    | **908**| ✅ pass    | –         |
+| **TOTAL GERAL**                    | **936**| ✅ pass    | –         |
+
+### Ganhos sessão 16 (novos hooks thin frontend)
+
+| Módulo                      | Testes adicionados | Cobertura |
+|-----------------------------|--------------------|-----------|
+| `useIfc.js` (novo)          | 14                 | 100%      |
+| `useRedeAnalise.js` (novo)  | 14                 | 100%      |
+| **Overall frontend**        | **+28**            | ≥80% ✅   |
 
 ### Ganhos sessão 15 (cobertura de lacunas críticas)
 
@@ -334,4 +347,8 @@ Usuário seleciona estruturas/materiais
 - [x] `PriceManagementModalImport.test.jsx` — 6 testes: erro reajuste (linha 108), re-click import tab (linha 145), ambiguous map (linhas 237-244), catch fileSelect (sessão 15)
 - [x] `KitEditorDelete.test.jsx` — 4 testes: cancelar delete (linha 251), qty change (linha 389), remove material (linha 398), overlay close (sessão 15)
 - [x] 908 testes totais (333 backend 98.10% + 575 frontend 87.91% lines), 0 CodeQL alerts (sessão 15)
+- [x] 936 testes totais (333 backend 98.10% + 603 frontend ≥80%), 0 CodeQL alerts (sessão 16)
+- [x] `useIfc.js` hook — exportação IFC2X3 STEP + validação via API (sessão 16)
+- [x] `useRedeAnalise.js` hook — análise de topologia de rede via API (sessão 16)
+- [x] Landing page: 726→936+ testes, 11→17+ endpoints (sessão 16)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)
