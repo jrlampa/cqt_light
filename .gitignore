@@ -39,6 +39,14 @@ logs/
 # React
 frontend/dist/
 frontend/node_modules/
+frontend/coverage/
+
+# Python backend
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/venv/
+backend/.env
 Padrões construtivos/ANEXO B - RECON.zip
 Padrões construtivos/OPO-25-0008 - RUA MANUEL BECKMAM.zip
 Padrões construtivos/Padrões.zip
@@ -52,3 +60,5 @@ Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m600dAN-Layout1.jpg
 Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m1000dAN-Layout1.jpg
 Padrões construtivos/Padrão CMB/WhatsApp Image 2025-05-06 at 11.53.29.jpeg
 Padrões construtivos/Padrão Cabo Armado/imagem.png
+backend/.coverage
+backend/.pytest_cache/

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CQT Light — Software enterprise de orçamentação para redes de distribuição de energia elétrica BT/MT. Conforme ABNT NBR 5410, NBR 14039 e ANEEL/PRODIST." />
+  <meta name="keywords" content="orçamento, redes elétricas, BT, MT, ABNT, PRODIST, ANEEL, DXF, engenharia elétrica" />
+  <title>CQT Light — Orçamentação de Redes Elétricas</title>
+
+  <!-- Tailwind CSS via CDN (zero custo) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            accent: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Google Fonts — Inter (zero custo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .gradient-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e40af 100%);
+    }
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.7s ease forwards; }
+    .delay-1 { animation-delay: 0.15s; opacity: 0; }
+    .delay-2 { animation-delay: 0.30s; opacity: 0; }
+    .delay-3 { animation-delay: 0.45s; opacity: 0; }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 antialiased">
+
+  <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Logo SVG inline -->
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#4338ca"/>
+          <path d="M8 24 L16 8 L24 24" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="10.5" y1="19" x2="21.5" y2="19" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="text-xl font-bold text-brand-700">CQT <span class="text-accent-500">Light</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+        <a href="#recursos" class="hover:text-brand-600 transition-colors">Recursos</a>
+        <a href="#como-funciona" class="hover:text-brand-600 transition-colors">Como Funciona</a>
+        <a href="#normas" class="hover:text-brand-600 transition-colors">Normas</a>
+        <a href="#tecnologia" class="hover:text-brand-600 transition-colors">Tecnologia</a>
+        <a href="/docs" class="hover:text-brand-600 transition-colors" target="_blank" rel="noopener">API Docs</a>
+      </div>
+      <a href="#recursos"
+         class="hidden md:inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+        Conheça os Recursos
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════ HERO ════════════════════════════════ -->
+  <section class="gradient-hero pt-32 pb-24 px-6 text-white relative overflow-hidden">
+    <!-- background decoration -->
+    <div class="absolute inset-0 opacity-10" aria-hidden="true">
+      <svg class="absolute right-0 top-0 w-1/2 h-full" viewBox="0 0 400 600" fill="none">
+        <circle cx="350" cy="100" r="300" stroke="white" stroke-width="1"/>
+        <circle cx="350" cy="100" r="200" stroke="white" stroke-width="1"/>
+        <circle cx="350" cy="100" r="100" stroke="white" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <div class="fade-in-up inline-flex items-center gap-2 bg-white/15 border border-white/30 rounded-full px-4 py-1.5 text-sm font-medium mb-8">
+        <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
+        Nível Enterprise · SotA em Orçamentação Elétrica
+      </div>
+
+      <h1 class="fade-in-up delay-1 text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+        Orçamentação de<br />
+        <span class="text-accent-400">Redes Elétricas</span><br />
+        com Precisão
+      </h1>
+
+      <p class="fade-in-up delay-2 text-xl text-indigo-200 max-w-2xl mx-auto mb-10 leading-relaxed">
+        Plataforma enterprise para engenheiros e técnicos de concessionárias.
+        Gera DXF 2.5D, aplica <strong class="text-white">ABNT NBR 5410</strong>,
+        <strong class="text-white">NBR 14039</strong> e normas
+        <strong class="text-white">ANEEL/PRODIST</strong> — tudo de forma automática.
+      </p>
+
+      <div class="fade-in-up delay-3 flex flex-wrap justify-center gap-4">
+        <a href="/docs"
+           target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-400 text-white font-bold px-8 py-3.5 rounded-xl transition-colors text-base shadow-lg">
+          <!-- API icon -->
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          Explorar API
+        </a>
+        <a href="#como-funciona"
+           class="inline-flex items-center gap-2 border border-white/40 hover:bg-white/10 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors text-base">
+          <!-- play icon -->
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Ver como funciona
+        </a>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="bg-white/10 border border-white/20 rounded-xl p-5 text-center">
+          <div class="text-3xl font-extrabold text-accent-400">≥80%</div>
+          <div class="text-sm text-indigo-200 mt-1">Cobertura de Testes</div>
+        </div>
+        <div class="bg-white/10 border border-white/20 rounded-xl p-5 text-center">
+          <div class="text-3xl font-extrabold text-accent-400">2.5D</div>
+          <div class="text-sm text-indigo-200 mt-1">Geração DXF</div>
+        </div>
+        <div class="bg-white/10 border border-white/20 rounded-xl p-5 text-center">
+          <div class="text-3xl font-extrabold text-accent-400">17+</div>
+          <div class="text-sm text-indigo-200 mt-1">Endpoints API</div>
+        </div>
+        <div class="bg-white/10 border border-white/20 rounded-xl p-5 text-center">
+          <div class="text-3xl font-extrabold text-accent-400">IFC2X3</div>
+          <div class="text-sm text-indigo-200 mt-1">Half-way BIM</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ RECURSOS ══════════════════════════════ -->
+  <section id="recursos" class="py-24 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="badge bg-brand-100 text-brand-700 mb-4">Recursos</span>
+        <h2 class="text-4xl font-extrabold text-gray-900">Tudo que você precisa para</h2>
+        <p class="text-xl text-gray-500 mt-3">projetos de redes elétricas de alta qualidade</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Card 1: DXF 2.5D -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Geração DXF 2.5D</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Gera arquivos DXF compatíveis com AutoCAD e BricsCAD em projeção 2.5D —
+            postes, trechos MT/BT, transformadores e legendas com cota Z anotada.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-indigo-100 text-indigo-700">ezdxf</span>
+            <span class="badge bg-indigo-100 text-indigo-700">AutoCAD DXF R2010+</span>
+          </div>
+        </div>
+
+        <!-- Card 2: ABNT/PRODIST -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">ABNT + ANEEL/PRODIST</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Aplica NBR 5410 (BT) e NBR 14039 (MT) para queda de tensão.
+            Quando a concessionária define sua norma, PRODIST prevalece com aviso toast explícito.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-yellow-100 text-yellow-700">NBR 5410</span>
+            <span class="badge bg-yellow-100 text-yellow-700">PRODIST Módulo 6+8</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Geo UTM -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Georreferenciamento</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Conversão UTM ↔ decimal com SIRGAS2000 (EPSG:31983).
+            Importação de traçados via KML e GPX. Cálculo de área de influência 100/500/1000 m.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-green-100 text-green-700">pyproj</span>
+            <span class="badge bg-green-100 text-green-700">SIRGAS2000</span>
+            <span class="badge bg-green-100 text-green-700">KML/GPX</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Orçamento -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Orçamentação BT/MT</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Composição automática de kits SAP, materiais avulsos, serviços CM e mão de obra.
+            Exportação para Excel com formatação profissional e histórico de preços.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-purple-100 text-purple-700">SQLite</span>
+            <span class="badge bg-purple-100 text-purple-700">XLSX Export</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Docker -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Docker First</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Toda a infraestrutura containerizada: backend FastAPI + frontend Electron
+            prontos via <code class="bg-gray-200 px-1 rounded text-xs">docker compose up</code>.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-blue-100 text-blue-700">Docker</span>
+            <span class="badge bg-blue-100 text-blue-700">CI/CD GitHub Actions</span>
+          </div>
+        </div>
+
+        <!-- Card 6: Half-way BIM -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Half-way BIM (IFC2X3)</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Exporta rede elétrica em formato IFC2X3 STEP (ISO 16739) sem bibliotecas externas.
+            Postes → IFCCOLUMN · Trechos → IFCFLOWSEGMENT · Transformadores → IFCELECTRICALDISTRIBUTIONELEMENT.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-teal-100 text-teal-700">IFC2X3</span>
+            <span class="badge bg-teal-100 text-teal-700">BIM Viewer</span>
+            <span class="badge bg-teal-100 text-teal-700">Zero custo</span>
+          </div>
+        </div>
+
+        <!-- Card 7: Testes -->
+        <div class="card-hover bg-gray-50 border border-gray-200 rounded-2xl p-7">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Cobertura de Testes ≥80%</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            979+ testes automatizados (Vitest + pytest). Backend com 98.40% de cobertura.
+            Testes de DXF headless via accoreconsole.exe. CI/CD com GitHub Actions.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge bg-red-100 text-red-700">pytest</span>
+            <span class="badge bg-red-100 text-red-700">Vitest</span>
+            <span class="badge bg-red-100 text-red-700">979+ testes</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ COMO FUNCIONA ════════════════════════════ -->
+  <section id="como-funciona" class="py-24 px-6 bg-gray-50">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="badge bg-brand-100 text-brand-700 mb-4">Fluxo de Trabalho</span>
+        <h2 class="text-4xl font-extrabold text-gray-900">Como Funciona</h2>
+        <p class="text-xl text-gray-500 mt-3">Em 3 etapas do levantamento ao arquivo final</p>
+      </div>
+
+      <div class="relative">
+        <!-- connector line -->
+        <div class="hidden md:block absolute top-16 left-1/2 -translate-x-1/2 w-2/3 h-0.5 bg-brand-200" aria-hidden="true"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div class="text-center">
+            <div class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-5 relative z-10 shadow-lg">
+              <span class="text-xl font-black text-white">1</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Selecione Estruturas</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Escolha postes, condutores MT/BT (Convencional, Compacta, Multiplex, Nua)
+              e transformadores. A composição de kits SAP é automática.
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-5 relative z-10 shadow-lg">
+              <span class="text-xl font-black text-white">2</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Importe Coordenadas</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Importe traçados via KML ou GPX. O backend converte UTM ↔ decimal
+              (SIRGAS2000) e calcula comprimentos com precisão Haversine.
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-5 relative z-10 shadow-lg">
+              <span class="text-xl font-black text-white">3</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Exporte DXF e Excel</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Gera DXF 2.5D conforme ABNT/PRODIST e planilha Excel com orçamento
+              detalhado por material, serviço e mão de obra.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Terminal demo -->
+      <div class="mt-16 bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="flex items-center gap-2 px-5 py-3 bg-gray-800 border-b border-gray-700">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          <span class="ml-3 text-xs text-gray-400 font-mono">Terminal — docker compose up</span>
+        </div>
+        <div class="p-6 font-mono text-sm leading-7">
+          <div class="text-gray-400">$ <span class="text-green-400">docker compose up</span></div>
+          <div class="text-gray-500">✔ Container cqt-backend  &nbsp;Started  0.8s</div>
+          <div class="text-gray-500">✔ Container cqt-frontend  Started  1.2s</div>
+          <div class="text-blue-400 mt-2">INFO:     Uvicorn running on http://0.0.0.0:8000</div>
+          <div class="text-green-400">INFO:     Application startup complete.</div>
+          <div class="text-gray-400 mt-2">$ <span class="text-yellow-400">curl -X POST http://localhost:8000/api/prodist/classificar-tensao \</span></div>
+          <div class="text-yellow-400 pl-6">-d '&#123;"tensao_medida_v":215,"tensao_referencia_v":220,"nivel":"BT"&#125;'</div>
+          <div class="text-green-300 mt-1">&#123;"classificacao":"ADEQUADA","norma":"PRODIST Módulo 8"&#125;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ NORMAS ════════════════════════════════ -->
+  <section id="normas" class="py-24 px-6 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="badge bg-yellow-100 text-yellow-700 mb-4">Conformidade</span>
+        <h2 class="text-4xl font-extrabold text-gray-900">Normas e Regulamentos</h2>
+        <p class="text-xl text-gray-500 mt-3">Implementadas diretamente no motor de cálculo</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="border-l-4 border-brand-500 bg-brand-50 rounded-r-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="text-3xl">📋</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-1">ABNT NBR 5410:2023</h3>
+              <p class="text-gray-600 text-sm">
+                Instalações elétricas de baixa tensão. Limites de queda de tensão:
+                7% para alimentadores, 3% para ramais BT.
+              </p>
+              <div class="mt-2 text-xs font-semibold text-brand-600 uppercase tracking-wide">Instalações BT</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-l-4 border-brand-500 bg-brand-50 rounded-r-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="text-3xl">📋</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-1">ABNT NBR 14039:2005</h3>
+              <p class="text-gray-600 text-sm">
+                Instalações elétricas de média tensão de 1,0 kV a 36,2 kV.
+                Limite ABNT de queda de tensão: 2% para MT.
+              </p>
+              <div class="mt-2 text-xs font-semibold text-brand-600 uppercase tracking-wide">Instalações MT</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-l-4 border-accent-500 bg-yellow-50 rounded-r-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="text-3xl">⚡</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-1">PRODIST Módulo 6 (ANEEL)</h3>
+              <p class="text-gray-600 text-sm">
+                Limites de queda de tensão para alimentadores de distribuição.
+                BT alimentador: 5%; BT ramal: 2%; MT: 3%.
+                Quando aplicado, <strong>substitui ABNT com aviso toast</strong>.
+              </p>
+              <div class="mt-2 text-xs font-semibold text-accent-600 uppercase tracking-wide">Queda de Tensão</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-l-4 border-accent-500 bg-yellow-50 rounded-r-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="text-3xl">🔌</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-1">PRODIST Módulo 8 (ANEEL)</h3>
+              <p class="text-gray-600 text-sm">
+                Classificação de tensão de atendimento: ADEQUADA, PRECÁRIA, CRÍTICA.
+                BT adequada: 0,93 pu ≤ V ≤ 1,05 pu. MT adequada: 0,95 pu ≤ V ≤ 1,05 pu.
+              </p>
+              <div class="mt-2 text-xs font-semibold text-accent-600 uppercase tracking-wide">Qualidade de Tensão</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PRODIST override callout -->
+      <div class="mt-8 bg-amber-50 border border-amber-200 rounded-2xl p-6 flex gap-4">
+        <div class="text-2xl flex-shrink-0">💡</div>
+        <div>
+          <h4 class="font-bold text-amber-900 mb-1">Prioridade da Norma da Concessionária</h4>
+          <p class="text-amber-800 text-sm leading-relaxed">
+            Quando uma norma de concessionária está ativa no sistema, o CQT Light aplica
+            automaticamente os limites PRODIST e exibe um <strong>aviso toast</strong> informando
+            ao usuário que a ABNT foi substituída. Isso garante conformidade total
+            com a distribuidora local sem margem para erro.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════ TECNOLOGIA ════════════════════════════ -->
+  <section id="tecnologia" class="py-24 px-6 bg-gray-900 text-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="badge bg-white/10 text-gray-300 mb-4">Stack Técnica</span>
+        <h2 class="text-4xl font-extrabold">Tecnologia de Ponta,<br/>Custo Zero</h2>
+        <p class="text-gray-400 text-lg mt-3">Apenas software livre e APIs públicas gratuitas</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">⚛️</div>
+          <div class="font-semibold text-sm">React 19</div>
+          <div class="text-gray-500 text-xs mt-1">Frontend</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🚀</div>
+          <div class="font-semibold text-sm">FastAPI</div>
+          <div class="text-gray-500 text-xs mt-1">Backend</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🗄️</div>
+          <div class="font-semibold text-sm">Electron 34</div>
+          <div class="text-gray-500 text-xs mt-1">Desktop Shell</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">📐</div>
+          <div class="font-semibold text-sm">ezdxf</div>
+          <div class="text-gray-500 text-xs mt-1">Geração DXF</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🐍</div>
+          <div class="font-semibold text-sm">pyproj</div>
+          <div class="text-gray-500 text-xs mt-1">SIRGAS2000</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🐳</div>
+          <div class="font-semibold text-sm">Docker</div>
+          <div class="text-gray-500 text-xs mt-1">Containers</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🔬</div>
+          <div class="font-semibold text-sm">pytest + Vitest</div>
+          <div class="text-gray-500 text-xs mt-1">Testes</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">🗃️</div>
+          <div class="font-semibold text-sm">SQLite</div>
+          <div class="text-gray-500 text-xs mt-1">Banco Local</div>
+        </div>
+      </div>
+
+      <!-- Architecture DDD -->
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+        <h3 class="text-lg font-bold mb-6 text-center">Arquitetura DDD (Domain-Driven Design)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-mono">
+          <div class="bg-brand-900/50 border border-brand-700/50 rounded-xl p-4">
+            <div class="text-brand-300 font-bold mb-3 text-xs uppercase tracking-widest">Domain</div>
+            <div class="text-gray-300 space-y-1">
+              <div>domain/entities.py</div>
+              <div class="text-gray-500 text-xs pl-2">Poste, TrechoRede</div>
+              <div class="text-gray-500 text-xs pl-2">Transformador</div>
+              <div class="text-gray-500 text-xs pl-2">PRODIST constants</div>
+            </div>
+          </div>
+          <div class="bg-green-900/30 border border-green-700/50 rounded-xl p-4">
+            <div class="text-green-300 font-bold mb-3 text-xs uppercase tracking-widest">Services</div>
+            <div class="text-gray-300 space-y-1">
+              <div>dxf_service.py</div>
+              <div>geo_service.py</div>
+              <div>voltage_drop.py</div>
+              <div>prodist_service.py</div>
+              <div>kml_service.py</div>
+            </div>
+          </div>
+          <div class="bg-yellow-900/30 border border-yellow-700/50 rounded-xl p-4">
+            <div class="text-yellow-300 font-bold mb-3 text-xs uppercase tracking-widest">API (Routers)</div>
+            <div class="text-gray-300 space-y-1">
+              <div>geo_router.py</div>
+              <div>dxf_router.py</div>
+              <div>voltage_drop_router.py</div>
+              <div>prodist_router.py</div>
+              <div>kml_router.py</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ API PREVIEW ══════════════════════════ -->
+  <section class="py-24 px-6 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="badge bg-brand-100 text-brand-700 mb-4">REST API</span>
+        <h2 class="text-4xl font-extrabold text-gray-900">17+ Endpoints Disponíveis</h2>
+        <p class="text-gray-500 text-lg mt-3">Integração simples com sistemas existentes</p>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="text-left px-6 py-4 font-semibold text-gray-700">Método</th>
+              <th class="text-left px-6 py-4 font-semibold text-gray-700">Endpoint</th>
+              <th class="text-left px-6 py-4 font-semibold text-gray-700">Descrição</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-green-100 text-green-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/dxf/generate</td>
+              <td class="px-6 py-3 text-gray-600">Gera DXF 2.5D da rede elétrica</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-green-100 text-green-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/geo/utm-to-decimal</td>
+              <td class="px-6 py-3 text-gray-600">Converte UTM → decimal (SIRGAS2000)</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-green-100 text-green-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/queda-tensao/calcular</td>
+              <td class="px-6 py-3 text-gray-600">Queda de tensão ABNT NBR 5410/14039</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-green-100 text-green-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/prodist/classificar-tensao</td>
+              <td class="px-6 py-3 text-gray-600">Classifica tensão ADEQUADA/PRECÁRIA/CRÍTICA</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-green-100 text-green-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/trace/importar</td>
+              <td class="px-6 py-3 text-gray-600">Importa traçado GPS (KML/GPX)</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-blue-100 text-blue-700">GET</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/prodist/limites</td>
+              <td class="px-6 py-3 text-gray-600">Lista limites PRODIST + comparação ABNT</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-purple-100 text-purple-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/ifc/export</td>
+              <td class="px-6 py-3 text-gray-600">Exporta rede como IFC2X3 BIM (postes, trechos, trafos)</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-purple-100 text-purple-700">POST</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/api/ifc/validate</td>
+              <td class="px-6 py-3 text-gray-600">Valida estrutura de arquivo IFC2X3 gerado</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3"><span class="badge bg-blue-100 text-blue-700">GET</span></td>
+              <td class="px-6 py-3 font-mono text-xs text-gray-700">/health</td>
+              <td class="px-6 py-3 text-gray-600">Health check do servidor</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/docs"
+           target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+          Ver documentação completa (Swagger UI)
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════════ -->
+  <footer class="bg-gray-900 text-gray-400 py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <rect width="32" height="32" rx="8" fill="#4338ca"/>
+              <path d="M8 24 L16 8 L24 24" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="10.5" y1="19" x2="21.5" y2="19" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-white font-bold text-lg">CQT Light</span>
+          </div>
+          <p class="text-sm leading-relaxed">
+            Plataforma enterprise para orçamentação de redes de distribuição
+            de energia elétrica BT/MT, com conformidade ABNT e ANEEL/PRODIST.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-semibold mb-4">Normas Aplicadas</h4>
+          <ul class="space-y-2 text-sm">
+            <li>ABNT NBR 5410 — Instalações BT</li>
+            <li>ABNT NBR 14039 — Instalações MT</li>
+            <li>ANEEL PRODIST Módulo 6 — Queda de Tensão</li>
+            <li>ANEEL PRODIST Módulo 8 — Qualidade de Tensão</li>
+            <li>ABNT NBR 6492 — Representação Gráfica</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-semibold mb-4">Links Úteis</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/docs" target="_blank" rel="noopener" class="hover:text-white transition-colors">Documentação API (Swagger)</a></li>
+            <li><a href="/redoc" target="_blank" rel="noopener" class="hover:text-white transition-colors">ReDoc</a></li>
+            <li><a href="/health" class="hover:text-white transition-colors">Health Check</a></li>
+            <li><a href="https://www.aneel.gov.br/prodist" target="_blank" rel="noopener" class="hover:text-white transition-colors">PRODIST (ANEEL)</a></li>
+            <li><a href="https://www.abnt.org.br/" target="_blank" rel="noopener" class="hover:text-white transition-colors">ABNT</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-sm">
+          CQT Light — Software livre para engenharia elétrica.
+          Sem custos de licença. Zero dependências pagas.
+        </p>
+        <div class="flex gap-3">
+          <span class="badge bg-white/10 text-gray-400">Open Source</span>
+          <span class="badge bg-white/10 text-gray-400">pt-BR</span>
+          <span class="badge bg-white/10 text-gray-400">Docker First</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
