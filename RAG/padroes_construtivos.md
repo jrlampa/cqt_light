@@ -1,76 +1,70 @@
-# RAG - Padrões Construtivos (LIGHT) - ULTIMATE ENGINEERING REFERENCE
+# RAG - Padrões Construtivos (LIGHT) - ASCENDANT ENGINEERING MASTER
 
-Esta é a versão definitiva do RAG, consolidando metadados técnicos, normas de segurança, conformidade ambiental e diretrizes de integração BIM.
-
----
-
-## ⚡ Catálogo de Condutores e Dimensionamento
-
-| Tipo | Bitola ($mm^2$) | Ampacidade ($A$) | QDT Máx % |
-| :--- | :--- | :--- | :--- |
-| **MT Compacta** | 50 / 95 / 150 | 185 / 270 / 360 | 3% (Tronco) |
-| **BT Mult.** | 35 / 70 / 120 | 115 / 181 / 250 | 5% (Total) |
+Esta versão "Ascendant" consolida o conhecimento operacional com inteligência executiva, mapeamento regional e normas de blindagem de rede.
 
 ---
 
-## 🏗️ Matriz de Equipamentos
+## 🌎 Mapeamento de Regionais e Contratos (Executivo)
 
-### 🔌 Transformadores & Demanda
+Utilize estes dados para direcionar orçamentos e fluxos de trabalho específicos por zona.
 
-* **Regra de Ouro**: Reservar 15% de margem (Limite 85% kVA).
-* **Ratings**: 15, 30, 45, 75, 112.5, 150, 225, 300 kVA.
-
-### 📐 Postes e Esforços
-
-* **Engastamento**: $E = (L/10) + 0,60$.
-* **Esforço Crítico**: Ângulos $> 6^\circ$ exigem verificação de tração e possível uso de postes de 1000daN+.
-
----
-
-## �️ Segurança e Afastamentos (Clearances)
-
-Valores mínimos para conformidade em cruzamentos e passagens:
-
-| Cenário | MT (13.8 kV) | BT (380/220V) |
+| Regional | Empresa(s) de Contrato | Foco de Projeto |
 | :--- | :--- | :--- |
-| **Rodovias Federais** | 7,50 m | 6,00 m |
-| **Ruas e Avenidas** | 6,00 m | 5,50 m |
-| **Calçadas/Pedestres** | 5,00 m | 4,50 m |
-| **Entrada de Veículos** | 6,00 m | 5,00 m |
+| **CENTRO SUL** | DÍNAMO / PARTNERSHIP | Áreas Urbanas Densas / Histórico |
+| **VALE** | ELLCA / CENEGED | Expansão Industrial / Comercial |
+| **OESTE** | INDICA | Expansão Residencial / Loteamentos |
+| **BAIXADA** | INDICA | Normalização / Clandestinos |
+| **LESTE** | ELLCA | Manutenção de Rede / Litoral |
+
+---
+
+## 🛡️ Padrão de Blindagem e Redes Especiais (MBNM / RCSN)
+
+As redes de blindagem (`MBNM`) possuem requisitos mecânicos e de hardware superiores.
+
+* **Estruturas Focais**:
+  * `MBNM-B1`: Alinhamento reto em beco.
+  * `MBNM-B3`: Final de linha em beco.
+  * `MBNM-TRAP`: Instalação de Transformador Autoprotegido.
+* **Hardware Específico**: Uso obrigatório de **Cinta de Aço para Poste Circular (220mm)** em estruturas de ancoragem.
+
+---
+
+## ⚡ Aterramento (Grounding) e Proteção
+
+Regras de espaçamento e tipos padrão:
+
+| Tipo | Aplicação | Descrição SAP |
+| :--- | :--- | :--- |
+| **AT-1** | Proteção Geral | Aterramento básico de rede. |
+| **AT-2** | Equipamentos | Aterramento para Transformadores/Chaves. |
+| **AT-3/5** | Final de Linha | Reforço de aterramento em extremidades. |
 
 > [!IMPORTANT]
-> Se o afastamento horizontal de edificações for $< 1,5m$, é obrigatório o uso de **Braço Afastador** (Estruturas tipo `B1A`, `B2A`, etc.).
+> **Regra de Espaçamento**: Deve haver um aterramento a cada **200 metros** de rede secundária, no máximo.
+> **Material Base**: Haste de Aterramento 19mm x 3m (SAP `357989`).
 
 ---
 
-## 🌳 Conformidade Ambiental (Poda)
+## 📐 Regras de Puxada e Tração (Mecânica Avançada)
 
-Códigos SAP para serviços de manejo de vegetação:
-
-* `PA/CR`: Poda de árvore com recolhimento (Urbano denso).
-* `PA/SR`: Poda de árvore sem recolhimento (Áreas rurais/vazias).
-* `PODA_LV`: Poda em Linha Viva (Alta complexidade).
-* **Distância de Segurança**: Manter corredor de 2,0m livre de vegetação para redes compactas.
-
----
-
-## 🎨 Integração BIM (Layers)
-
-| Elemento | Layer CAD | Atributo Principal |
-| :--- | :--- | :--- |
-| **Poste** | `EQUIP_POSTE` | `pole_id`, `daN` |
-| **Transf.** | `EQUIP_TRANSF` | `kva_rating` |
-| **Rede MT** | `RED_MT` | `conductor_sap` |
-| **Ferragens** | `ACESS_FERRAGEM` | `kit_code` |
+* **Ângulo de Deflexão**:
+  * $< 6^\circ$: Estrutura Passante Simples.
+  * $6^\circ$ a $30^\circ$: Estrutura de Ângulo com Reforço.
+  * $> 30^\circ$: Ancoragem Dupla (SIV/CA3/CE3).
+* **Vão Crítico**: Vãos $> 40m$ em rede compacta exigem cabo mensageiro de alta resistência (Espaçadores a cada 10m).
 
 ---
 
-## � Dicas Estratégicas (Estagiário "Fora da Caixa")
+## 🎨 Simbologia e Camadas de Projeto (BIM Entry)
 
-1. **Compartilhamento**: Sempre que instalar poste novo, prever espaço para 1 ocupante de telecom (norma 0,5m abaixo da BT).
-2. **Poluição Visual**: Em centros históricos, priorizar estruturas compactas (`CE`) sobre convencionais (`CA`).
-3. **Manutenibilidade**: Evitar cruzar redes sobre telhados, mesmo que a altura seja legal; priorizar o logradouro público.
+Camadas padronizadas para exportação Civil 3D/Revit:
+
+* `SIMB_POSTE`: Representação gráfica 2.5D do poste.
+* `SIMB_TRAFO`: Blocos dinâmicos para subestações.
+* `SIMB_VÃO`: Linha de centro com metadados de tração.
 
 ---
 *Última atualização: 2026-02-22*
-*Status: ULTIMATE REFERENCE (Stage 5)*
+*Status: ASCENDANT MASTER REFERENCE (Stage 6)*
+*Fontes: calculation_logic.json, Regional_Leste, Roteiro_RDA, standards_index.json.*
