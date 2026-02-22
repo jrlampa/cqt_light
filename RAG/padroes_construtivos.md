@@ -1,70 +1,91 @@
-# RAG - Padrões Construtivos (LIGHT) - ASCENDANT ENGINEERING MASTER
+# RAG - Padrões Construtivos (LIGHT) - ZENITH ENGINEERING MASTER
 
-Esta versão "Ascendant" consolida o conhecimento operacional com inteligência executiva, mapeamento regional e normas de blindagem de rede.
-
----
-
-## 🌎 Mapeamento de Regionais e Contratos (Executivo)
-
-Utilize estes dados para direcionar orçamentos e fluxos de trabalho específicos por zona.
-
-| Regional | Empresa(s) de Contrato | Foco de Projeto |
-| :--- | :--- | :--- |
-| **CENTRO SUL** | DÍNAMO / PARTNERSHIP | Áreas Urbanas Densas / Histórico |
-| **VALE** | ELLCA / CENEGED | Expansão Industrial / Comercial |
-| **OESTE** | INDICA | Expansão Residencial / Loteamentos |
-| **BAIXADA** | INDICA | Normalização / Clandestinos |
-| **LESTE** | ELLCA | Manutenção de Rede / Litoral |
+Esta é a especificação definitiva de engenharia para o projeto CQT LIGHT, consolidando o conhecimento das diretrizes primárias de 2016 e revisões subsequentes.
 
 ---
 
-## 🛡️ Padrão de Blindagem e Redes Especiais (MBNM / RCSN)
+## ⚡ Catálogo de Condutores e Dimensionamento
 
-As redes de blindagem (`MBNM`) possuem requisitos mecânicos e de hardware superiores.
-
-* **Estruturas Focais**:
-  * `MBNM-B1`: Alinhamento reto em beco.
-  * `MBNM-B3`: Final de linha em beco.
-  * `MBNM-TRAP`: Instalação de Transformador Autoprotegido.
-* **Hardware Específico**: Uso obrigatório de **Cinta de Aço para Poste Circular (220mm)** em estruturas de ancoragem.
+| Tipo | Bitola ($mm^2$) | Ampacidade ($A$) | QDT Máx % | Uso Principal |
+| :--- | :--- | :--- | :--- | :--- |
+| **MT Compacta** | 50 / 95 / 150 | 185 / 270 / 360 | 3% (Tronco) | Urbano (Spacer Cable) |
+| **MT Conv.** | 1/0 / 4/0 / 397 | 200 / 340 / 510 | 3% (Tronco) | Rural / Transmissão |
+| **BT Mult.** | 35 / 70 / 120 / 240 | 115 / 181 / 250 / 426 | 5% (Total) | Distribuição Secundária |
 
 ---
 
-## ⚡ Aterramento (Grounding) e Proteção
+## 🏗️ Matriz de Equipamentos e Esforços
 
-Regras de espaçamento e tipos padrão:
+### 🔌 Transformadores (Ratings & Loading)
 
-| Tipo | Aplicação | Descrição SAP |
-| :--- | :--- | :--- |
-| **AT-1** | Proteção Geral | Aterramento básico de rede. |
-| **AT-2** | Equipamentos | Aterramento para Transformadores/Chaves. |
-| **AT-3/5** | Final de Linha | Reforço de aterramento em extremidades. |
+* **Standard kVA**: 15, 30, 45, 75, 112.5, 150, 225, 300.
+* **Fator de Carga Máximo**: 0.85 (85%) para regime nominal.
+* **Padrão de Referência**: *Padrão de Equipamentos rev 01 - 2016-1.pdf*.
+
+### 📐 Postes e Critérios Mecânicos
+
+* **Engastamento Standard**: $E = (L/10) + 0,60$ metros.
+* **Resistências Nominais (daN)**: 300, 600, 1000, 1500, 2000.
+* **Threshold de Esforço**: Ângulos de deflexão $> 6^\circ$ ou vãos $> 40m$ (Compacta) exigem postes $\ge 1000daN$.
+* **Referência**: *PTL0426DT 18 R1 (CÁLCULO DE ESFORÇO).pdf*.
+
+---
+
+## ⚡ Afastamentos e Segurança (Clearances)
+
+Valores de referência para conformidade regulatória (Diretrizes Básicas 2016):
+
+| Cenário | MT (13.8 kV) | BT (380/220V) | Observação |
+| :--- | :--- | :--- | :--- |
+| **Rodovias Federais** | 7,50 m | 6,00 m | Gabarito transporte carga |
+| **Ruas e Avenidas** | 6,00 m | 6,00 m | Travessia de vias urbanas |
+| **Calçadas/Pedestres** | 5,00 m | 4,50 m | Passagem segura |
+| **Entrada Veículos** | 6,00 m | 6,00 m | Acesso a garagens/docas |
+| **Horiz. Edificações** | 1,50 m | 1,20 m | Mínimo para janelas/sacadas |
 
 > [!IMPORTANT]
-> **Regra de Espaçamento**: Deve haver um aterramento a cada **200 metros** de rede secundária, no máximo.
-> **Material Base**: Haste de Aterramento 19mm x 3m (SAP `357989`).
+> Se o afastamento horizontal for insuficiente ($< 1,5m$), utilizar **Braço Afastador** em estruturas MBNM ou Compacta (Ex: `B1A`, `B2A`).
 
 ---
 
-## 📐 Regras de Puxada e Tração (Mecânica Avançada)
+## 🛡️ Proteção e Blindagem (MBNM)
 
-* **Ângulo de Deflexão**:
-  * $< 6^\circ$: Estrutura Passante Simples.
-  * $6^\circ$ a $30^\circ$: Estrutura de Ângulo com Reforço.
-  * $> 30^\circ$: Ancoragem Dupla (SIV/CA3/CE3).
-* **Vão Crítico**: Vãos $> 40m$ em rede compacta exigem cabo mensageiro de alta resistência (Espaçadores a cada 10m).
+Redes protegidas para áreas de alta interferência arbórea ou restrição de espaço:
+
+* **Estruturas Base**: `MBNM-B1` (Tangente), `MBNM-B2` (Ângulo), `MBNM-B3` (Fim), `MBNM-B4` (Ângulo acentuado).
+* **Blindagem BT**: Uso obrigatório de cabos multiplexados (`C30/50`, `C30/185`) com blindagem metálica aterrada em ambos os fins.
+* **Transição**: Estruturas `MBNMRCSN` para derivação de rede convencional para blindada.
 
 ---
 
-## 🎨 Simbologia e Camadas de Projeto (BIM Entry)
+## 🌳 Gestão Ambiental e Manejo (PODA)
 
-Camadas padronizadas para exportação Civil 3D/Revit:
+Códigos SAP mandatórios para orçamentação executiva:
 
-* `SIMB_POSTE`: Representação gráfica 2.5D do poste.
-* `SIMB_TRAFO`: Blocos dinâmicos para subestações.
-* `SIMB_VÃO`: Linha de centro com metadados de tração.
+* `PA/CR`: Poda de árvore **com** recolhimento (Obrigatório em centros urbanos).
+* `PA/SR`: Poda de árvore **sem** recolhimento (Permitido em áreas rurais/pastos).
+* `PA/BC`: Poda de Bambuzal (Especificação de lâmina de serra HT-131).
+* `PODA_LV`: Poda em Linha Viva (Exige equipe especializada e SAP code 3007105).
+* **Corredor de Segurança**: Livre de vegetação em raio de 2,0m (Compacta) a 3,0m (Convencional).
+
+---
+
+## 🎨 Metadados BIM e Civil 3D
+
+Conjunção de layers e atributos para exportação legal:
+
+* **Layer Principal**: `EQUIP_POSTE` (Atributos: `Pole_Type`, `Foundation_Depth`, `SAP_Code`).
+* **Z-Coord**: O topo do poste no MDT deve respeitar a altura livre de projeto (Clearance + Flecha).
+* **BOM Dynamic**: Exportação direta via `BomService.js` integrada aos metadados BIM.
+
+---
+
+## 🌾 Padrões Rurais (Monofásico/Trifásico)
+
+* **Monofásico (MRT)**: Retorno por terra. Referência: *PADRÃO RURAL MONOFÁSICO REV 04 - 2016.pdf*.
+* **Vãos Longos**: Permitidos vãos de até 150m em estruturas convencionais de alumínio nu com alma de aço (CAA).
 
 ---
 *Última atualização: 2026-02-22*
-*Status: ASCENDANT MASTER REFERENCE (Stage 6)*
-*Fontes: calculation_logic.json, Regional_Leste, Roteiro_RDA, standards_index.json.*
+*Status: ZENITH ENGINEERING MASTER (Stage 7)*
+*Fontes primárias: Diretrizes Básicas LIGHT 2016, Padrão Compacta R3, Padrão Rural R4.*
