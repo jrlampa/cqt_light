@@ -97,6 +97,24 @@
                 300
             ],
             "reference_file": "Rede Compacta 13_8kV - Estruturas e Equipamentos.pdf"
+        },
+        "clearances_m": {
+            "federal_highway": 7.5,
+            "streets_avenues": 6.0,
+            "pedestrians_sidewalks": {
+                "mt": 5.0,
+                "bt": 4.5
+            },
+            "vehicle_entrance": 6.0,
+            "horizontal_building_min": 1.5
+        },
+        "environmental": {
+            "poda_safety_corridor_m": 2.0,
+            "sap_codes": {
+                "urbano_denso": "PA/CR",
+                "rural_vazio": "PA/SR",
+                "high_complexity": "PODA_LV"
+            }
         }
     }
 }

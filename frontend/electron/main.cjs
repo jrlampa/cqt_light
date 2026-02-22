@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const db = require('./db/database.cjs');
+const auditService = require('./services/AuditService.js');
 
 let mainWindow;
 
@@ -149,3 +150,6 @@ ipcMain.handle('get-all-sufixos', () =>
 ipcMain.handle('get-zero-price-materials', () => db.getZeroPriceMaterials());
 ipcMain.handle('update-material-price', (_, { sap, price }) => db.updateMaterialPrice(sap, price));
 ipcMain.handle('update-all-kits-service-cost', (_, amount) => db.updateServiceCostForAllKits(amount));
+
+// AUDITORIA (Python Engine Bridge)
+ipcMain.handle('audit-project', (_, projectData) => auditService.auditProject(projectData));

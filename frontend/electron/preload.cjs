@@ -91,4 +91,7 @@ contextBridge.exposeInMainWorld('api', {
   getZeroPriceMaterials: () => ipcRenderer.invoke('get-zero-price-materials'),
   updateMaterialPrice: (sap, price) => ipcRenderer.invoke('update-material-price', { sap, price }),
   updateAllKitsServiceCost: (amount) => ipcRenderer.invoke('update-all-kits-service-cost', amount),
+
+  // Auditoria (Python Engine Bridge)
+  auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
 });
