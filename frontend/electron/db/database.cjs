@@ -594,6 +594,45 @@ class DatabaseService {
   updateServiceCostForAllKits(amount) {
     return this.run("UPDATE kits SET custo_servico = ?", [amount]);
   }
+  // ========== AUDIT FLAGS (Governance) ==========
+
+  getAuditFlags(poleId = null) {
+    if (poleId) {
+      return this.all('SELECT * FROM audit_flags WHERE pole_id = ? ORDER BY created_at DESC', [poleId]);
+    }
+    return this.all('SELECT * FROM audit_flags ORDER BY created_at DESC');
+  }
+
+  addAuditFlag(poleId, severity, message, createdBy = 'TechLead') {
+    return this.run(`
+      INSERT INTO audit_flags (pole_id, severity, message, created_by)
+      VALUES (?, ?, ?, ?)
+    `, [poleId, severity, message, createdBy]);
+  }
+
+  updateAuditFlagStatus(id, status) {
+    const resolvedAt = status === 'resolved' ? new Date().toISOString() : null;
+    return this.run(`
+      UPDATE audit_flags 
+      SET status = ?, resolved_at = ?
+      WHERE id = ?
+    `, [status, resolvedAt, id]);
+  }
+
+  deleteAuditFlag(id) {
+    return this.run('DELETE FROM audit_flags WHERE id = ?', [id]);
+  }
+
+  getGovernanceStats() {
+    const total = this.get('SELECT COUNT(*) as count FROM audit_flags');
+    const open = this.get("SELECT COUNT(*) as count FROM audit_flags WHERE status = 'open'");
+    const resolved = this.get("SELECT COUNT(*) as count FROM audit_flags WHERE status = 'resolved'");
+    return {
+      total: total?.count || 0,
+      open: open?.count || 0,
+      resolved: resolved?.count || 0
+    };
+  }
 }
 
 module.exports = new DatabaseService();

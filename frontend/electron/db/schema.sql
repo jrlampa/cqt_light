@@ -151,4 +151,18 @@ CREATE TABLE IF NOT EXISTS normas_referencia (
   data_indexacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_normas_sap ON normas_referencia(sap);
+-- 14. audit_flags (Collaboration & Governance)
+CREATE TABLE IF NOT EXISTS audit_flags (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pole_id TEXT NOT NULL,
+  severity TEXT NOT NULL DEFAULT 'medium', -- 'low', 'medium', 'high', 'critical'
+  message TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open', -- 'open', 'resolved', 'rejected'
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  resolved_at DATETIME,
+  created_by TEXT DEFAULT 'TechLead'
+);
+CREATE INDEX IF NOT EXISTS idx_audit_flags_pole ON audit_flags(pole_id);
+CREATE INDEX IF NOT EXISTS idx_audit_flags_status ON audit_flags(status);
+
 CREATE INDEX IF NOT EXISTS idx_sufixos_sufixo ON sufixos_contextuais(sufixo);

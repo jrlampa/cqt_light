@@ -98,4 +98,10 @@ contextBridge.exposeInMainWorld('api', {
   // BOM Generation
   generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),
   getProjectAnalytics: (projectData) => ipcRenderer.invoke('get-project-analytics', projectData),
+
+  // Governance & Collaboration
+  getAuditFlags: (poleId) => ipcRenderer.invoke('get-audit-flags', poleId),
+  addAuditFlag: (data) => ipcRenderer.invoke('add-audit-flag', data),
+  updateAuditFlagStatus: (id, status) => ipcRenderer.invoke('update-audit-flag-status', { id, status }),
+  getGovernanceStats: () => ipcRenderer.invoke('get-governance-stats'),
 });

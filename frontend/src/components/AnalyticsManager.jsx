@@ -1,19 +1,25 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { BarChart3, ShieldCheck, FileSpreadsheet, Ruler, Layers, AlertCircle, RefreshCw } from 'lucide-react';
+import { BarChart3, ShieldCheck, FileSpreadsheet, Ruler, Layers, AlertCircle, RefreshCw, MessageSquare } from 'lucide-react';
 
 const AnalyticsManager = ({ projectData = {} }) => {
     const [analytics, setAnalytics] = useState(null);
+    const [govStats, setGovStats] = useState({ total: 0, open: 0, resolved: 0, debtRatio: 0 });
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
-            if (!window.api || !projectData.poles) return;
+            if (!window.api) return;
             setLoading(true);
             try {
                 const results = await window.api.getProjectAnalytics(projectData);
                 setAnalytics(results);
+
+                if (window.api.getGovernanceStats) {
+                    const gStats = await window.api.getGovernanceStats();
+                    setGovStats(gStats);
+                }
             } catch (error) {
-                console.error('Failed to fetch analytics:', error);
+                console.error('Analytics Fetch Error:', error);
             } finally {
                 setLoading(false);
             }
@@ -35,9 +41,9 @@ const AnalyticsManager = ({ projectData = {} }) => {
 
     const cards = [
         { label: 'Score Qualidade DXF', value: `${analytics?.dxf?.score || 0}%`, icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-        { label: 'Maturidade BIM', value: `Nível ${analytics?.bim?.maturityLevel || 0}`, icon: Layers, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Dívida Técnica', value: `${govStats.debtRatio.toFixed(1)}%`, icon: AlertCircle, color: govStats.debtRatio > 20 ? 'text-red-600' : 'text-amber-600', bg: govStats.debtRatio > 20 ? 'bg-red-50' : 'bg-amber-50' },
         { label: 'Total Estruturas', value: stats.polesCount, icon: Ruler, color: 'text-purple-600', bg: 'bg-purple-50' },
-        { label: 'Ciclo Médio Manut.', value: `${stats.avgMaintenanceMonths} meses`, icon: FileSpreadsheet, color: 'text-amber-600', bg: 'bg-amber-50' },
+        { label: 'Alertas Abertos', value: govStats.open, icon: MessageSquare, color: 'text-blue-600', bg: 'bg-blue-50' },
     ];
 
     if (loading && !analytics) {
