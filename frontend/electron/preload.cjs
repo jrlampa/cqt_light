@@ -94,4 +94,7 @@ contextBridge.exposeInMainWorld('api', {
 
   // Auditoria (Python Engine Bridge)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
+
+  // BOM Generation
+  generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),
 });

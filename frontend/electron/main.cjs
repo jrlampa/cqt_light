@@ -3,6 +3,7 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const db = require('./db/database.cjs');
 const auditService = require('./services/AuditService.js');
+const bomService = require('./services/BomService.js');
 
 let mainWindow;
 
@@ -153,3 +154,6 @@ ipcMain.handle('update-all-kits-service-cost', (_, amount) => db.updateServiceCo
 
 // AUDITORIA (Python Engine Bridge)
 ipcMain.handle('audit-project', (_, projectData) => auditService.auditProject(projectData));
+
+// BOM GENERATION
+ipcMain.handle('generate-bom', (_, projectData) => bomService.generateBOM(projectData));
