@@ -1,0 +1,609 @@
+const Database = require('better-sqlite3');
+const path = require('path');
+const fs = require('fs');
+
+class DatabaseService {
+    constructor() {
+        this.db = null;
+        // Database file remains in the root or appropriate folder
+        this.dbPath = path.join(process.cwd(), 'cqt_light.db');
+        this.initialized = false;
+    }
+
+    async init() {
+        if (this.initialized) return;
+
+        // Sanitization utility
+        this.sanitize = (val) => {
+            if (typeof val !== 'string') return val;
+            // Remove non-printable characters and trim
+            return val.replace(/[\x00-\x1F\x7F]/g, "").trim();
+        };
+
+        try {
+            this.db = new Database(this.dbPath);
+
+            // Performance optimizations
+            this.db.pragma('journal_mode = WAL');
+            this.db.pragma('synchronous = NORMAL');
+
+            // Adjust path to schema.sql relative to this file (services/)
+            const schemaPath = path.join(__dirname, '../db/schema.sql');
+            if (fs.existsSync(schemaPath)) {
+                const schema = fs.readFileSync(schemaPath, 'utf-8');
+                this.db.exec(schema);
+            } else {
+                console.warn('Schema file not found at:', schemaPath);
+            }
+
+            this.initialized = true;
+        } catch (err) {
+            console.error('Database initialization error:', err);
+            throw err;
+        }
+    }
+
+    run(sql, params = []) {
+        const info = this.db.prepare(sql).run(params);
+        return {
+            changes: info.changes,
+            lastInsertRowid: info.lastInsertRowid
+        };
+    }
+
+    get(sql, params = []) {
+        return this.db.prepare(sql).get(params);
+    }
+
+    all(sql, params = []) {
+        return this.db.prepare(sql).all(params);
+    }
+
+    // ========== FAST COST CALCULATION (< 100ms) ==========
+
+    /**
+     * Get total cost for multiple kits in ONE query
+     * Returns: { materiais: [], totalMaterial, totalServico, totalGeral }
+     */
+    getCustoTotal(kitCodes) {
+        if (!kitCodes || kitCodes.length === 0) {
+            return { materiais: [], totalMaterial: 0, totalServico: 0, totalGeral: 0 };
+        }
+
+        const placeholders = kitCodes.map(() => '?').join(',');
+
+        // Aggregated materials
+        const materiais = this.all(`
+      SELECT 
+        m.sap,
+        m.descricao,
+        m.unidade,
+        m.preco_unitario,
+        SUM(kc.quantidade) as quantidade,
+        SUM(kc.quantidade * m.preco_unitario) as subtotal
+      FROM kit_composicao kc
+      JOIN materiais m ON kc.sap = m.sap
+      WHERE kc.codigo_kit IN (${placeholders})
+      GROUP BY m.sap, m.descricao, m.unidade, m.preco_unitario
+      ORDER BY m.descricao
+    `, kitCodes);
+
+        // Service costs from kits
+        const servicos = this.all(`
+      SELECT codigo_kit, descricao_kit, codigo_servico, custo_servico
+      FROM kits WHERE codigo_kit IN (${placeholders})
+    `, kitCodes);
+
+        const totalMaterial = materiais.reduce((sum, m) => sum + (m.subtotal || 0), 0);
+        const totalServico = servicos.reduce((sum, s) => sum + (s.custo_servico || 0), 0);
+
+        return {
+            materiais,
+            servicos,
+            totalMaterial,
+            totalServico,
+            totalGeral: totalMaterial + totalServico
+        };
+    }
+
+    // ========== MATERIAIS ==========
+    getAllMaterials() {
+        return this.all('SELECT * FROM materiais ORDER BY sap LIMIT 200');
+    }
+
+    searchMaterials(query) {
+        return this.all(`
+      SELECT * FROM materiais 
+      WHERE sap LIKE ? OR descricao LIKE ?
+      ORDER BY sap LIMIT 50
+    `, [`%${query}%`, `%${query}%`]);
+    }
+
+    getMaterialsPrices(codes) {
+        if (!codes || codes.length === 0) return [];
+        const placeholders = codes.map(() => '?').join(',');
+        return this.all(`
+      SELECT sap, descricao, unidade, preco_unitario 
+      FROM materiais WHERE sap IN (${placeholders})
+    `, codes);
+    }
+
+    upsertMaterial(sap, descricao, unidade, preco_unitario) {
+        const s_sap = this.sanitize(sap);
+        const s_desc = this.sanitize(descricao);
+        const s_un = this.sanitize(unidade);
+
+        this.run(`
+      INSERT INTO materiais (sap, descricao, unidade, preco_unitario)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(sap) DO UPDATE SET
+        descricao = excluded.descricao,
+        unidade = excluded.unidade,
+        preco_unitario = excluded.preco_unitario
+      `, [s_sap, s_desc, s_un || 'UN', preco_unitario || 0]);
+    }
+
+    // ========== KITS ==========
+    getAllKits() {
+        return this.all('SELECT * FROM kits ORDER BY codigo_kit');
+    }
+
+    searchKits(query) {
+        return this.all(`
+      SELECT codigo_kit, descricao_kit, custo_servico, 'padrao' as tipo, NULL as materiais_json
+      FROM kits 
+      WHERE codigo_kit LIKE ? OR descricao_kit LIKE ?
+      UNION ALL
+      SELECT nome_template as codigo_kit, observacao as descricao_kit, 0 as custo_servico, 'manual' as tipo, materiais_json
+      FROM templates_kit_manual
+      WHERE nome_template LIKE ? OR observacao LIKE ?
+      ORDER BY codigo_kit LIMIT 30
+    `, [`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`]);
+    }
+
+    getKit(codigoKit) {
+        return this.get('SELECT * FROM kits WHERE codigo_kit = ?', [codigoKit]);
+    }
+
+    upsertKit(codigoKit, descricaoKit, codigoServico = null, custoServico = 0) {
+        const s_ckit = this.sanitize(codigoKit);
+        const s_desc = this.sanitize(descricaoKit);
+        const s_cserv = this.sanitize(codigoServico);
+
+        this.run(`
+      INSERT INTO kits (codigo_kit, descricao_kit, codigo_servico, custo_servico)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(codigo_kit) DO UPDATE SET
+        descricao_kit = excluded.descricao_kit,
+        codigo_servico = excluded.codigo_servico,
+        custo_servico = excluded.custo_servico
+    `, [s_ckit, s_desc, s_cserv, custoServico]);
+    }
+
+    // Create a new kit (explicit insert)
+    createKit(codigoKit, descricaoKit) {
+        const s_ckit = this.sanitize(codigoKit);
+        const s_desc = this.sanitize(descricaoKit);
+        this.run(`
+      INSERT INTO kits (codigo_kit, descricao_kit, codigo_servico, custo_servico)
+      VALUES (?, ?, NULL, 0)
+    `, [s_ckit, s_desc]);
+        return this.getKit(s_ckit);
+    }
+
+    updateKitMetadata(codigoKit, descricaoKit) {
+        return this.run(`
+      UPDATE kits SET descricao_kit = ? WHERE codigo_kit = ?
+    `, [this.sanitize(descricaoKit), this.sanitize(codigoKit)]);
+    }
+
+    deleteKit(codigoKit) {
+        // Delete composition first
+        this.run('DELETE FROM kit_composicao WHERE codigo_kit = ?', [codigoKit]);
+        // Then delete kit
+        return this.run('DELETE FROM kits WHERE codigo_kit = ?', [codigoKit]);
+    }
+
+    // ========== KIT COMPOSITION ==========
+    getKitComposition(codigoKit) {
+        return this.all(`
+      SELECT kc.*, m.descricao, m.unidade, m.preco_unitario,
+             (kc.quantidade * m.preco_unitario) as subtotal
+      FROM kit_composicao kc
+      LEFT JOIN materiais m ON kc.sap = m.sap
+      WHERE kc.codigo_kit = ?
+      ORDER BY m.descricao
+    `, [codigoKit]);
+    }
+
+    addMaterialToKit(codigoKit, sap, quantidade) {
+        this.run(`
+      INSERT INTO kit_composicao (codigo_kit, sap, quantidade)
+      VALUES (?, ?, ?)
+      ON CONFLICT(codigo_kit, sap) DO UPDATE SET quantidade = excluded.quantidade
+    `, [codigoKit, sap, quantidade || 1]);
+    }
+
+    updateKitMaterialQty(id, quantidade) {
+        return this.run('UPDATE kit_composicao SET quantidade = ? WHERE id = ?', [quantidade, id]);
+    }
+
+    removeMaterialFromKit(id) {
+        return this.run('DELETE FROM kit_composicao WHERE id = ?', [id]);
+    }
+
+    // ========== SERVICOS CM ==========
+    getAllServicos() {
+        return this.all('SELECT * FROM servicos_cm ORDER BY codigo');
+    }
+
+    searchServicos(query) {
+        return this.all(`
+      SELECT * FROM servicos_cm 
+      WHERE codigo LIKE ? OR descricao LIKE ?
+      ORDER BY codigo LIMIT 30
+    `, [`%${query}%`, `%${query}%`]);
+    }
+
+    upsertServico(codigo, descricao, precoBruto) {
+        const s_cod = this.sanitize(codigo);
+        const s_desc = this.sanitize(descricao);
+        this.run(`
+      INSERT INTO servicos_cm (codigo, descricao, preco_bruto)
+      VALUES (?, ?, ?)
+      ON CONFLICT(codigo) DO UPDATE SET
+        descricao = excluded.descricao,
+        preco_bruto = excluded.preco_bruto
+    `, [s_cod, s_desc, precoBruto || 0]);
+    }
+
+    // ========== STATS ==========
+    getStats() {
+        const materials = this.get('SELECT COUNT(*) as count FROM materiais');
+        const kits = this.get('SELECT COUNT(*) as count FROM kits');
+        const servicos = this.get('SELECT COUNT(*) as count FROM servicos_cm');
+
+        // ABNT Violations count (Simple check for lowercase in description)
+        const abntViolations = this.get("SELECT COUNT(*) as count FROM materiais WHERE descricao != UPPER(descricao)");
+
+        return {
+            materials: materials?.count || 0,
+            kits: kits?.count || 0,
+            servicos: servicos?.count || 0,
+            abntViolations: abntViolations?.count || 0
+        };
+    }
+
+    // ========== ORÇAMENTOS (Budget History) ==========
+    saveOrcamento(nome, total, dados) {
+        const s_nome = this.sanitize(nome);
+        const info = this.run(`
+      INSERT INTO orcamentos (nome, total, dados_json)
+      VALUES (?, ?, ?)
+    `, [s_nome, total, JSON.stringify(dados)]);
+        return { id: info.lastInsertRowid, nome: s_nome, total, data_criacao: new Date().toISOString() };
+    }
+
+    getOrcamentos() {
+        return this.all('SELECT id, nome, total, data_criacao FROM orcamentos ORDER BY data_criacao DESC');
+    }
+
+    getOrcamento(id) {
+        const orcamento = this.get('SELECT * FROM orcamentos WHERE id = ?', [id]);
+        if (orcamento) {
+            try {
+                orcamento.dados = JSON.parse(orcamento.dados_json);
+            } catch (e) {
+                console.error('Erro ao fazer parse do JSON do orçamento:', e);
+                orcamento.dados = null;
+            }
+        }
+        return orcamento;
+    }
+
+    deleteOrcamento(id) {
+        this.run('DELETE FROM orcamentos WHERE id = ?', [id]);
+    }
+
+    // ========== TEMPLATES (Project Templates) ==========
+    saveTemplate(nome, descricao, dados) {
+        const s_nome = this.sanitize(nome);
+        const s_desc = this.sanitize(descricao);
+        try {
+            this.run(`
+        INSERT INTO templates (nome, descricao, dados_json)
+        VALUES (?, ?, ?)
+      `, [s_nome, s_desc, JSON.stringify(dados)]);
+            return { success: true };
+        } catch (e) {
+            if (e.message.includes('UNIQUE constraint failed')) {
+                throw new Error('Já existe um template com este nome.');
+            }
+            throw e;
+        }
+    }
+
+    getTemplates() {
+        return this.all('SELECT id, nome, descricao, is_default FROM templates ORDER BY nome');
+    }
+
+    getTemplate(id) {
+        const tpl = this.get('SELECT * FROM templates WHERE id = ?', [id]);
+        if (tpl) {
+            try {
+                tpl.dados = JSON.parse(tpl.dados_json);
+            } catch (e) {
+                tpl.dados = null;
+            }
+        }
+        return tpl;
+    }
+
+    deleteTemplate(id) {
+        this.run('DELETE FROM templates WHERE id = ?', [id]);
+    }
+
+    // ========== EMPRESAS (Multi-Company Management) ==========
+    getAllEmpresas() {
+        return this.all('SELECT * FROM empresas WHERE ativa = 1 ORDER BY nome');
+    }
+
+    getEmpresa(id) {
+        return this.get('SELECT * FROM empresas WHERE id = ?', [id]);
+    }
+
+    createEmpresa(nome, contrato, regional) {
+        this.run(
+            'INSERT INTO empresas (nome, contrato, regional) VALUES (?, ?, ?)',
+            [nome, contrato, regional]
+        );
+        return this.get('SELECT last_insert_rowid() as id').id;
+    }
+
+    updateEmpresa(id, nome, contrato, regional) {
+        this.run(
+            'UPDATE empresas SET nome = ?, contrato = ?, regional = ? WHERE id = ?',
+            [nome, contrato, regional, id]
+        );
+    }
+
+    deleteEmpresa(id) {
+        this.run('UPDATE empresas SET ativa = 0 WHERE id = ?', [id]);
+    }
+
+    // CONFIGURAÇÃO
+    getConfig(chave) {
+        const config = this.get('SELECT valor FROM configuracao WHERE chave = ?', [chave]);
+        return config ? config.valor : null;
+    }
+
+    setConfig(chave, valor) {
+        this.run(
+            'INSERT OR REPLACE INTO configuracao (chave, valor) VALUES (?, ?)',
+            [chave, valor]
+        );
+    }
+
+    getEmpresaAtiva() {
+        const empresaId = this.getConfig('empresa_ativa_id');
+        if (!empresaId) return null;
+        return this.getEmpresa(parseInt(empresaId));
+    }
+
+    setEmpresaAtiva(empresaId) {
+        this.setConfig('empresa_ativa_id', empresaId.toString());
+    }
+
+    // PREÇOS POR EMPRESA
+    getPrecoByEmpresa(empresaId, sap) {
+        const preco = this.get(
+            'SELECT preco_unitario FROM precos_empresa WHERE empresa_id = ? AND sap = ?',
+            [empresaId, sap]
+        );
+
+        if (!preco) {
+            const material = this.get('SELECT preco_unitario FROM materiais WHERE sap = ?', [sap]);
+            return material ? material.preco_unitario : 0;
+        }
+
+        return preco.preco_unitario;
+    }
+
+    getAllPrecosByEmpresa(empresaId) {
+        return this.all(`
+      SELECT pe.sap, m.descricao, m.unidade, pe.preco_unitario, pe.data_atualizacao, pe.origem
+      FROM precos_empresa pe
+      LEFT JOIN materiais m ON pe.sap = m.sap
+      WHERE pe.empresa_id = ?
+      ORDER BY m.descricao
+    `, [empresaId]);
+    }
+
+    setPrecoEmpresa(empresaId, sap, precoNovo, origem = 'manual') {
+        const precoAnterior = this.getPrecoByEmpresa(empresaId, sap);
+
+        this.run(`
+      INSERT INTO precos_empresa (empresa_id, sap, preco_unitario, origem, data_atualizacao)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(empresa_id, sap) DO UPDATE SET
+        preco_unitario = excluded.preco_unitario,
+        origem = excluded.origem,
+        data_atualizacao = CURRENT_TIMESTAMP
+    `, [empresaId, sap, precoNovo, origem]);
+
+        this.run(`
+      INSERT INTO historico_precos (empresa_id, sap, preco_anterior, preco_novo, tipo_alteracao)
+      VALUES (?, ?, ?, ?, ?)
+    `, [empresaId, sap, precoAnterior, precoNovo, origem]);
+    }
+
+    importPrecosFromArray(empresaId, precosArray, origem = 'importacao') {
+        let contador = 0;
+        precosArray.forEach(item => {
+            if (item.sap && item.preco_unitario !== undefined) {
+                this.setPrecoEmpresa(empresaId, item.sap, item.preco_unitario, origem);
+                contador++;
+            }
+        });
+        return contador;
+    }
+
+    reajusteEmMassa(empresaId, percentual, filtroSaps = null) {
+        let query = `SELECT sap, preco_unitario FROM precos_empresa WHERE empresa_id = ?`;
+        let params = [empresaId];
+
+        if (filtroSaps && filtroSaps.length > 0) {
+            const placeholders = filtroSaps.map(() => '?').join(',');
+            query += ` AND sap IN (${placeholders})`;
+            params = params.concat(filtroSaps);
+        }
+
+        const precos = this.all(query, params);
+        let contador = 0;
+
+        precos.forEach(item => {
+            const novoPreco = item.preco_unitario * (1 + percentual / 100);
+            this.run(`
+        UPDATE precos_empresa 
+        SET preco_unitario = ?, origem = 'reajuste', data_atualizacao = CURRENT_TIMESTAMP
+        WHERE empresa_id = ? AND sap = ?
+      `, [novoPreco, empresaId, item.sap]);
+
+            this.run(`
+        INSERT INTO historico_precos (empresa_id, sap, preco_anterior, preco_novo, tipo_alteracao, percentual)
+        VALUES (?, ?, ?, ?, 'reajuste_percentual', ?)
+      `, [empresaId, item.sap, item.preco_unitario, novoPreco, percentual]);
+
+            contador++;
+        });
+
+        return contador;
+    }
+
+    getHistoricoPrecos(empresaId, limit = 100) {
+        return this.all(`
+      SELECT h.*, m.descricao
+      FROM historico_precos h
+      LEFT JOIN materiais m ON h.sap = m.sap
+      WHERE h.empresa_id = ?
+      ORDER BY h.data_alteracao DESC
+      LIMIT ?
+    `, [empresaId, limit]);
+    }
+
+    // ========== SUFIXOS CONTEXTUAIS ==========
+    resolverSufixo(prefixo, tipoContexto, valorContexto) {
+        const result = this.get(`
+      SELECT codigo_completo, prefixo || sufixo as resolved
+      FROM sufixos_contextuais
+      WHERE prefixo = ? AND tipo_contexto = ? AND valor_contexto = ?
+    `, [prefixo, tipoContexto, valorContexto]);
+
+        return result ? (result.codigo_completo || result.resolved) : null;
+    }
+
+    upsertSufixo(prefixo, tipoContexto, valorContexto, sufixo) {
+        const codigoCompleto = prefixo + sufixo;
+        this.run(`
+      INSERT INTO sufixos_contextuais (prefixo, tipo_contexto, valor_contexto, sufixo, codigo_completo)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(prefixo, tipo_contexto, valor_contexto) DO UPDATE SET
+        sufixo = excluded.sufixo,
+        codigo_completo = excluded.codigo_completo
+    `, [prefixo, tipoContexto, valorContexto, sufixo, codigoCompleto]);
+    }
+
+    getSufixosByPrefixo(prefixo) {
+        return this.all(`
+      SELECT * FROM sufixos_contextuais WHERE prefixo = ? ORDER BY valor_contexto
+    `, [prefixo]);
+    }
+
+    getSufixosByContexto(tipoContexto, valorContexto) {
+        return this.all(`
+      SELECT * FROM sufixos_contextuais 
+      WHERE tipo_contexto = ? AND valor_contexto = ?
+    `, [tipoContexto, valorContexto]);
+    }
+
+    // ========== TEMPLATES KIT MANUAL ==========
+    saveTemplateManual(templateData) {
+        const { nome_template, kit_base, materiais, observacao } = templateData;
+        const p_nome = this.sanitize(nome_template) || null;
+        const p_base = this.sanitize(kit_base) || null;
+        const p_materiais = JSON.stringify(materiais || []);
+        const p_obs = this.sanitize(observacao) || null;
+
+        if (!p_nome) throw new Error('Nome do template é obrigatório');
+
+        this.run(`
+      INSERT INTO templates_kit_manual (nome_template, kit_base, materiais_json, observacao)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(nome_template) DO UPDATE SET
+        kit_base = excluded.kit_base,
+        materiais_json = excluded.materiais_json,
+        observacao = excluded.observacao
+    `, [p_nome, p_base, p_materiais, p_obs]);
+        return { success: true };
+    }
+
+    deleteTemplateManual(nome_template) {
+        this.run(`DELETE FROM templates_kit_manual WHERE nome_template = ?`, [nome_template]);
+        return { success: true };
+    }
+
+    getTemplateManual(nomeTemplate) {
+        const tpl = this.get('SELECT * FROM templates_kit_manual WHERE nome_template = ?', [nomeTemplate]);
+        if (tpl) {
+            try { tpl.materiais = JSON.parse(tpl.materiais_json); }
+            catch { tpl.materiais = []; }
+        }
+        return tpl;
+    }
+
+    getAllTemplatesManuais() {
+        const templates = this.all('SELECT * FROM templates_kit_manual ORDER BY nome_template');
+        return templates.map(t => {
+            try { t.materiais = t.materiais_json ? JSON.parse(t.materiais_json) : []; }
+            catch { t.materiais = []; }
+            return t;
+        });
+    }
+
+    getAllSufixos() {
+        return this.all('SELECT * FROM sufixos_contextuais');
+    }
+
+    // ========== PRICE MANAGEMENT ==========
+    getZeroPriceMaterials() {
+        return this.all("SELECT * FROM materiais WHERE preco_unitario = 0 OR preco_unitario IS NULL ORDER BY sap");
+    }
+
+    updateMaterialPrice(sap, price) {
+        return this.run("UPDATE materiais SET preco_unitario = ? WHERE sap = ?", [price, sap]);
+    }
+
+    updateServiceCostForAllKits(amount) {
+        return this.run("UPDATE kits SET custo_servico = ?", [amount]);
+    }
+
+    // ========== NORMATIVE REFERENCES ==========
+    getMaterialNormas(sap) {
+        return this.all("SELECT * FROM normas_referencia WHERE sap = ? ORDER BY fonte, pagina", [sap]);
+    }
+
+    getNormasForMaterials(saps) {
+        if (!saps || saps.length === 0) return [];
+        const placeholders = saps.map(() => '?').join(',');
+        return this.all(`SELECT * FROM normas_referencia WHERE sap IN (${placeholders}) ORDER BY sap, fonte, pagina`, saps);
+    }
+
+    upsertNormaReferencia(sap, fonte, pagina, contexto) {
+        this.run(`
+      INSERT INTO normas_referencia (sap, fonte, pagina, contexto)
+      VALUES (?, ?, ?, ?)
+    `, [sap, fonte, pagina, contexto]);
+    }
+}
+
+module.exports = new DatabaseService();

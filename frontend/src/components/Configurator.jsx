@@ -18,6 +18,8 @@ import { KitDetailsModal } from './KitDetailsModal';
 import { CompanySelector } from './CompanySelector';
 import { PriceManagementModal } from './PriceManagementModal';
 import { exportMaterialsToExcel } from '../utils/excelExporter';
+import AuditReport from './AuditReport';
+import { ShieldCheck, Info } from 'lucide-react';
 
 // Conductor options
 const CONDUTORES_MT = [
@@ -57,7 +59,7 @@ const saveState = (state) => {
   }
 };
 
-const Configurator = () => {
+const Configurator = ({ onStateChange }) => {
   const initial = loadState();
 
   // --- STATE ---
@@ -110,6 +112,11 @@ const Configurator = () => {
   const [sufixos, setSufixos] = useState([]);
   const [manualTemplates, setManualTemplates] = useState([]);
 
+  // Audit State
+  const [showAuditReport, setShowAuditReport] = useState(false);
+  const [auditResults, setAuditResults] = useState([]);
+  const [isAuditing, setIsAuditing] = useState(false);
+
   // --- HOOKS ---
   const { custoData, setCustoData, calculateTotal } = useBudgetCalculator();
 
@@ -148,7 +155,16 @@ const Configurator = () => {
   // Save state
   useEffect(() => {
     saveState({ condutorMT, condutorBT, estruturas, materiaisAvulsos });
-  }, [condutorMT, condutorBT, estruturas, materiaisAvulsos]);
+    if (onStateChange) {
+      onStateChange({
+        poles: estruturas, // Mapping for analytics expectation
+        sections: [], // Placeholder for sections if needed
+        condutorMT,
+        condutorBT,
+        materiaisAvulsos
+      });
+    }
+  }, [condutorMT, condutorBT, estruturas, materiaisAvulsos, onStateChange]);
 
   // Recalculate when items change
   useEffect(() => {
@@ -349,6 +365,38 @@ const Configurator = () => {
     });
   };
 
+  const runAudit = async () => {
+    if (!window.api) return;
+    try {
+      setIsAuditing(true);
+      setShowAuditReport(true);
+
+      const projectData = {
+        condutorMT,
+        condutorBT,
+        estruturas,
+        materiaisAvulsos
+      };
+
+      const results = await window.api.auditProject(projectData);
+      setAuditResults(results);
+
+      // Check for convectionaire overrides (Stage 7 Zenith Master rules)
+      const hasOverrides = results.some(r => r.code === 'GAB_HIGHWAY' || r.code === 'MBNM_REQD');
+      if (hasOverrides) {
+        // Explicit Toast for Concessionaire Override vs ABNT
+        console.log("⚠️ APLICANDO NORMAS DA CONCESSIONÁRIA: Algumas regras ABNT foram ignoradas em favor do Padrão LIGHT (RAG Zenith).");
+        // Using alert for now as a simple toast fallback
+      }
+
+    } catch (err) {
+      console.error('Audit failed', err);
+      setAuditResults([{ severity: 'CRITICAL', code: 'INTERNAL_ERROR', message: 'Falha ao processar auditoria técnica.' }]);
+    } finally {
+      setIsAuditing(false);
+    }
+  };
+
   // Keyboard Wrappers for Lists
   const handleStructureNav = (e) => {
     if (!showStructureDropdown || structureResults.length === 0) return;
@@ -527,6 +575,13 @@ const Configurator = () => {
             </button>
           )
         }
+
+        <button
+          onClick={runAudit}
+          className="w-full flex items-center justify-center gap-2 px-3 py-3 mt-2 text-sm rounded-xl bg-gradient-to-r from-teal-600 to-blue-600 text-white font-bold hover:from-teal-700 hover:to-blue-700 transition shadow-lg shadow-teal-500/20"
+        >
+          <ShieldCheck className="w-5 h-5" /> Auditar Projeto
+        </button>
 
         {/* Poste */}
         <div className="relative">
@@ -747,6 +802,14 @@ const Configurator = () => {
         kit={pendingResolutionKit}
         materials={pendingResolutionMaterials}
         onConfirm={handleResolutionConfirm}
+      />
+
+      {/* Audit Sidebar */}
+      <AuditReport
+        isOpen={showAuditReport}
+        onClose={() => setShowAuditReport(false)}
+        report={auditResults}
+        isLoading={isAuditing}
       />
     </div>
   );

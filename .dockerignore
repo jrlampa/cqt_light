@@ -1,0 +1,29 @@
+.git
+.gitignore
+.vscode
+.idea
+node_modules
+frontend/node_modules
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.xlsm
+*.xlsx
+*.docx
+*.pdf
+data/raw/
+PLANILHA CUSTO MODULAR/
+Padrões/
+Padrões construtivos/
+dist
+frontend/dist
+dist_electron
+*.log
+MEMORY.md
+IMPLEMENTATION_PLAN.md
+/brain/

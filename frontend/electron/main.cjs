@@ -2,13 +2,15 @@ const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const db = require('./db/database.cjs');
-const auditService = require('./services/AuditService.js');
-const bomService = require('./services/BomService.js');
+const ControllerRegistry = require('./src/interfaces/ControllerRegistry');
 
 let mainWindow;
 
 async function createWindow() {
   await db.init();
+
+  // Register all DDD Controllers
+  ControllerRegistry.registerAll();
 
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -46,14 +48,11 @@ app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) creat
 
 // ========== IPC HANDLERS ==========
 
+// ========== IPC HANDLERS (LEGACY - MIGRATION IN PROGRESS) ==========
+
 // Fast cost calculation (single query)
 ipcMain.handle('get-custo-total', (_, kitCodes) => db.getCustoTotal(kitCodes));
 
-// Materials
-ipcMain.handle('get-all-materials', () => db.getAllMaterials());
-ipcMain.handle('search-materials', (_, query) => db.searchMaterials(query));
-ipcMain.handle('get-materials-prices', (_, codes) => db.getMaterialsPrices(codes));
-ipcMain.handle('upsert-material', (_, m) => db.upsertMaterial(m.sap, m.descricao, m.unidade, m.preco_unitario));
 // Kits
 ipcMain.handle('get-all-kits', () => db.getAllKits());
 ipcMain.handle('search-kits', (_, query) => db.searchKits(query));
@@ -151,9 +150,3 @@ ipcMain.handle('get-all-sufixos', () =>
 ipcMain.handle('get-zero-price-materials', () => db.getZeroPriceMaterials());
 ipcMain.handle('update-material-price', (_, { sap, price }) => db.updateMaterialPrice(sap, price));
 ipcMain.handle('update-all-kits-service-cost', (_, amount) => db.updateServiceCostForAllKits(amount));
-
-// AUDITORIA (Python Engine Bridge)
-ipcMain.handle('audit-project', (_, projectData) => auditService.auditProject(projectData));
-
-// BOM GENERATION
-ipcMain.handle('generate-bom', (_, projectData) => bomService.generateBOM(projectData));

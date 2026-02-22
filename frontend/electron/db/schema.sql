@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS materiais (
   sap TEXT PRIMARY KEY,
   descricao TEXT NOT NULL,
   unidade TEXT DEFAULT 'UN',
-  preco_unitario REAL DEFAULT 0
+  preco_unitario REAL DEFAULT 0,
+  ciclo_manutencao_meses INTEGER DEFAULT 24,
+  vida_util_anos INTEGER DEFAULT 30
 );
 -- 2. servicos_cm (Custo Modular reference)
 CREATE TABLE IF NOT EXISTS servicos_cm (

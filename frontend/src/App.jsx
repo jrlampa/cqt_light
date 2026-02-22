@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Calculator, Layers, Package, DollarSign, Keyboard } from 'lucide-react';
-import Configurator from './components/Configurator';
-import MaterialManager from './components/MaterialManager';
-import KitEditor from './components/KitEditor';
 import LaborManager from './components/LaborManager';
+import StructuralMap from './components/StructuralMap';
+import AnalyticsManager from './components/AnalyticsManager';
+import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3 } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
   const [stats, setStats] = useState({ materials: 0, kits: 0, servicos: 0 });
+  const [projectData, setProjectData] = useState({ poles: [], sections: [] });
 
   useEffect(() => {
     loadStats();
@@ -39,15 +38,19 @@ function App() {
     { id: 'materials', label: 'Materiais', icon: Layers, shortcut: '2' },
     { id: 'kits', label: 'Kits', icon: Package, shortcut: '3' },
     { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4' },
+    { id: 'map', label: 'Visualização 2.5D', icon: MapIcon, shortcut: '5' },
+    { id: 'analytics', label: 'Analytics (SotA)', icon: BarChart3, shortcut: '6' },
   ];
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'configurator': return <Configurator />;
+      case 'configurator': return <Configurator onStateChange={setProjectData} />;
       case 'materials': return <MaterialManager />;
       case 'kits': return <KitEditor />;
       case 'labor': return <LaborManager />;
-      default: return <Configurator />;
+      case 'map': return <StructuralMap projectData={projectData} />;
+      case 'analytics': return <AnalyticsManager projectData={projectData} />;
+      default: return <Configurator onStateChange={setProjectData} />;
     }
   };
 

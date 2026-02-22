@@ -1,0 +1,6 @@
+pandas
+openpyxl
+pypdf
+better-sqlite3
+sqlalchemy
+jinja2

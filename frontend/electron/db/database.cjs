@@ -115,15 +115,17 @@ class DatabaseService {
     `, codes);
   }
 
-  upsertMaterial(sap, descricao, unidade, preco_unitario) {
+  upsertMaterial(sap, descricao, unidade, preco_unitario, ciclo_manutencao = 24, vida_util = 30) {
     this.run(`
-      INSERT INTO materiais (sap, descricao, unidade, preco_unitario)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO materiais (sap, descricao, unidade, preco_unitario, ciclo_manutencao_meses, vida_util_anos)
+      VALUES (?, ?, ?, ?, ?, ?)
       ON CONFLICT(sap) DO UPDATE SET
         descricao = excluded.descricao,
         unidade = excluded.unidade,
-        preco_unitario = excluded.preco_unitario
-    `, [sap, descricao, unidade || 'UN', preco_unitario || 0]);
+        preco_unitario = excluded.preco_unitario,
+        ciclo_manutencao_meses = excluded.ciclo_manutencao_meses,
+        vida_util_anos = excluded.vida_util_anos
+    `, [sap, descricao, unidade || 'UN', preco_unitario || 0, ciclo_manutencao, vida_util]);
   }
 
   // ========== KITS ==========

@@ -1,0 +1,22 @@
+# Base image for Python
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements if they exist, otherwise install core ones
+COPY scripts/requirements.txt* ./
+RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; \
+    else pip install --no-cache-dir pandas openpyxl sqlalchemy; fi
+
+# Copy scripts
+COPY scripts/ ./scripts/
+COPY data/ ./data/
+
+# Default command (could be used for scheduled tasks or worker)
+CMD ["python", "scripts/check_deps.py"]

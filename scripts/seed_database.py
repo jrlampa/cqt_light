@@ -50,18 +50,37 @@ def import_materials(conn):
     
     for sap, data in catalog.items():
         try:
+            # BIM Heuristics
+            desc = data.get('description', '').upper()
+            maintenance = 24 # Default 2 years
+            lifecycle = 30   # Default 30 years
+            
+            if "POSTE" in desc:
+                maintenance = 60 # 5 years for poles
+                lifecycle = 40
+            elif "TRAFO" in desc or "TRANSFORMADOR" in desc:
+                maintenance = 12 # 1 year for transformers
+                lifecycle = 25
+            elif "PARA-RAIOS" in desc or "CHAVE" in desc:
+                maintenance = 24
+                lifecycle = 15
+
             cursor.execute("""
-                INSERT INTO materiais (sap, descricao, unidade, preco_unitario)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO materiais (sap, descricao, unidade, preco_unitario, ciclo_manutencao_meses, vida_util_anos)
+                VALUES (?, ?, ?, ?, ?, ?)
                 ON CONFLICT(sap) DO UPDATE SET
                     descricao = excluded.descricao,
                     unidade = excluded.unidade,
-                    preco_unitario = excluded.preco_unitario
+                    preco_unitario = excluded.preco_unitario,
+                    ciclo_manutencao_meses = excluded.ciclo_manutencao_meses,
+                    vida_util_anos = excluded.vida_util_anos
             """, (
                 str(sap),
                 data.get('description', ''),
                 data.get('unit', 'UN'),
-                float(data.get('price', 0))
+                float(data.get('price', 0)),
+                maintenance,
+                lifecycle
             ))
             count += 1
         except Exception as e:
@@ -129,7 +148,7 @@ def show_stats(conn):
     cursor.execute("SELECT COUNT(*) FROM kit_composicao")
     comp_count = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(*) FROM mao_de_obra")
+    cursor.execute("SELECT COUNT(*) FROM servicos_cm")
     mo_count = cursor.fetchone()[0]
     
     print("\n📊 Database Stats:")

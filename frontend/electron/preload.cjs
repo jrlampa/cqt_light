@@ -97,4 +97,5 @@ contextBridge.exposeInMainWorld('api', {
 
   // BOM Generation
   generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),
+  getProjectAnalytics: (projectData) => ipcRenderer.invoke('get-project-analytics', projectData),
 });
