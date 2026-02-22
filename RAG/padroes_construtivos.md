@@ -1,6 +1,6 @@
-# RAG - Padrões Construtivos (LIGHT) - ULTRA REFERENCE
+# RAG - Padrões Construtivos (LIGHT) - HYPER REFERENCE
 
-Este documento é a base de conhecimento inteligente para o sistema, integrando normas técnicas da LIGHT, lógica de engenharia e composições de materiais (BOM).
+Este documento é o cérebro normativo do sistema, integrando normas da LIGHT, lógica de engenharia, composições de materiais (BOM) e diagnósticos automáticos.
 
 ## 📂 Localização da Fonte
 
@@ -8,86 +8,79 @@ Este documento é a base de conhecimento inteligente para o sistema, integrando 
 
 ---
 
+## 🚨 Manutenção e Diagnóstico (Erros de Validação)
+
+Baseado na inteligência extraída de `qdt_deep_logic.json`. Use estes códigos para explicar falhas ao usuário:
+
+| Código | Nome do Erro | Significado / Solução |
+| :--- | :--- | :--- |
+| **Erro 02** | Falha de Lógica | Mismatch entre número de fases e consumidores ou ausência de dados básicos. |
+| **Erro 03** | Temperatura Crítica | Cabo excedeu **90.1°C**. Necessário aumentar a bitola do condutor. |
+| **Erro 04** | kVA Mismatch | Erro no cálculo de demanda (kVA) por consumidor no final do trecho. |
+| **Erro 05** | Baixa Diversidade | Carga calculada é menor que o limite de diversificação (E_kVA * FDIV). |
+| **Erro 08** | Limite Especial | Temperatura excedeu **70.1°C** para cabos sensíveis (especificados no sistema). |
+
+---
+
 ## ⚡ Regras de Engenharia (Smart Logic)
 
-Baseado em `data/rules/calculation_logic.json`:
+### 📏 Mecânica e Estruturas
 
-### 🏗️ Mecânica e Estruturas
+- **Engastamento**: $L/10 + 0,60$ metros (obrigatório para novos postes).
+- **Vão Máximo (Span)**: Compacta: **40m** | Convencional: **80m**.
+- **Limite de Ângulo**: Até **6.0º** sem necessidade de seccionamento ou ancoragem extra.
 
-- **Engastamento de Postes**: Fórmula $L/10 + 0,60$ metros.
-- **Limite de Ângulo**: Até 6.0º sem necessidade de verificação de tração adicional.
-- **Vão Máximo (Span)**:
-  - Rede Compacta (Spacer): **40m**
-  - Rede Convencional (Nua): **80m**
+### 🔌 Elétrica e Carregamento (Ratings)
 
-### 🔌 Elétrica e Carregamento
-
-- **Limite de Carga (Trafo)**: Máximo **85%** de carregamento nominal.
-- **Queda de Tensão**:
-  - Rede Secundária: Máximo **5%**.
-  - Ramal de Ligação: Máximo **1,5%**.
-- **Ratings de Transformador (kVA)**: 15, 30, 45, 75, 112.5, 150, 225, 300.
+- **Queda de Tensão**: Secundária: **5%** | Ramal: **1,5%**.
+- **Ratings Trafo (kVA)**: 15, 30, 45, 75, 112.5, 150, 225, 300.
+- **Ampacidade**: Limitar corrente conforme bitola do cabo para evitar **Erro 03/08**.
 
 ---
 
-## 🏗️ Dicionário de Estruturas (Kits Técnicos)
+## 🏗️ Detalhamento de Montagens (Kits Comuns)
 
-| Sigla | Descrição Funcional | Tipo de Rede |
+Composições extraídas do banco de kits (`custom_kits.json`):
+
+| Estrutura | Composição Principal (Ferragens) | Notas de Montagem |
 | :--- | :--- | :--- |
-| **S1 / SI1** | Alinhamento Reto | Convencional / Multiplexada |
-| **SI3.SI3** | Ângulos Acentuados (> 50º) | Exige ancoragem dupla |
-| **SI4** | Ancoragem Dupla / Fim de Rede | Finais de linha |
-| **13CE1** | Alinhamento em Tangente | Rede Compacta (MT) |
-| **13CE3** | Estrutura Fim de Rede | Rede Compacta (MT) |
-| **MBNM-B1** | Beco Alinhamento | Rede Blindada (Antifurto) |
-| **SIV1 / SIV3** | Padrão Vila (Alinhamento/Ancoragem)| Áreas Restritas |
+| **9/300-SI4** | SI4 (Ancoragem Dupla), A-18 (Suporte), M14S1/0B (Alças) | Poste DT 9m/300daN |
+| **13CE3** | 3x Cinta Circular (329186), Ferragem para Fim de Rede | Rede Compacta MT |
+| **SI3** | SI3 (Ancoragem Simples), A-18, M14S1/0B, 1x Cinta | Fim de Rede BT |
+| **AT-2** | Haste de aterramento, Conector, Cabo de Cobre | Aterramento Padrão |
 
 ---
 
-## 📦 Composição de Materiais (Golden Patterns)
+## 🧬 Dicionário de Constantes (R/X)
 
-Amostras de composição extraídas de `data/kits/kits.json`:
+Valores em $\Omega/km$ para simulação elétrica:
 
-| Kit | Componente Principal (SAP) | Função do Componente |
-| :--- | :--- | :--- |
-| **13B1** | 309112 | Chave Fusível 34,5kV 200A |
-| **13CE2** | 309392 | Para-raios Silicone 15kV |
-| **SI1** | 335053 | Grampo de Ancoragem / Terminal |
-| **SIV1** | 121998 | Poste P675200 (Especial Vila) |
-
----
-
-## 🔩 Simbologia de Ferragens (Quick Search)
-
-- **F-10/**: Cinta para Poste Circular
-- **O-80/**: Conector Perfurante (BT)
-- **O-12/**: Conector Cunho (Ampact MT)
-- **M1/**: Alça Preformada
-- **A-30/02**: Suporte para Transformador
-
----
-
-## ⚡ Constantes Elétricas (Condutores)
-
-Valores de resistência ($R$) e reatância ($X$) em $\Omega/km$ para cálculos de queda de tensão:
-
-| Condutor | $R$ ($\Omega/km$) | $X$ ($\Omega/km$) | Coef. Queda |
+| Condutor | $R$ | $X$ | Coef. Queda |
 | :--- | :--- | :--- | :--- |
 | **33 AA** | 1.0903 | 0.4034 | 0.2402 |
 | **53 AA** | 0.7059 | 0.3705 | 0.1647 |
-| **107 A** | 0.3225 | 0.2968 | 0.0906 |
-| **53 QX** | 0.6641 | 0.1311 | 0.1399 |
-| **70 MMX** | 0.5697 | 0.1260 | 0.1206 |
 | **185 MMX** | 0.2149 | 0.1178 | 0.0506 |
 
 ---
 
 ## 🛠️ Instruções para o AI Assistant (Antigravity)
 
-- **Cálculos**: Use a fórmula de engastamento ($L/10 + 0,60$) e as constantes elétricas acima para validações.
-- **Validação**: Verifique se vãos não superam os limites (40m/80m) e se a queda de tensão está dentro dos limites nominais (5% / 1,5%).
-- **Smart Backend**: Utilize os metadados SAP e composições de kit para gerar listas de materiais precisas.
+1. **Auditoria em Lote**: Ao ler uma lista de materiais, flagar kits que não respeitam a composição acima.
+2. **Explicação de Erros**: Se um script retornar "Erro 03", explique ao usuário que houve superaquecimento do condutor.
+3. **BIM Integration**: Atribua o SAP correto (`121998` para Poste Vila, `329186` para Cintas) nos metadados do DXF.
+
+---
+
+## ✅ Checklist de Verificação Rápida (Smart Audit)
+
+Antes de finalizar qualquer projeto ou relatório, valide:
+
+1. **Vãos**: Algum vão supera **40m** (Compacta) ou **80m** (Convencional)?
+2. **Engastamento**: A profundidade do poste é exatamente **L/10 + 0,60**?
+3. **Temperatura**: Existe algum **Erro 03** ou **Erro 08** na planilha de carga?
+4. **Materiais**: O kit selecionado (ex: SI4) possui todas as alças e grampos no BOM?
+5. **Queda de Tensão**: O valor final está abaixo de **5%** para BT?
 
 ---
 *Última atualização: 2026-02-22*
-*Base: kits.json, calculation_logic.json, final_technical_discovery.json.*
+*Base: kits.json, custom_kits.json, calculation_logic.json, qdt_deep_logic.json, final_technical_discovery.json.*
