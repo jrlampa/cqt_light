@@ -4,7 +4,7 @@ import Configurator from './components/Configurator';
 import MaterialManager from './components/MaterialManager';
 import KitEditor from './components/KitEditor';
 import LaborManager from './components/LaborManager';
-import MapaRede from './components/MapaRede';
+import RedeEletricaPanel from './components/RedeEletricaPanel';
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
@@ -50,7 +50,7 @@ function App() {
       case 'materials': return <MaterialManager />;
       case 'kits': return <KitEditor />;
       case 'labor': return <LaborManager />;
-      case 'mapa': return <MapaRede />;
+      case 'mapa': return <RedeEletricaPanel />;
       default: return <Configurator />;
     }
   };

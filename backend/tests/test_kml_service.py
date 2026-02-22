@@ -319,3 +319,51 @@ class TestKMLRouterAPI:
         p = resp.json()["pontos"][0]
         assert abs(p["latitude"] - (-22.15018)) < 0.001
         assert abs(p["longitude"] - (-42.92185)) < 0.001
+
+
+class TestGpxCoverageGaps:
+    """Cobre linhas não cobertas em kml_service.py: GPX inválido (ParseError) e tag_prefix."""
+
+    def test_gpx_xml_invalido_levanta_value_error(self):
+        """Linhas 187-188: ET.ParseError → ValueError."""
+        from services.kml_service import importar_gpx
+        with pytest.raises(ValueError, match="GPX inválido"):
+            importar_gpx("<<XML QUEBRADO>>")
+
+    def test_gpx_sem_namespace_funciona(self):
+        """Linha 202: tag_prefix vazio quando root tag não tem namespace."""
+        from services.kml_service import importar_gpx
+        gpx_sem_ns = """<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="test">
+  <trk>
+    <trkseg>
+      <trkpt lat="-22.15018" lon="-42.92185">
+        <ele>900</ele>
+        <name>Ponto REF</name>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>"""
+        resultado = importar_gpx(gpx_sem_ns)
+        assert len(resultado.pontos) == 1
+        assert abs(resultado.pontos[0].latitude - (-22.15018)) < 0.001
+
+    def test_gpx_com_namespace_funciona(self):
+        """Linha 202: tag_prefix com namespace quando root tag tem {uri}tag."""
+        from services.kml_service import importar_gpx
+        gpx_com_ns = """<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1">
+  <trk>
+    <trkseg>
+      <trkpt lat="-22.15018" lon="-42.92185">
+        <ele>900</ele>
+      </trkpt>
+      <trkpt lat="-22.1510" lon="-42.9220">
+        <ele>905</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>"""
+        resultado = importar_gpx(gpx_com_ns)
+        assert len(resultado.pontos) == 2
+        assert resultado.comprimento_total_m > 0

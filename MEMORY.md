@@ -248,6 +248,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-22 | `useRedeAnalise.js` hook — thin frontend para network topology analysis | Endpoint /api/rede/analisar; BFS conectividade, comprimentos MT/BT |
 | 2026-02-22 | Landing page atualizada: 936+ testes, 17+ endpoints | Contagem real após sessão 16 |
 | 2026-02-22 | `useIfc` e `useRedeAnalise` seguem padrão exato de `useGeo` — postJson + loading/error/clearError | Consistência de código; facilita onboarding |
+| 2026-02-22 | Backend coverage gap closure: DXF invalid poste → `continue` (lines 99/123), IFC helpers `_ifc_string`/`_coord`/`_coord3` (lines 39/46/51), GPX ParseError (lines 187-188) | 98.10% → 98.40% |
+| 2026-02-22 | `RedeEletricaPanel.jsx` (377L) — 5 sub-tabs: Mapa (Leaflet), GPS (useKml), Análise (useRedeAnalise), Queda U (useQuedaTensao), BIM/IFC (useIfc) | Integração enterprise de todos os serviços na aba Mapa |
+| 2026-02-22 | App.jsx aba "Mapa" usa `RedeEletricaPanel` em vez de bare `MapaRede` | Separação de responsabilidades; RedeEletricaPanel orquestra sub-abas |
+| 2026-02-22 | Testes de `RedeEletricaPanel` usam `vi.mock` em todos os hooks + `MapaRede` | Isolamento total; componente 100% testável sem Electron ou CDN Leaflet |
 | 2026-02-22 | `MapaRede.jsx` prop `tracado` — GPS points como circleMarker roxo, incluídos em fitBounds | Integração visual KML/GPX na aba Mapa |
 | 2026-02-22 | `rede_analysis_service.py` — BFS conectividade, distância euclidiana, estatísticas | Topologia SotA — ABNT NBR 14565, PRODIST Módulo 6 |
 | 2026-02-22 | `rede_router.py` — POST /api/rede/analisar com validação Pydantic | id, nivel (MT/BT), potencia_kva > 0 sanitizados |
@@ -292,9 +296,9 @@ Usuário seleciona estruturas/materiais
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
 | `test_rede_service.py`             | 31     | ✅ pass    | 100%      |
-| **Total frontend**                 | **603**| ✅ pass    | **≥80%** ✅|
-| **Total backend**                  | **333**| ✅ pass    | **98.10%** ✅|
-| **TOTAL GERAL**                    | **936**| ✅ pass    | –         |
+| **Total frontend**                 | **632**| ✅ pass    | **≥80%** ✅|
+| **Total backend**                  | **347**| ✅ pass    | **98.40%** ✅|
+| **TOTAL GERAL**                    | **979**| ✅ pass    | –         |
 
 ### Ganhos sessão 16 (novos hooks thin frontend)
 
@@ -351,4 +355,9 @@ Usuário seleciona estruturas/materiais
 - [x] `useIfc.js` hook — exportação IFC2X3 STEP + validação via API (sessão 16)
 - [x] `useRedeAnalise.js` hook — análise de topologia de rede via API (sessão 16)
 - [x] Landing page: 726→936+ testes, 11→17+ endpoints (sessão 16)
+- [x] Backend coverage gap closure: DXF lines 99/123, IFC lines 39/46/51, KML lines 187-188/202 (sessão 17)
+- [x] `RedeEletricaPanel.jsx` (377 linhas) — painel integrado com sub-tabs: Mapa, Importar GPS, Análise, Queda U, BIM/IFC (sessão 17)
+- [x] App.jsx: aba Mapa usa `RedeEletricaPanel` em vez de `MapaRede` diretamente (sessão 17)
+- [x] 29 novos testes para `RedeEletricaPanel` — cobertura de todos os 5 sub-painéis (sessão 17)
+- [x] 979 testes totais (347 backend 98.40% + 632 frontend ≥80%), 0 CodeQL alerts (sessão 17)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)

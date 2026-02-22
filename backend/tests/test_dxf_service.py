@@ -127,3 +127,48 @@ class TestValidateDxf:
         result = validate_dxf(generate_dxf(rede))
         assert isinstance(result["entity_counts"], dict)
         assert result["total_entities"] > 0
+
+
+class TestDxfCoverageGaps:
+    """Cobre linhas não cobertas em dxf_service.py: trechos/trafos com poste inválido."""
+
+    def test_trecho_com_poste_invalido_e_ignorado(self):
+        """Linha 99: continue quando poste_b não existe na rede — trecho ignorado."""
+        rede = RedeEletrica(
+            postes=[Poste(id="P1", x=0, y=0)],
+            trechos=[TrechoRede(poste_a="P1", poste_b="INVALIDO", nivel="BT")],
+        )
+        result = generate_dxf(rede)
+        # Deve gerar DXF sem erro (trecho ignorado, apenas poste gera LINE 2.5D)
+        assert isinstance(result, bytes)
+        val = validate_dxf(result)
+        assert val["valid"] is True
+        # Só 1 LINE (do poste P1 2.5D) — nenhuma LINE extra de trecho
+        assert val["entity_counts"].get("LINE", 0) == 1
+
+    def test_trafo_com_poste_invalido_e_ignorado(self):
+        """Linha 123: continue quando transformador.poste_id não existe na rede."""
+        rede = RedeEletrica(
+            postes=[Poste(id="P1", x=0, y=0)],
+            trechos=[],
+            transformadores=[Transformador(id="T1", poste_id="INVALIDO", potencia_kva=112.5)],
+        )
+        result = generate_dxf(rede)
+        assert isinstance(result, bytes)
+        val = validate_dxf(result)
+        assert val["valid"] is True
+        # Nenhum lwpolyline deve ter sido gerado (trafo ignorado)
+        assert val["entity_counts"].get("LWPOLYLINE", 0) == 0
+
+    def test_trecho_com_ambos_postes_invalidos(self):
+        """Linhas 96-99: poste_a e poste_b ambos inválidos — trecho ignorado."""
+        rede = RedeEletrica(
+            postes=[Poste(id="P1", x=100, y=200)],
+            trechos=[TrechoRede(poste_a="X", poste_b="Y", nivel="MT")],
+        )
+        result = generate_dxf(rede)
+        assert isinstance(result, bytes)
+        val = validate_dxf(result)
+        assert val["valid"] is True
+        # Só 1 LINE (do poste P1) — nenhuma LINE de trecho X→Y
+        assert val["entity_counts"].get("LINE", 0) == 1

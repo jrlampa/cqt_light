@@ -318,3 +318,49 @@ class TestIfcRouter:
         result = validate_ifc(r.content)
         assert result["valid"] is True
         assert result["n_trechos"] == 1
+
+
+class TestIfcHelpers:
+    """Cobre funções auxiliares internas: _ifc_string, _coord, _coord3."""
+
+    def test_ifc_string_none_retorna_dollar(self):
+        """Linha 39: _ifc_string(None) deve retornar '$'."""
+        from services.ifc_service import _ifc_string
+        assert _ifc_string(None) == "$"
+
+    def test_ifc_string_valor_normal(self):
+        from services.ifc_service import _ifc_string
+        assert _ifc_string("CQT Light") == "'CQT Light'"
+
+    def test_ifc_string_com_aspas_simples(self):
+        from services.ifc_service import _ifc_string
+        result = _ifc_string("O'Brien")
+        assert "\\'" in result
+
+    def test_ifc_string_com_backslash(self):
+        from services.ifc_service import _ifc_string
+        result = _ifc_string("C:\\path")
+        assert "\\\\" in result
+
+    def test_coord_retorna_formato_correto(self):
+        """Linha 46: _coord(x, y) deve retornar string '(x.4f,y.4f)'."""
+        from services.ifc_service import _coord
+        result = _coord(788547.0, 7634925.0)
+        assert result == "(788547.0000,7634925.0000)"
+
+    def test_coord_valores_decimais(self):
+        from services.ifc_service import _coord
+        result = _coord(1.23456, 7.89012)
+        assert result == "(1.2346,7.8901)"
+
+    def test_coord3_retorna_formato_correto(self):
+        """Linha 51: _coord3(x, y, z) deve retornar string '(x.4f,y.4f,z.4f)'."""
+        from services.ifc_service import _coord3
+        result = _coord3(1.0, 2.0, 3.0)
+        assert result == "(1.0000,2.0000,3.0000)"
+
+    def test_coord3_z_default(self):
+        """Linha 51: z default é 0.0."""
+        from services.ifc_service import _coord3
+        result = _coord3(5.0, 10.0)
+        assert result == "(5.0000,10.0000,0.0000)"

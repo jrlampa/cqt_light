@@ -14,6 +14,7 @@ vi.mock('../components/MaterialManager', () => ({ default: () => <div data-testi
 vi.mock('../components/KitEditor', () => ({ default: () => <div data-testid="kiteditor">KitEditor</div> }));
 vi.mock('../components/LaborManager', () => ({ default: () => <div data-testid="labormanager">LaborManager</div> }));
 vi.mock('../components/MapaRede', () => ({ default: () => <div data-testid="maparede">MapaRede</div> }));
+vi.mock('../components/RedeEletricaPanel', () => ({ default: () => <div data-testid="rede-eletrica-panel">RedeEletricaPanel</div> }));
 
 describe('App', () => {
   beforeEach(() => {
@@ -107,15 +108,15 @@ describe('App', () => {
     expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
   });
 
-  it('troca para MapaRede ao clicar em Mapa', async () => {
+  it('troca para RedeEletricaPanel ao clicar em Mapa', async () => {
     render(<App />);
     fireEvent.click(screen.getByText('Mapa'));
-    await waitFor(() => expect(screen.getByTestId('maparede')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('rede-eletrica-panel')).toBeTruthy());
   });
 
   it('tecla Ctrl+5 muda para aba Mapa', async () => {
     render(<App />);
     fireEvent.keyDown(window, { key: '5', ctrlKey: true });
-    await waitFor(() => expect(screen.getByTestId('maparede')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('rede-eletrica-panel')).toBeTruthy());
   });
 });
