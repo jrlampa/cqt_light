@@ -52,3 +52,11 @@ Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m600dAN-Layout1.jpg
 Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m1000dAN-Layout1.jpg
 Padrões construtivos/Padrão CMB/WhatsApp Image 2025-05-06 at 11.53.29.jpeg
 Padrões construtivos/Padrão Cabo Armado/imagem.png
+
+# Build & Distribution (Cycle 6)
+scripts/dist/
+scripts/build/
+*.spec
+frontend/dist_electron/
+frontend/electron_obfuscated/
+frontend/build_resources/icon.png
