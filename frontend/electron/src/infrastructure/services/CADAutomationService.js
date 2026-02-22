@@ -70,13 +70,17 @@ class CADAutomationService {
 
     /**
      * Generates a technical report by auditing layers and blocks in a DXF.
-     * (Wrapper for the future Python DXF Auditor)
      */
     async auditDXFQuality(dxfPath) {
-        // This will call the Python DXF Auditor engine
-        // Coming in the next steps of Cycle 5.
-        logger.debug(`Planning quality audit for: ${dxfPath}`, 'CADAutomationService');
-        return { success: true, score: 95, layers: ['POSTES', 'CONDUTORES', 'TEXTO'] };
+        const PythonBridge = require('./PythonBridge');
+        logger.debug(`Starting quality audit for: ${dxfPath}`, 'CADAutomationService');
+        try {
+            const results = await PythonBridge.run('dxf_auditor', { dxfPath });
+            return results;
+        } catch (error) {
+            logger.error(`DXF Quality Audit failed: ${error.message}`, 'CADAutomationService');
+            return []; // Fallback to empty results
+        }
     }
 }
 

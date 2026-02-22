@@ -7,7 +7,7 @@ class PythonBOMService {
     }
 
     async generate(projectData) {
-        return PythonBridge.run(this.scriptPath, projectData);
+        return PythonBridge.run('bom_generator', projectData);
     }
 }
 

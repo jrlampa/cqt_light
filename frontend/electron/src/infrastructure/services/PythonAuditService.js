@@ -7,7 +7,7 @@ class PythonAuditService {
     }
 
     async audit(projectData) {
-        return PythonBridge.run(this.scriptPath, projectData);
+        return PythonBridge.run('audit_engine', projectData);
     }
 }
 

@@ -1,37 +1,57 @@
-/**
- * @typedef {Object} PythonBridgeOptions
- * @property {string} pythonPath
- * @property {string} scriptPath
- */
-
 const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const isDev = require('electron-is-dev');
 const logger = require('./Logger');
 
 class PythonBridge {
-    static async run(scriptPath, projectData, pythonPath = 'python') {
-        const scriptName = scriptPath.split(/[\\/]/).pop();
-        logger.info(`Starting Python script: ${scriptName}`, 'PythonBridge');
+    /**
+     * Executes a Python script or a standalone binary.
+     * @param {string} scriptName - Name of the script/binary (e.g., 'audit_engine')
+     * @param {Object} projectData - Data to send to stdin.
+     * @returns {Promise<Object>} - Parsed JSON response.
+     */
+    static async run(scriptName, projectData) {
+        let exePath;
+        let args = [];
+
+        // Determine if we use the binary or the script
+        if (isDev) {
+            exePath = 'python';
+            args = [path.join(process.cwd(), '..', 'scripts', `${scriptName}.py`)];
+        } else {
+            // Production: look into extraResources (python_bin)
+            const binDir = path.join(process.resourcesPath, 'python_bin');
+            exePath = path.join(binDir, `${scriptName}.exe`);
+
+            if (!fs.existsSync(exePath)) {
+                logger.error(`Python binary not found: ${exePath}`, 'PythonBridge');
+                throw new Error(`Dependência crítica ausente: ${scriptName}.exe`);
+            }
+        }
+
+        logger.info(`Starting process: ${scriptName} (Env: ${isDev ? 'Dev' : 'Prod'})`, 'PythonBridge');
 
         return new Promise((resolve, reject) => {
-            const pyProcess = spawn(pythonPath, [scriptPath]);
+            const process = spawn(exePath, args);
             let resultData = '';
             let errorData = '';
 
-            pyProcess.stdin.write(JSON.stringify(projectData));
-            pyProcess.stdin.end();
+            process.stdin.write(JSON.stringify(projectData));
+            process.stdin.end();
 
-            pyProcess.stdout.on('data', (data) => {
+            process.stdout.on('data', (data) => {
                 resultData += data.toString();
             });
 
-            pyProcess.stderr.on('data', (data) => {
+            process.stderr.on('data', (data) => {
                 errorData += data.toString();
-                logger.warn(`Python Stderr [${scriptName}]: ${data.toString().trim()}`, 'PythonBridge');
+                logger.warn(`Process Stderr [${scriptName}]: ${data.toString().trim()}`, 'PythonBridge');
             });
 
-            pyProcess.on('close', (code) => {
+            process.on('close', (code) => {
                 if (code !== 0) {
-                    const errorMsg = `Python script ${scriptName} failed (code ${code}): ${errorData}`;
+                    const errorMsg = `Process ${scriptName} failed (code ${code}): ${errorData}`;
                     logger.error(errorMsg, 'PythonBridge');
                     reject(new Error(errorMsg));
                     return;
@@ -43,21 +63,27 @@ class PythonBridge {
 
                     if (jsonStart !== -1 && jsonEnd !== -1) {
                         const parsed = JSON.parse(resultData.substring(jsonStart, jsonEnd));
-                        logger.info(`Python script ${scriptName} completed successfully.`, 'PythonBridge');
+                        logger.info(`Process ${scriptName} completed successfully.`, 'PythonBridge');
                         resolve(parsed);
                     } else {
-                        logger.debug(`Python output for ${scriptName} returned raw text.`, 'PythonBridge');
-                        resolve(resultData);
+                        // Support for plain objects if necessary
+                        const objStart = resultData.indexOf('{');
+                        const objEnd = resultData.lastIndexOf('}') + 1;
+                        if (objStart !== -1 && objEnd !== -1) {
+                            resolve(JSON.parse(resultData.substring(objStart, objEnd)));
+                        } else {
+                            resolve(resultData);
+                        }
                     }
                 } catch (e) {
-                    const parseError = `Failed to parse Python output from ${scriptName}: ${e.message}`;
+                    const parseError = `Failed to parse output from ${scriptName}: ${e.message}`;
                     logger.error(parseError, 'PythonBridge', e);
                     reject(new Error(parseError));
                 }
             });
 
-            pyProcess.on('error', (err) => {
-                logger.error(`Failed to spawn Python process for ${scriptName}`, 'PythonBridge', err);
+            process.on('error', (err) => {
+                logger.error(`Failed to spawn process for ${scriptName}`, 'PythonBridge', err);
                 reject(err);
             });
         });
