@@ -240,7 +240,9 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `backend/.coverage` removido do git tracking               | Estava rastreado por engano desde sessão 6 |
 | 2026-02-21 | `test_prodist_service.py` (536L) dividido em `test_prodist_domain.py` + `test_prodist_api.py` | Limite 500 linhas, SRP |
 | 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
-| 2026-02-22 | `useKml.js` hook — lê File.text(), POST JSON ao backend `/api/trace/importar` | Thin frontend: browser não processa XML — delega ao backend |
+| 2026-02-22 | `pytest-cov>=5.0.0` adicionado a requirements.txt + pytest.ini addopts | CI garante ≥80% backend coverage automaticamente |
+| 2026-02-22 | `PriceManagementModalImport.test.jsx` — trigger fileInput change com File mock + act() | Cobre linha 108 (reajuste error), 145 (tab re-click), 237-244 (ambiguous map) |
+| 2026-02-22 | `KitEditorDelete.test.jsx` — `input[type="number"][step="0.01"]` selector para qty inputs | Cobre linha 251 (cancel delete), 389 (qty onChange), 398 (remove onClick) |
 | 2026-02-22 | `MapaRede.jsx` prop `tracado` — GPS points como circleMarker roxo, incluídos em fitBounds | Integração visual KML/GPX na aba Mapa |
 | 2026-02-22 | `rede_analysis_service.py` — BFS conectividade, distância euclidiana, estatísticas | Topologia SotA — ABNT NBR 14565, PRODIST Módulo 6 |
 | 2026-02-22 | `rede_router.py` — POST /api/rede/analisar com validação Pydantic | id, nivel (MT/BT), potencia_kva > 0 sanitizados |
@@ -264,14 +266,16 @@ Usuário seleciona estruturas/materiais
 | `database.test.js`                 | 17     | ✅ pass    | –         |
 | `useBudgetCalculator.test.js`      | 3      | ✅ pass    | 81%       |
 | `useKeyboardNav.test.js`           | 8      | ✅ pass    | 100%      |
-| `useProdistToast.test.js`      | 18     | ✅ pass    | 100%      |
+| `useProdistToast.test.js`          | 18     | ✅ pass    | 100%      |
 | `configuratorStorage.test.js`      | 6      | ✅ pass    | 90%       |
 | `conductors.test.js`               | 8      | ✅ pass    | 100%      |
 | `excelPriceParser.test.js`         | 21     | ✅ pass    | 95%       |
 | `excelExporter.test.js`            | 16     | ✅ pass    | 95%       |
 | `App.test.jsx`                     | 13     | ✅ pass    | 97%       |
 | `MapaRede.test.jsx`                | 10     | ✅ pass    | 82%       |
-| Componentes (30+ arquivos .test.jsx)| 355   | ✅ pass    | ≥80% ✅   |
+| `PriceManagementModalImport.test.jsx` | 6   | ✅ pass    | –         |
+| `KitEditorDelete.test.jsx`         | 4      | ✅ pass    | –         |
+| Componentes (34+ arquivos .test.jsx)| 465   | ✅ pass    | ≥80% ✅   |
 | `test_prodist_domain.py`           | 22     | ✅ pass    | 100%      |
 | `test_prodist_api.py`              | 40     | ✅ pass    | 100%      |
 | `test_domain.py`                   | 20     | ✅ pass    | 100%      |
@@ -282,30 +286,18 @@ Usuário seleciona estruturas/materiais
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
-| **Total frontend**                 | **565**| ✅ pass    | **85.85%** lines ✅|
-| **Total backend**                  | **333**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **898**| ✅ pass    | –         |
+| `test_rede_service.py`             | 31     | ✅ pass    | 100%      |
+| **Total frontend**                 | **575**| ✅ pass    | **87.91%** lines ✅|
+| **Total backend**                  | **333**| ✅ pass    | **98.10%** ✅|
+| **TOTAL GERAL**                    | **908**| ✅ pass    | –         |
 
-### Nota sobre cobertura frontend:
-O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
+### Ganhos sessão 15 (cobertura de lacunas críticas)
 
-### Ganhos sessão 7 (cobertura frontend — componentes)
-
-| Componente                  | Antes | Depois | Testes adicionados |
-|-----------------------------|-------|--------|--------------------|
-| `App.jsx`                   | 0%    | 97%    | 13                 |
-| `LaborManager.jsx`          | 0%    | 71%    | 12                 |
-| `BudgetHistory.jsx`         | 0%    | 59%    | 9                  |
-| `TemplateManager.jsx`       | 0%    | 45%    | 9                  |
-| `KitResolutionModal.jsx`    | 0%    | 79%    | 8                  |
-| `PriceManager.jsx`          | 0%    | 54%    | 8                  |
-| `MaterialManager.jsx`       | 0%    | 56%    | 11                 |
-| `KitDetailsModal.jsx`       | 0%    | 53%    | 10                 |
-| `KitEditor.jsx`             | 0%    | 34%    | 8                  |
-| `ManualKitManager.jsx`      | 0%    | 30%    | 10                 |
-| `Configurator.jsx`          | 0%    | 28%    | 10                 |
-| `PriceManagementModal.jsx`  | 0%    | 34%    | 9                  |
-| **Overall frontend**        | **20%**| **53%** | **+119**          |
+| Componente                  | Antes  | Depois | Testes adicionados |
+|-----------------------------|--------|--------|--------------------|
+| `PriceManagementModal.jsx`  | 55.22% | 82.08% | 6                  |
+| `KitEditor.jsx`             | 79.16% | 89.16% | 4                  |
+| **Overall frontend**        | **85.85%** | **87.91%** lines | **+10** |
 
 ---
 
@@ -338,4 +330,8 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] `MapaRedeLeaflet.test.jsx` — mock window.L para testar inicialização Leaflet; MapaRede 47% → 92.85% (sessão 14)
 - [x] `ConfiguratorSearch.test.jsx` — handlers de busca/seleção do Configurator (sessão 14)
 - [x] 898 testes totais (333 backend + 565 frontend, 85.85% lines), 0 CodeQL alerts (sessão 14)
+- [x] pytest-cov adicionado a requirements.txt + pytest.ini --cov → backend 98.10% verificado automaticamente (sessão 15)
+- [x] `PriceManagementModalImport.test.jsx` — 6 testes: erro reajuste (linha 108), re-click import tab (linha 145), ambiguous map (linhas 237-244), catch fileSelect (sessão 15)
+- [x] `KitEditorDelete.test.jsx` — 4 testes: cancelar delete (linha 251), qty change (linha 389), remove material (linha 398), overlay close (sessão 15)
+- [x] 908 testes totais (333 backend 98.10% + 575 frontend 87.91% lines), 0 CodeQL alerts (sessão 15)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)
