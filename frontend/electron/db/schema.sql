@@ -166,3 +166,18 @@ CREATE INDEX IF NOT EXISTS idx_audit_flags_pole ON audit_flags(pole_id);
 CREATE INDEX IF NOT EXISTS idx_audit_flags_status ON audit_flags(status);
 
 CREATE INDEX IF NOT EXISTS idx_sufixos_sufixo ON sufixos_contextuais(sufixo);
+
+-- 15. maintenance_jobs (Predictive Maintenance)
+CREATE TABLE IF NOT EXISTS maintenance_jobs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pole_id TEXT NOT NULL,
+  priority TEXT NOT NULL DEFAULT 'medium', -- 'low', 'medium', 'high', 'critical'
+  job_type TEXT NOT NULL, -- 'inspection', 'replacement', 'structural_fix'
+  scheduled_date DATETIME,
+  status TEXT NOT NULL DEFAULT 'scheduled', -- 'scheduled', 'in_progress', 'completed', 'cancelled'
+  notes TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (pole_id) REFERENCES audit_flags(pole_id)
+);
+CREATE INDEX IF NOT EXISTS idx_maintenance_pole ON maintenance_jobs(pole_id);
+CREATE INDEX IF NOT EXISTS idx_maintenance_status ON maintenance_jobs(status);

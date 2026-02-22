@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, ShieldCheck, ClipboardCheck, AlertTriangle, FileSpreadsheet } from 'lucide-react';
+import { FileText, Download, ShieldCheck, ClipboardCheck, AlertTriangle, FileSpreadsheet, Globe } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
@@ -149,6 +149,22 @@ const ReportsDashboard = ({ projectData = {} }) => {
             icon: FileSpreadsheet,
             color: 'from-amber-600 to-orange-600',
             action: () => alert('Funcionalidade integrada ao gerador de Python selecionado (BOM Generator).')
+        },
+        {
+            title: 'Interoperabilidade GIS',
+            description: 'Exportar mapa de saúde e dívida técnica em GeoJSON para QGIS/ArcGIS.',
+            icon: Globe,
+            color: 'from-purple-600 to-fuchsia-600',
+            action: async () => {
+                if (window.api) {
+                    setGenerating(true);
+                    try {
+                        await window.api.exportGeoJson(projectData);
+                    } finally {
+                        setGenerating(false);
+                    }
+                }
+            }
         }
     ];
 
@@ -165,7 +181,7 @@ const ReportsDashboard = ({ projectData = {} }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {reportCards.map((card, i) => (
                     <div key={i} className="group relative bg-white rounded-3xl p-8 shadow-md border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
                         <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${card.color} opacity-5 rounded-bl-full group-hover:opacity-10 transition-opacity`} />

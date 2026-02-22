@@ -100,6 +100,11 @@ contextBridge.exposeInMainWorld('api', {
   // Reporting (Cycle 9)
   savePdfReport: (data) => ipcRenderer.invoke('save-pdf-report', data),
 
+  // Operation & GIS (Cycle 10)
+  scheduleMaintenance: (jobData) => ipcRenderer.invoke('schedule-maintenance', jobData),
+  getMaintenanceJobs: () => ipcRenderer.invoke('get-maintenance-jobs'),
+  exportGeoJson: (projectData) => ipcRenderer.invoke('export-geojson', projectData),
+
   // Auditoria (Python Engine Bridge)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
 

@@ -3,10 +3,10 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import NormativeExplorer from './NormativeExplorer';
-import { Box, Layers, MessageSquare, Flag, CheckCircle, ShieldAlert, Activity } from 'lucide-react';
+import { Box, Layers, MessageSquare, Flag, CheckCircle, ShieldAlert, Activity, Calendar } from 'lucide-react';
 
 // Memoized Marker Component for Performance
-const StructureMarker = memo(({ s, viewMode, topPos, isReviewMode, flags = [], onAddFlag, onResolveFlag, onSelect, healthData }) => {
+const StructureMarker = memo(({ s, viewMode, topPos, isReviewMode, flags = [], onAddFlag, onResolveFlag, onSelect, onSchedule, healthData }) => {
     const sapCode = s.sap || (s.isTrafo ? '10005432' : '10001234');
     const bimStatus = s.isTrafo ? 'Zenith Master' : 'ABNT Standard';
     const activeFlags = flags.filter(f => f.pole_id === s.id && f.status === 'open');
@@ -79,6 +79,12 @@ const StructureMarker = memo(({ s, viewMode, topPos, isReviewMode, flags = [], o
                                 className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-slate-800 text-white rounded text-[10px] font-bold hover:bg-slate-900 transition-colors"
                             >
                                 <ShieldAlert className="w-3 h-3" /> Ver Normas
+                            </button>
+                            <button
+                                onClick={() => onSchedule(s.id, s.type)}
+                                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-indigo-600 text-white rounded text-[10px] font-bold hover:bg-indigo-700 transition-colors"
+                            >
+                                <Calendar className="w-3 h-3" /> Agendar
                             </button>
                         </div>
 
@@ -167,6 +173,21 @@ const StructuralMap = ({ structures = [], initialPos = [-22.15018, -42.92185] })
         setFlags(results);
     };
 
+    const handleScheduleMaintenance = async (poleId, type) => {
+        if (!window.api) return;
+        const note = prompt(`Tipo de serviço para ${type}:`, 'Inspeção Preventiva');
+        if (note) {
+            await window.api.scheduleMaintenance({
+                pole_id: poleId.toString(),
+                priority: 'medium',
+                job_type: 'inspection',
+                scheduled_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // +7 days
+                notes: note
+            });
+            alert('Manutenção agendada com sucesso!');
+        }
+    };
+
     const processedMapData = useMemo(() => {
         const topPositions = displayStructures.map(s => ({
             ...s,
@@ -240,6 +261,7 @@ const StructuralMap = ({ structures = [], initialPos = [-22.15018, -42.92185] })
                         flags={flags}
                         onAddFlag={handleAddFlag}
                         onResolveFlag={handleResolveFlag}
+                        onSchedule={handleScheduleMaintenance}
                         onSelect={setSelectedSap}
                         healthData={healthMap[s.id]}
                     />
