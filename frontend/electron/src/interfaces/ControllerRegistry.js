@@ -6,6 +6,7 @@ const MaterialController = require('./ipc/MaterialController');
 const AnalyticsController = require('./ipc/AnalyticsController');
 const GovernanceController = require('./ipc/GovernanceController');
 const IntelligenceController = require('./ipc/IntelligenceController');
+const ReportingController = require('./ipc/ReportingController');
 
 // Future controllers will be added here
 const controllers = [
@@ -14,7 +15,8 @@ const controllers = [
     MaterialController,
     AnalyticsController,
     GovernanceController,
-    IntelligenceController
+    IntelligenceController,
+    ReportingController
 ];
 
 class ControllerRegistry {

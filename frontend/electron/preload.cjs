@@ -97,6 +97,9 @@ contextBridge.exposeInMainWorld('api', {
   calculateStructureHealth: (poleData) => ipcRenderer.invoke('calculate-structure-health', poleData),
   searchNorms: (query) => ipcRenderer.invoke('search-norms', query),
 
+  // Reporting (Cycle 9)
+  savePdfReport: (data) => ipcRenderer.invoke('save-pdf-report', data),
+
   // Auditoria (Python Engine Bridge)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
 

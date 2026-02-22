@@ -1,7 +1,5 @@
-import LaborManager from './components/LaborManager';
-import StructuralMap from './components/StructuralMap';
-import AnalyticsManager from './components/AnalyticsManager';
-import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3 } from 'lucide-react';
+import ReportsDashboard from './components/ReportsDashboard';
+import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3, FileText } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
@@ -19,6 +17,9 @@ function App() {
           case '2': e.preventDefault(); setActiveTab('materials'); break;
           case '3': e.preventDefault(); setActiveTab('kits'); break;
           case '4': e.preventDefault(); setActiveTab('labor'); break;
+          case '5': e.preventDefault(); setActiveTab('map'); break;
+          case '6': e.preventDefault(); setActiveTab('analytics'); break;
+          case '7': e.preventDefault(); setActiveTab('reports'); break;
         }
       }
     };
@@ -40,6 +41,7 @@ function App() {
     { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4' },
     { id: 'map', label: 'Visualização 2.5D', icon: MapIcon, shortcut: '5' },
     { id: 'analytics', label: 'Analytics (SotA)', icon: BarChart3, shortcut: '6' },
+    { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '7' },
   ];
 
   const renderContent = () => {
@@ -50,6 +52,7 @@ function App() {
       case 'labor': return <LaborManager />;
       case 'map': return <StructuralMap projectData={projectData} />;
       case 'analytics': return <AnalyticsManager projectData={projectData} />;
+      case 'reports': return <ReportsDashboard projectData={projectData} />;
       default: return <Configurator onStateChange={setProjectData} />;
     }
   };
