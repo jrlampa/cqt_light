@@ -17,8 +17,10 @@ scripts_to_package = [
 def package():
     if os.path.exists(DIST_DIR):
         print(f"Cleaning existing dist: {DIST_DIR}")
-        shutil.rmtree(DIST_DIR)
-    os.makedirs(DIST_DIR)
+        shutil.rmtree(DIST_DIR, ignore_errors=True)
+    
+    if not os.path.exists(DIST_DIR):
+        os.makedirs(DIST_DIR)
 
     for script in scripts_to_package:
         script_path = os.path.join(SCRIPTS_DIR, script)

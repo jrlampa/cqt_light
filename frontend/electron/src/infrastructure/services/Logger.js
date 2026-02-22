@@ -4,11 +4,23 @@ const { app } = require('electron');
 
 class Logger {
     constructor() {
-        this.logDir = path.join(app.getPath('userData'), 'logs');
-        if (!fs.existsSync(this.logDir)) {
-            fs.mkdirSync(this.logDir, { recursive: true });
+        this.logDir = null;
+        this.logFile = null;
+    }
+
+    _ensureLogDir() {
+        if (this.logDir) return;
+        try {
+            // Use a safe fallback if app is not ready or available
+            const userData = app.getPath ? app.getPath('userData') : process.cwd();
+            this.logDir = path.join(userData, 'logs');
+            if (!fs.existsSync(this.logDir)) {
+                fs.mkdirSync(this.logDir, { recursive: true });
+            }
+            this.logFile = path.join(this.logDir, `app_${new Date().toISOString().split('T')[0]}.log`);
+        } catch (e) {
+            console.error('Logger: Failed to initialize log directory', e.message);
         }
-        this.logFile = path.join(this.logDir, `app_${new Date().toISOString().split('T')[0]}.log`);
     }
 
     formatMessage(level, message, context = '') {
@@ -18,6 +30,7 @@ class Logger {
     }
 
     async _log(level, message, context) {
+        this._ensureLogDir();
         const formatted = this.formatMessage(level, message, context);
         console.log(formatted.trim());
         try {

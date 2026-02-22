@@ -42,7 +42,7 @@ class ControllerRegistry {
 
     static registerAll() {
         controllers.forEach(controller => {
-            if (typeof controller.register === 'function') {
+            if (controller && typeof controller.register === 'function') {
                 controller.register(this.safeHandle);
             }
         });

@@ -1,6 +1,6 @@
-const materialRepo = require('../infrastructure/repositories/MaterialRepository');
-const logger = require('../infrastructure/services/Logger');
-const SanitizationService = require('../infrastructure/services/SanitizationService');
+const materialRepo = require('../../infrastructure/repositories/MaterialRepository');
+const logger = require('../../infrastructure/services/Logger');
+const SanitizationService = require('../../infrastructure/services/SanitizationService');
 
 /**
  * AnalyticsController

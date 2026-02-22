@@ -94,7 +94,7 @@
     "postcss": "^8.4.49",
     "pyinstaller": "^0.0.1",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.0.7",
+    "vite": "^6.4.1",
     "vitest": "^4.0.18",
     "wait-on": "^8.0.3"
   }
