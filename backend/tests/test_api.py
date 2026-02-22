@@ -332,3 +332,29 @@ class TestLandingPage:
     def test_landing_docker_mention(self):
         resp = client.get("/")
         assert "Docker" in resp.text
+
+
+class TestSecurityHeaders:
+    """Testes dos cabeçalhos de segurança HTTP (SecurityHeadersMiddleware)."""
+
+    def test_health_x_content_type_options(self):
+        resp = client.get("/health")
+        assert resp.headers.get("x-content-type-options") == "nosniff"
+
+    def test_health_x_frame_options(self):
+        resp = client.get("/health")
+        assert resp.headers.get("x-frame-options") == "DENY"
+
+    def test_health_referrer_policy(self):
+        resp = client.get("/health")
+        assert resp.headers.get("referrer-policy") == "strict-origin-when-cross-origin"
+
+    def test_api_endpoint_security_headers(self):
+        resp = client.get("/api/queda-tensao/tensoes")
+        assert resp.headers.get("x-content-type-options") == "nosniff"
+        assert resp.headers.get("x-frame-options") == "DENY"
+
+    def test_landing_security_headers(self):
+        resp = client.get("/")
+        assert resp.headers.get("x-content-type-options") == "nosniff"
+        assert resp.headers.get("referrer-policy") == "strict-origin-when-cross-origin"

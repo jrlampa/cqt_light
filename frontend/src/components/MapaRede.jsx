@@ -59,6 +59,7 @@ function carregarLeaflet() {
 export default function MapaRede({
   postes = [],
   trechos = [],
+  tracado = [],
   centro = { lat: -22.15018, lon: -42.92185 },
   zoom = 15,
   altura = 450,
@@ -154,6 +155,24 @@ export default function MapaRede({
       circulo.addTo(mapa);
     });
 
+    // Renderizar pontos do traçado GPS importado (KML/GPX)
+    tracado.forEach((ponto) => {
+      const circulo = L.circleMarker([ponto.latitude, ponto.longitude], {
+        radius: 4,
+        fillColor: '#8b5cf6', // roxo — GPS importado
+        color: '#5b21b6',
+        weight: 1.5,
+        opacity: 1,
+        fillOpacity: 0.8,
+      });
+      circulo._cqtLayer = true;
+      circulo.bindTooltip(
+        `GPS ${ponto.nome || (ponto.id != null ? String(ponto.id) : '')}`,
+        { sticky: true }
+      );
+      circulo.addTo(mapa);
+    });
+
     // Ajustar viewport se houver elementos
     const todosLatLon = [
       ...postes.map((p) => [p.lat, p.lon]),
@@ -161,11 +180,12 @@ export default function MapaRede({
         [t.lat_ini, t.lon_ini],
         [t.lat_fim, t.lon_fim],
       ]),
+      ...tracado.map((p) => [p.latitude, p.longitude]),
     ];
     if (todosLatLon.length > 0) {
       mapa.fitBounds(todosLatLon, { padding: [30, 30], maxZoom: 17 });
     }
-  }, [postes, trechos]);
+  }, [postes, trechos, tracado]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -180,6 +200,10 @@ export default function MapaRede({
         <span className="flex items-center gap-1">
           <span className="inline-block w-3 h-3 rounded-full bg-orange-400 border border-orange-900" />{' '}
           Poste
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-3 h-3 rounded-full bg-purple-400 border border-purple-900" />{' '}
+          GPS
         </span>
         <span className="ml-auto text-gray-400">
           © OpenStreetMap — Mapa 2.5D

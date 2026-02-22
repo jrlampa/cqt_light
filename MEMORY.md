@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-21 (sessão 12)  
+> **Atualizado em:** 2026-02-22 (sessão 13)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -134,7 +134,8 @@ Usuário seleciona estruturas/materiais
 | `QuantityPopup.jsx`            | Modal de quantidade            | 58     |
 | `utils/configuratorStorage.js` | Persistência localStorage      | 38     |
 | `hooks/useGeo.js`              | Conversão UTM↔decimal via API  | 91     |
-| `components/MapaRede.jsx`      | Mapa Leaflet/OSM 2.5D          | 198    |
+| `hooks/useKml.js`              | Importação KML/GPX via API     | 87     |
+| `components/MapaRede.jsx`      | Mapa Leaflet/OSM 2.5D + GPS    | 232    |
 
 **Módulos do banco (electron/db/):**
 
@@ -235,7 +236,10 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `backend/.coverage` removido do git tracking               | Estava rastreado por engano desde sessão 6 |
 | 2026-02-21 | `test_prodist_service.py` (536L) dividido em `test_prodist_domain.py` + `test_prodist_api.py` | Limite 500 linhas, SRP |
 | 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
-| 2026-02-21 | `useProdistToast.js` — hook com `formatarMensagemProdist` exportada | JSDoc tipado, constantes PREFIXO/SUFIXO_AVISO, MT sempre incluído (concessionária) |
+| 2026-02-22 | `useKml.js` hook — lê File.text(), POST JSON ao backend `/api/trace/importar` | Thin frontend: browser não processa XML — delega ao backend |
+| 2026-02-22 | `MapaRede.jsx` prop `tracado` — GPS points como circleMarker roxo, incluídos em fitBounds | Integração visual KML/GPX na aba Mapa |
+| 2026-02-22 | `SecurityHeadersMiddleware` (Starlette BaseHTTPMiddleware) em main.py | X-Content-Type-Options=nosniff, X-Frame-Options=DENY, Referrer-Policy em todas as respostas |
+| 2026-02-22 | Tooltip GPS usa `ponto.nome \|\| (ponto.id != null ? String(ponto.id) : '')` | Evita exibir 'GPS 0' quando id=0 e nome está vazio |
 | 2026-02-21 | App.jsx: aba "Mapa" (Ctrl+5) renderiza MapaRede | Integração do mapa Leaflet/OSM ao app principal |
 | 2026-02-21 | Configurator.jsx integra `useProdistToast` + `Toast` | Aviso PRODIST/ABNT explícito conforme requisito "toast explicito" |
 | 2026-02-21 | `test_e2e_workflow.py` — 8 fluxos E2E completos | Cobre pipeline real: UTM→geo→buffer→DXF→IFC→PRODIST |
@@ -269,9 +273,9 @@ Usuário seleciona estruturas/materiais
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
-| **Total frontend**                 | **506**| ✅ pass    | **≥80%** ✅|
-| **Total backend**                  | **297**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **803**| ✅ pass    | –         |
+| **Total frontend**                 | **528**| ✅ pass    | **≥80%** ✅|
+| **Total backend**                  | **302**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **830**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -316,4 +320,8 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] 781 testes totais (297 backend + 484 frontend), 0 CodeQL alerts (sessão 11)
 - [x] Integrar MapaRede na aba de configurador (tab "Mapa" no App.jsx) — Ctrl+5, sessão 12
 - [x] Conectar useProdistToast + Toast ao Configurator.jsx — aviso PRODIST on mount (sessão 12)
+- [x] useKml.js hook — importa KML/GPX via API, retorna pontos GPS (sessão 13)
+- [x] MapaRede.jsx — prop tracado para exibir pontos GPS importados com marcadores roxos (sessão 13)
+- [x] SecurityHeadersMiddleware — X-Content-Type-Options, X-Frame-Options, Referrer-Policy em todas as respostas (sessão 13)
+- [x] 830 testes totais (302 backend + 528 frontend), 0 CodeQL alerts (sessão 13)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)

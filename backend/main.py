@@ -9,6 +9,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
 
 from api.geo_router import router as geo_router
 from api.dxf_router import router as dxf_router
@@ -19,6 +21,24 @@ from api.ifc_router import router as ifc_router
 
 _LANDING_DIR = Path(__file__).resolve().parent.parent / "landing"
 
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Adiciona cabeçalhos de segurança HTTP em todas as respostas."""
+
+    async def dispatch(self, request: StarletteRequest, call_next):
+        """
+        Processa a requisição e adiciona cabeçalhos de segurança na resposta.
+
+        :param request: Requisição HTTP de entrada.
+        :param call_next: Próximo handler na cadeia de middlewares.
+        :returns: Resposta HTTP com cabeçalhos de segurança adicionados.
+        """
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        return response
+
 app = FastAPI(
     title="CQT Light Backend",
     description="Serviços de geração DXF 2.5D e conversão de coordenadas geográficas para redes elétricas",
@@ -27,6 +47,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
