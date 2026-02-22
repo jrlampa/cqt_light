@@ -22,12 +22,16 @@
 - **Abstração**: O sistema deve resolver sufixos contextuais (ex: sufixo de condutor baseado no tipo de poste).
 - **BIM**: Exportação de dados que permitam integração parcial com fluxos BIM (metadados estruturados).
 
-## 🚀 Marcos de Evolução (SotA)
+## 🚀 Marcos de Evolução (Zenith Master)
 
-1. **Refatoração SRP**: Concluída (DatabaseService, IpcController).
-2. **Dashboard**: Implementado (Visão geral de custos e alertas).
-3. **Importação**: Implementado (Excel/CSV via UI).
-4. **Próximos Passos**: Dockerização completa, Testes E2E, Exportação ABNT.
+1. **Refatoração SRP/DDD**: Concluída (Arquitetura de Serviços e Repositórios).
+2. **Industrialização**: Automação CAD/DXF via Python + Electron.
+3. **Gêmeo Digital**: Monitoramento de Saúde Estrutural e Degradação.
+4. **Governança**: Z-Review Mode e Gestão de Dívida Técnica.
+5. **Inteligência**: RAG Normativo indexado com busca contextual.
+6. **Reporting**: Zenith Engine (PDF) e Interoperabilidade GIS (GeoJSON).
+7. **Operacional**: Agendamento de Manutenção Preditiva direta no mapa.
+8. **DevOps**: Docker-first, Obfuscação e Binários Standalone.
 
 ## ⚠️ Regras de Ouro
 

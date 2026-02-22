@@ -23,6 +23,8 @@ Padrões construtivos/
 dist
 frontend/dist
 dist_electron
+electron_obfuscated
+scripts/dist
 *.log
 MEMORY.md
 IMPLEMENTATION_PLAN.md
