@@ -1,71 +1,76 @@
-# RAG - Padrões Construtivos (LIGHT) - OPERATIONAL MASTER
+# RAG - Padrões Construtivos (LIGHT) - ULTIMATE ENGINEERING REFERENCE
 
-Este documento é a referência técnica operacional para o sistema, integrando metadados de engenharia, catálogos de materiais e diretrizes de integração BIM.
-
----
-
-## ⚡ Catálogo de Condutores (MT/BT)
-
-Utilize estes valores para cálculos de ampacidade e queda de tensão ($R/X$).
-
-| Tipo | Condutor | Bitola ($mm^2$) | Ampacidade ($A$) | SAP Sugerido |
-| :--- | :--- | :--- | :--- | :--- |
-| **MT** | Cabo Spacer | 53 / 185 | 185 / 355 | `cab_53_spacer` |
-| **MT** | Cabo CAA | 21 / 53 | 120 / 180 | `cab_21_caa` |
-| **BT** | Multiplex | 35 / 70 / 120 | 115 / 181 / 250 | `mult_70` |
-| **BT** | Rede Nua | 4 / 2 / 1/0 AWG | 95 / 130 / 190 | `cab_1_0awg` |
+Esta é a versão definitiva do RAG, consolidando metadados técnicos, normas de segurança, conformidade ambiental e diretrizes de integração BIM.
 
 ---
 
-## 🏗️ Dimensionamento e Estruturas
+## ⚡ Catálogo de Condutores e Dimensionamento
 
-### 🔌 Transformadores (Ratings kVA)
+| Tipo | Bitola ($mm^2$) | Ampacidade ($A$) | QDT Máx % |
+| :--- | :--- | :--- | :--- |
+| **MT Compacta** | 50 / 95 / 150 | 185 / 270 / 360 | 3% (Tronco) |
+| **BT Mult.** | 35 / 70 / 120 | 115 / 181 / 250 | 5% (Total) |
 
-O sistema deve sugerir o transformador superior mais próximo, respeitando o limite de **85%** de carga.
-**Ratings Padrão:** 15, 30, 45, 75, 112.5, 150, 225, 300.
-*Exemplo: Carga de 65 kVA $\rightarrow$ Instalar 75 kVA.*
+---
 
-### 📐 Matriz de Postes (Concreto)
+## 🏗️ Matriz de Equipamentos
 
-Fórmula de Engastamento: $L/10 + 0,60$.
+### 🔌 Transformadores & Demanda
 
-| Altura ($m$) | Esforço ($daN$) | SAP/ID |
+* **Regra de Ouro**: Reservar 15% de margem (Limite 85% kVA).
+* **Ratings**: 15, 30, 45, 75, 112.5, 150, 225, 300 kVA.
+
+### 📐 Postes e Esforços
+
+* **Engastamento**: $E = (L/10) + 0,60$.
+* **Esforço Crítico**: Ângulos $> 6^\circ$ exigem verificação de tração e possível uso de postes de 1000daN+.
+
+---
+
+## �️ Segurança e Afastamentos (Clearances)
+
+Valores mínimos para conformidade em cruzamentos e passagens:
+
+| Cenário | MT (13.8 kV) | BT (380/220V) |
 | :--- | :--- | :--- |
-| 9 | 300 / 600 / 1000 | `P19300B` |
-| 11 | 300 / 600 / 1000 / 1500 | `P111300B` |
-| 12 | 600 / 1000 / 2000 | `P112600B` |
+| **Rodovias Federais** | 7,50 m | 6,00 m |
+| **Ruas e Avenidas** | 6,00 m | 5,50 m |
+| **Calçadas/Pedestres** | 5,00 m | 4,50 m |
+| **Entrada de Veículos** | 6,00 m | 5,00 m |
+
+> [!IMPORTANT]
+> Se o afastamento horizontal de edificações for $< 1,5m$, é obrigatório o uso de **Braço Afastador** (Estruturas tipo `B1A`, `B2A`, etc.).
 
 ---
 
-## 🎨 Mapeamento "Half-way BIM" (CAD/DXF)
+## 🌳 Conformidade Ambiental (Poda)
 
-Para exportação de metadados integrada ao Civil 3D/Revit:
+Códigos SAP para serviços de manejo de vegetação:
 
-| Elemento | Camada (Layer) Sugerida | Atributos Obrigatórios |
+* `PA/CR`: Poda de árvore com recolhimento (Urbano denso).
+* `PA/SR`: Poda de árvore sem recolhimento (Áreas rurais/vazias).
+* `PODA_LV`: Poda em Linha Viva (Alta complexidade).
+* **Distância de Segurança**: Manter corredor de 2,0m livre de vegetação para redes compactas.
+
+---
+
+## 🎨 Integração BIM (Layers)
+
+| Elemento | Layer CAD | Atributo Principal |
 | :--- | :--- | :--- |
-| **Poste** | `EQUIP_POSTE` | SAP, Altura, Esforço, Engastamento |
-| **Rede MT** | `RED_MT_COMPACTA` | SAP Cabo, Bitola, Fase, QDT % |
-| **Trafo** | `EQUIP_TRANSF` | SAP, kVA, Carregamento % |
-| **Ferragens** | `ACESS_FERRAGEM` | SAP, Descrição, Kit Associado |
+| **Poste** | `EQUIP_POSTE` | `pole_id`, `daN` |
+| **Transf.** | `EQUIP_TRANSF` | `kva_rating` |
+| **Rede MT** | `RED_MT` | `conductor_sap` |
+| **Ferragens** | `ACESS_FERRAGEM` | `kit_code` |
 
 ---
 
-## 🚨 Códigos de Erro (Troubleshoot)
+## � Dicas Estratégicas (Estagiário "Fora da Caixa")
 
-| Código | Erro | Ação Recomendada |
-| :--- | :--- | :--- |
-| **Erro 03** | Temperatura > 90.1°C | Aumentar seção do cabo (Ampacidade insuficiente). |
-| **Erro 01** | QDT > 5% | Redistribuir carga ou aproximar o Trafo. |
-| **Erro 08** | Limite 70.1°C | Revisar materiais sensíveis no trecho. |
-
----
-
-## 🛠️ Instruções para o AI Assistant (Antigravity)
-
-1. **Cálculo Automático**: Calcule a bitola mínima baseada na carga informada e na tabela de ampacidade acima.
-2. **Validação Geométrica**: Vãos $> 40m$ em rede compacta devem disparar aviso de violação normativa.
-3. **Geração de BOM**: Use os SAPs definidos na `tabela_sheet_full` para exportações Excel.
+1. **Compartilhamento**: Sempre que instalar poste novo, prever espaço para 1 ocupante de telecom (norma 0,5m abaixo da BT).
+2. **Poluição Visual**: Em centros históricos, priorizar estruturas compactas (`CE`) sobre convencionais (`CA`).
+3. **Manutenibilidade**: Evitar cruzar redes sobre telhados, mesmo que a altura seja legal; priorizar o logradouro público.
 
 ---
 *Última atualização: 2026-02-22*
-*Base: kits.json, poles.json, calculation_logic.json, final_technical_discovery.json, Configurator.jsx.*
+*Status: ULTIMATE REFERENCE (Stage 5)*
