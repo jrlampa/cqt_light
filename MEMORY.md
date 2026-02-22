@@ -1,6 +1,6 @@
 # CQT Light — RAG / Memória de Trabalho
 
-> **Atualizado em:** 2026-02-22 (sessão 13)  
+> **Atualizado em:** 2026-02-22 (sessão 14)  
 > **Branch ativa:** `dev`  
 > **Arquitetura:** DDD · Electron + React (frontend) · FastAPI (backend) · SQLite (DB local)
 
@@ -135,6 +135,7 @@ Usuário seleciona estruturas/materiais
 | `utils/configuratorStorage.js` | Persistência localStorage      | 38     |
 | `hooks/useGeo.js`              | Conversão UTM↔decimal via API  | 91     |
 | `hooks/useKml.js`              | Importação KML/GPX via API     | 87     |
+| `hooks/useQuedaTensao.js`      | Cálculo queda de tensão via API | 90    |
 | `components/MapaRede.jsx`      | Mapa Leaflet/OSM 2.5D + GPS    | 232    |
 
 **Módulos do banco (electron/db/):**
@@ -157,9 +158,11 @@ Usuário seleciona estruturas/materiais
 | `services/voltage_drop_service.py` | Queda de tensão ABNT NBR 5410/14039       | 117    |
 | `services/kml_service.py`      | Importação KML/GPX (stdlib)                   | 210    |
 | `services/ifc_service.py`      | Exportação IFC2X3 STEP (Half-way BIM)         | 185    |
+| `services/rede_analysis_service.py` | Topologia de rede: BFS, distâncias, stats | 152    |
 | `tests/test_prodist_domain.py` | Domínio PRODIST: constantes + classificação    | 138    |
 | `tests/test_prodist_api.py`    | API PRODIST: queda + integração REST           | 298    |
 | `tests/test_e2e_workflow.py`   | E2E: 8 fluxos reais UTM→DXF→IFC               | 260    |
+| `tests/test_rede_service.py`   | Topologia: BFS + comprimentos + API           | 248    |
 
 ---
 
@@ -181,6 +184,7 @@ Usuário seleciona estruturas/materiais
 | `/api/prodist/limites`                | GET    | Lista limites PRODIST + comparação ABNT          |
 | `/api/ifc/export`                     | POST   | Exporta rede elétrica em IFC2X3 STEP (Half-way BIM) |
 | `/api/ifc/validate`                   | POST   | Valida arquivo IFC2X3 gerado                     |
+| `/api/rede/analisar`                  | POST   | Análise de topologia de rede (conectividade BFS, comprimentos MT/BT) |
 | `/health`                             | GET    | Health check                                     |
 | `/landing`                            | GET    | Serve arquivos estáticos da landing page         |
 
@@ -238,7 +242,12 @@ Usuário seleciona estruturas/materiais
 | 2026-02-21 | `useGeo.js` hook — converte UTM↔decimal, buffer via fetch ao backend | Thin frontend: UI exibe mapa; backend faz conversão |
 | 2026-02-22 | `useKml.js` hook — lê File.text(), POST JSON ao backend `/api/trace/importar` | Thin frontend: browser não processa XML — delega ao backend |
 | 2026-02-22 | `MapaRede.jsx` prop `tracado` — GPS points como circleMarker roxo, incluídos em fitBounds | Integração visual KML/GPX na aba Mapa |
-| 2026-02-22 | `SecurityHeadersMiddleware` (Starlette BaseHTTPMiddleware) em main.py | X-Content-Type-Options=nosniff, X-Frame-Options=DENY, Referrer-Policy em todas as respostas |
+| 2026-02-22 | `rede_analysis_service.py` — BFS conectividade, distância euclidiana, estatísticas | Topologia SotA — ABNT NBR 14565, PRODIST Módulo 6 |
+| 2026-02-22 | `rede_router.py` — POST /api/rede/analisar com validação Pydantic | id, nivel (MT/BT), potencia_kva > 0 sanitizados |
+| 2026-02-22 | BFS usa `min(pole_ids)` como nó inicial — determinístico independente de set order | Evita falha intermitente em testes com multiplos isolados |
+| 2026-02-22 | `useQuedaTensao.js` hook — thin frontend para voltage drop API | Mesmo padrão de useGeo.js e useKml.js |
+| 2026-02-22 | `MapaRedeLeaflet.test.jsx` — mock window.L antes do render | carregarLeaflet resolve sync; cobre linhas 78-186; coverage 47% → 92.85% |
+| 2026-02-22 | `ConfiguratorSearch.test.jsx` — mock PosteSearch/StructureList/MaterialList controlados | Testa searchPoste, selectPoste, searchMaterial, confirmAddItem sem acesso ao código interno |
 | 2026-02-22 | Tooltip GPS usa `ponto.nome \|\| (ponto.id != null ? String(ponto.id) : '')` | Evita exibir 'GPS 0' quando id=0 e nome está vazio |
 | 2026-02-21 | App.jsx: aba "Mapa" (Ctrl+5) renderiza MapaRede | Integração do mapa Leaflet/OSM ao app principal |
 | 2026-02-21 | Configurator.jsx integra `useProdistToast` + `Toast` | Aviso PRODIST/ABNT explícito conforme requisito "toast explicito" |
@@ -273,9 +282,9 @@ Usuário seleciona estruturas/materiais
 | `test_kml_service.py`              | 39     | ✅ pass    | 100%      |
 | `test_ifc_service.py`              | 42     | ✅ pass    | 100%      |
 | `test_e2e_workflow.py`             | 27     | ✅ pass    | –         |
-| **Total frontend**                 | **528**| ✅ pass    | **≥80%** ✅|
-| **Total backend**                  | **302**| ✅ pass    | **97%**   |
-| **TOTAL GERAL**                    | **830**| ✅ pass    | –         |
+| **Total frontend**                 | **565**| ✅ pass    | **85.85%** lines ✅|
+| **Total backend**                  | **333**| ✅ pass    | **97%**   |
+| **TOTAL GERAL**                    | **898**| ✅ pass    | –         |
 
 ### Nota sobre cobertura frontend:
 O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concentrado nos componentes de grande porte (Configurator 486L, KitEditor 430L, ManualKitManager 498L, PriceManagementModal 381L) que têm muitos branches de estado e chamadas IPC complexas. A cobertura backend está em 97% (acima do target). Frontend passou de 20% → 53% nesta sessão.
@@ -324,4 +333,9 @@ O target de 80% não foi atingido para o frontend. O gap (53% vs 80%) é concent
 - [x] MapaRede.jsx — prop tracado para exibir pontos GPS importados com marcadores roxos (sessão 13)
 - [x] SecurityHeadersMiddleware — X-Content-Type-Options, X-Frame-Options, Referrer-Policy em todas as respostas (sessão 13)
 - [x] 830 testes totais (302 backend + 528 frontend), 0 CodeQL alerts (sessão 13)
+- [x] `rede_analysis_service.py` + `rede_router.py` — BFS conectividade, distâncias euclidianas (sessão 14)
+- [x] `useQuedaTensao.js` — hook React thin frontend para voltage drop API (sessão 14)
+- [x] `MapaRedeLeaflet.test.jsx` — mock window.L para testar inicialização Leaflet; MapaRede 47% → 92.85% (sessão 14)
+- [x] `ConfiguratorSearch.test.jsx` — handlers de busca/seleção do Configurator (sessão 14)
+- [x] 898 testes totais (333 backend + 565 frontend, 85.85% lines), 0 CodeQL alerts (sessão 14)
 - [ ] Testes E2E com Playwright para o Electron app (desktop)

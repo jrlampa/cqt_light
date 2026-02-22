@@ -18,6 +18,7 @@ from api.voltage_drop_router import router as voltage_drop_router
 from api.kml_router import router as kml_router
 from api.prodist_router import router as prodist_router
 from api.ifc_router import router as ifc_router
+from api.rede_router import router as rede_router
 
 _LANDING_DIR = Path(__file__).resolve().parent.parent / "landing"
 
@@ -62,6 +63,7 @@ app.include_router(voltage_drop_router, prefix="/api/queda-tensao", tags=["Cálc
 app.include_router(kml_router, prefix="/api/trace", tags=["Importação GPS"])
 app.include_router(prodist_router, prefix="/api/prodist", tags=["ANEEL/PRODIST"])
 app.include_router(ifc_router, prefix="/api/ifc", tags=["Half-way BIM"])
+app.include_router(rede_router)
 
 
 @app.get("/health", tags=["Saúde"])
