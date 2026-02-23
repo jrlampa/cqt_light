@@ -7,11 +7,11 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     setupFiles: [],
-    include: ['src/__tests__/**/*.{test,spec}.{js,jsx}'],
+    include: ['src/__tests__/**/*.{test,spec}.{js,jsx}', 'electron/__tests__/**/*.{test,spec}.js'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/**/*.{js,jsx}'],
+      include: ['src/**/*.{js,jsx}', 'electron/services/**/*.js'],
       exclude: ['src/__tests__/**', 'src/main.jsx']
     }
   }

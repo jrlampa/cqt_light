@@ -25,13 +25,23 @@ const controllers = [
 
 class ControllerRegistry {
     /**
-     * Standard IPC wrapper for global error handling and logging
+     * Standard IPC wrapper for global error handling, logging and SANITIZATION
      */
     static safeHandle(channel, handler) {
         ipcMain.handle(channel, async (event, ...args) => {
             logger.info(`IPC Call: ${channel}`, 'ControllerRegistry');
+
             try {
-                const result = await handler(event, ...args);
+                // Determine if we need to sanitize inputs (basic project data or query strings)
+                let sanitizedArgs = args;
+                if (channel.includes('project') || channel.includes('audit') || channel.includes('bom')) {
+                    const SanitizationService = require('../infrastructure/services/SanitizationService');
+                    sanitizedArgs = args.map(arg =>
+                        (typeof arg === 'object' && arg !== null) ? SanitizationService.sanitizeProjectData(arg) : arg
+                    );
+                }
+
+                const result = await handler(event, ...sanitizedArgs);
                 return result;
             } catch (err) {
                 logger.error(`IPC Error on ${channel}`, 'ControllerRegistry', err);

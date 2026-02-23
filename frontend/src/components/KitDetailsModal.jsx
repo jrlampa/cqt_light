@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Package, Search, DollarSign } from 'lucide-react';
+import { X, Plus, Trash2, Package, Search, DollarSign, Zap, AlertTriangle, Wand2 } from 'lucide-react';
 
 export const KitDetailsModal = ({ isOpen, onClose, kit, onSaveMateriais }) => {
   const [materiaisPadrao, setMateriaisPadrao] = useState([]);
   const [materiaisExtras, setMateriaisExtras] = useState(kit?.materiaisExtras || []);
+  const [moOverride, setMoOverride] = useState(kit?.moOverride || null);
   const [loading, setLoading] = useState(false);
+  const [aiSuggesting, setAiSuggesting] = useState(false);
 
   // Material search state
   const [showSearch, setShowSearch] = useState(false);
@@ -16,6 +18,7 @@ export const KitDetailsModal = ({ isOpen, onClose, kit, onSaveMateriais }) => {
     if (isOpen && kit) {
       loadKitComposition();
       setMateriaisExtras(kit.materiaisExtras || []);
+      setMoOverride(kit.moOverride || null);
     }
   }, [isOpen, kit]);
 
@@ -59,15 +62,35 @@ export const KitDetailsModal = ({ isOpen, onClose, kit, onSaveMateriais }) => {
     setMateriaisExtras(prev => prev.filter((_, i) => i !== index));
   };
 
+  const suggestMoAI = async () => {
+    if (!window.api) return;
+    setAiSuggesting(true);
+    try {
+      const suggestion = await window.api.suggestLaborCost({
+        description: kit.descricao_kit,
+        materials: [...materiaisPadrao, ...materiaisExtras]
+      });
+      if (suggestion && suggestion.cost) {
+        setMoOverride(suggestion.cost);
+      }
+    } catch (err) {
+      console.error('AI Suggestion failed:', err);
+      alert('Falha na sugestão por IA. Verifique a chave de API.');
+    } finally {
+      setAiSuggesting(false);
+    }
+  };
+
   const handleSave = () => {
-    onSaveMateriais(materiaisExtras);
+    onSaveMateriais(materiaisExtras, moOverride);
     onClose();
   };
 
   const custoMaterialPadrao = materiaisPadrao.reduce((sum, m) => sum + (m.subtotal || 0), 0);
   const custoMateriaisExtras = materiaisExtras.reduce((sum, m) => sum + (m.subtotal || 0), 0);
   const custoTotalMateriais = custoMaterialPadrao + custoMateriaisExtras;
-  const custoServico = kit?.custo_servico || 0;
+  const custoServicoOriginal = kit?.custo_servico || 0;
+  const custoServico = moOverride !== null ? moOverride : custoServicoOriginal;
   const custoTotalKit = custoTotalMateriais + custoServico;
 
   if (!isOpen || !kit) return null;
@@ -231,10 +254,49 @@ export const KitDetailsModal = ({ isOpen, onClose, kit, onSaveMateriais }) => {
                 <span className="text-gray-600">Materiais Extras:</span>
                 <span className="font-semibold text-purple-600">R$ {custoMateriaisExtras.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Serviço (M.O.):</span>
-                <span className="font-semibold">R$ {custoServico.toFixed(2)}</span>
+              <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
+                <div className="flex flex-col">
+                  <span className="text-gray-600">Serviço (M.O.):</span>
+                  <span className="text-[10px] text-gray-400">Valor Unitário</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold font-mono">R$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={moOverride !== null ? moOverride : custoServicoOriginal}
+                      onChange={(e) => setMoOverride(parseFloat(e.target.value) || 0)}
+                      className={`w-28 pl-7 pr-2 py-1.5 border rounded-lg text-sm font-bold text-right outline-none transition ${moOverride !== null ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-gray-200'}`}
+                    />
+                  </div>
+                  <button
+                    onClick={suggestMoAI}
+                    disabled={aiSuggesting}
+                    className="p-2 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 transition shadow-sm disabled:opacity-50"
+                    title="Sugerir via IA (CROQ)"
+                  >
+                    {aiSuggesting ? <Zap className="w-4 h-4 animate-pulse" /> : <Wand2 className="w-4 h-4" />}
+                  </button>
+                  {moOverride !== null && (
+                    <button
+                      onClick={() => setMoOverride(null)}
+                      className="p-1 text-gray-400 hover:text-red-500 transition"
+                      title="Resetar para Original"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {custoServicoOriginal === 0 && moOverride === null && (
+                <div className="flex items-center gap-2 text-[10px] text-amber-600 bg-amber-50 p-2 rounded-lg border border-amber-100">
+                  <AlertTriangle className="w-3 h-3" />
+                  Este Kit não possui M.O. mapeada. Defina manualmente ou use a IA.
+                </div>
+              )}
               <div className="border-t border-emerald-300 pt-2 mt-2 flex justify-between">
                 <span className="font-bold text-gray-800">Total do Kit:</span>
                 <span className="font-bold text-lg text-emerald-600">R$ {custoTotalKit.toFixed(2)}</span>

@@ -66,8 +66,10 @@ export const CompanySelector = ({ onCompanyChange }) => {
 
   return (
     <div className="relative flex items-center gap-2">
-      <Building2 className="w-4 h-4 text-gray-600" />
+      <label htmlFor="company-selector" className="sr-only">Selecionar Empresa</label>
+      <Building2 className="w-4 h-4 text-gray-700" />
       <select
+        id="company-selector"
         value={empresaAtiva?.id || ''}
         onChange={handleEmpresaChange}
         className="pl-2 pr-8 py-1.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition cursor-pointer appearance-none"

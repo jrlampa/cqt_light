@@ -1,8 +1,19 @@
-import ReportsDashboard from './components/ReportsDashboard';
-import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3, FileText } from 'lucide-react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3, FileText, ShieldCheck } from 'lucide-react';
+
+// Lazy load heavy components
+const ReportsDashboard = lazy(() => import('./components/ReportsDashboard'));
+const Configurator = lazy(() => import('./components/Configurator'));
+const MaterialManager = lazy(() => import('./components/MaterialManager'));
+const KitEditor = lazy(() => import('./components/KitEditor'));
+const LaborManager = lazy(() => import('./components/LaborManager'));
+const StructuralMap = lazy(() => import('./components/StructuralMap'));
+const AnalyticsManager = lazy(() => import('./components/AnalyticsManager'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
+  const [appMode, setAppMode] = useState('operational'); // 'operational' | 'analytics'
   const [stats, setStats] = useState({ materials: 0, kits: 0, servicos: 0 });
   const [projectData, setProjectData] = useState({ poles: [], sections: [] });
 
@@ -35,14 +46,20 @@ function App() {
   };
 
   const tabs = [
-    { id: 'configurator', label: 'Montagem', icon: Calculator, shortcut: '1' },
-    { id: 'materials', label: 'Materiais', icon: Layers, shortcut: '2' },
-    { id: 'kits', label: 'Kits', icon: Package, shortcut: '3' },
-    { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4' },
-    { id: 'map', label: 'Visualização 2.5D', icon: MapIcon, shortcut: '5' },
-    { id: 'analytics', label: 'Analytics (SotA)', icon: BarChart3, shortcut: '6' },
-    { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '7' },
+    // Operational Tabs
+    { id: 'configurator', label: 'Montagem', icon: Calculator, shortcut: '1', mode: 'operational' },
+    { id: 'materials', label: 'Materiais', icon: Layers, shortcut: '2', mode: 'operational' },
+    { id: 'kits', label: 'Kits', icon: Package, shortcut: '3', mode: 'operational' },
+    { id: 'labor', label: 'Mão de Obra', icon: DollarSign, shortcut: '4', mode: 'operational' },
+    { id: 'map', label: 'Visualização 2.5D', icon: MapIcon, shortcut: '5', mode: 'operational' },
+
+    // Analytics/BI Tabs
+    { id: 'dashboard', label: 'Dashboard BI', icon: BarChart3, shortcut: '6', mode: 'analytics' },
+    { id: 'analytics', label: 'Auditoria SotA', icon: ShieldCheck, shortcut: '7', mode: 'analytics' },
+    { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '8', mode: 'analytics' },
   ];
+
+  const filteredTabs = tabs.filter(t => t.mode === appMode);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -51,6 +68,7 @@ function App() {
       case 'kits': return <KitEditor />;
       case 'labor': return <LaborManager />;
       case 'map': return <StructuralMap projectData={projectData} />;
+      case 'dashboard': return <Dashboard />;
       case 'analytics': return <AnalyticsManager projectData={projectData} />;
       case 'reports': return <ReportsDashboard projectData={projectData} />;
       default: return <Configurator onStateChange={setProjectData} />;
@@ -65,21 +83,37 @@ function App() {
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
             CQT Light
           </h1>
+          <div className="flex bg-gray-100 p-1 rounded-xl border border-gray-200 ml-4">
+            <button
+              onClick={() => { setAppMode('operational'); setActiveTab('configurator'); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${appMode === 'operational' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+            >
+              OPERAÇÃO
+            </button>
+            <button
+              onClick={() => { setAppMode('analytics'); setActiveTab('dashboard'); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${appMode === 'analytics' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+            >
+              ANALYTICS (BI)
+            </button>
+          </div>
           <span className="text-xs text-gray-400 px-2 py-0.5 bg-gray-100 rounded-full">v3.0</span>
         </div>
 
         {/* Tab Navigation */}
         <nav className="flex items-center gap-1">
-          {tabs.map(tab => (
+          {filteredTabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
+              aria-label={`Mudar para aba ${tab.label}`}
+              title={`Atalho: Ctrl+${tab.shortcut}`}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === tab.id
                 ? 'bg-white shadow-md text-blue-600'
                 : 'text-gray-600 hover:bg-white/50'
                 }`}
             >
-              <tab.icon className="w-4 h-4" />
+              {tab.icon && <tab.icon className="w-4 h-4" data-testid={`icon-${tab.id}`} />}
               {tab.label}
               <kbd className="hidden md:inline text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded ml-1">
                 Ctrl+{tab.shortcut}
@@ -92,22 +126,28 @@ function App() {
         <div className="flex items-center gap-4 text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <Layers className="w-3 h-3" />
-            {stats.materials.toLocaleString()}
+            {stats.materials?.toLocaleString() || '0'}
           </span>
           <span className="flex items-center gap-1">
             <Package className="w-3 h-3" />
-            {stats.kits.toLocaleString()}
+            {stats.kits?.toLocaleString() || '0'}
           </span>
           <span className="flex items-center gap-1">
             <DollarSign className="w-3 h-3" />
-            {stats.servicos.toLocaleString()}
+            {stats.servicos?.toLocaleString() || '0'}
           </span>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="p-6 h-[calc(100vh-4rem)]">
-        {renderContent()}
+        <Suspense fallback={
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }>
+          {renderContent()}
+        </Suspense>
       </main>
     </div>
   );

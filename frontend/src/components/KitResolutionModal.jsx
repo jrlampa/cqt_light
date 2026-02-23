@@ -111,12 +111,13 @@ export const KitResolutionModal = ({ isOpen, onClose, kit, materials, onConfirm 
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="text-sm text-gray-600 flex items-center">
+                    <label htmlFor={`resolution-select-${idx}`} className="text-sm text-gray-700 flex items-center cursor-pointer">
                       <ArrowRight className="w-4 h-4 mr-2" />
                       Selecione o material específico:
-                    </div>
+                    </label>
                     <div>
                       <select
+                        id={`resolution-select-${idx}`}
                         className="w-full p-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-200 outline-none"
                         value={resolutions[mat.codigo] || ''}
                         onChange={(e) => handleSelect(mat.codigo, e.target.value)}

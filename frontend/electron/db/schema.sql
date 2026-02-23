@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS materiais (
   descricao TEXT NOT NULL,
   unidade TEXT DEFAULT 'UN',
   preco_unitario REAL DEFAULT 0,
+  tipo_padronizado TEXT,
   ciclo_manutencao_meses INTEGER DEFAULT 24,
   vida_util_anos INTEGER DEFAULT 30
 );
@@ -19,6 +20,8 @@ CREATE TABLE IF NOT EXISTS servicos_cm (
 CREATE TABLE IF NOT EXISTS kits (
   codigo_kit TEXT PRIMARY KEY,
   descricao_kit TEXT NOT NULL,
+  categoria TEXT,
+  observacao_engenharia TEXT,
   codigo_servico TEXT,
   -- Direct link to servicos_cm
   custo_servico REAL DEFAULT 0,

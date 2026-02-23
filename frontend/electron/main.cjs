@@ -3,6 +3,9 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const db = require('./db/database.cjs');
 const ControllerRegistry = require('./src/interfaces/ControllerRegistry');
+const PythonBridge = require('./src/infrastructure/services/PythonBridge');
+const DashboardService = require('./services/DashboardService');
+const BimPredictorService = require('./services/BimPredictorService');
 
 let mainWindow;
 
@@ -23,8 +26,15 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.cjs'),
+      spellcheck: false, // Disable spellcheck to reduce internal requests
+      enableRemoteModule: false,
     },
     show: false,
+  });
+
+  // Mitigation for chrome://terms and Autofill errors
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (url.startsWith('chrome://')) event.preventDefault();
   });
 
   if (isDev) {
@@ -150,3 +160,10 @@ ipcMain.handle('get-all-sufixos', () =>
 ipcMain.handle('get-zero-price-materials', () => db.getZeroPriceMaterials());
 ipcMain.handle('update-material-price', (_, { sap, price }) => db.updateMaterialPrice(sap, price));
 ipcMain.handle('update-all-kits-service-cost', (_, amount) => db.updateServiceCostForAllKits(amount));
+
+// AI & Intelligence
+ipcMain.handle('suggest-labor-cost', (_, data) => PythonBridge.run('ai_labor_estimator', data));
+
+// Zenith Analytics & BI
+ipcMain.handle('get-dashboard-metrics', () => DashboardService.getMetrics());
+ipcMain.handle('predict-bim-category', (_, description) => BimPredictorService.predict(description));

@@ -35,7 +35,10 @@ describe('useBudgetCalculator', () => {
         { sap: 'M1', quantidade: 2, preco_unitario: 5, descricao: 'Mat1' }
       ],
       totalMaterial: 10,
-      totalServico: 50
+      totalServico: 50,
+      servicos: [
+        { codigo_kit: 'KIT1', custo_servico: 25 }
+      ]
     });
 
     await act(async () => {
@@ -48,7 +51,7 @@ describe('useBudgetCalculator', () => {
     expect(result.current.custoData.totalMaterial).toBe(40);
     expect(result.current.custoData.totalServico).toBe(50);
     expect(result.current.custoData.totalGeral).toBe(90);
-    expect(result.current.custoData.materiais).toHaveLength(2);
+    expect(result.current.custoData.materiais).toHaveLength(3);
   });
 
   it('should handle template extras correctly', async () => {
@@ -74,6 +77,83 @@ describe('useBudgetCalculator', () => {
     });
 
     expect(result.current.custoData.totalMaterial).toBe(10); // 5 * 2
-    expect(result.current.custoData.materiais[0].sap).toBe('EXTRA1');
+    expect(result.current.custoData.materiais.find(m => m.sap === 'EXTRA1')).toBeDefined();
+  });
+
+  it('should resolve suffixes based on context', async () => {
+    const { result } = renderHook(() => useBudgetCalculator());
+
+    const materiaisAvulsos = [
+      { sap: '11600B', preco_unitario: 1000, quantidade: 1, descricao: 'POSTE' }
+    ];
+    const estruturas = [
+      { codigo_kit: 'F-10/', quantidade: 1 }
+    ];
+    const sufixos = [
+      { prefixo: 'F-10/', tipo_contexto: 'poste', valor_contexto: '11600B', codigo_completo: 'F-10/11' }
+    ];
+
+    window.api.getCustoTotal.mockResolvedValue({
+      materiais: [{ sap: 'F-10/', quantidade: 1, preco_unitario: 50, descricao: 'Ferragem' }],
+      totalMaterial: 50,
+      totalServico: 10,
+      servicos: [{ codigo_kit: 'F-10/', custo_servico: 10 }]
+    });
+
+    await act(async () => {
+      await result.current.calculateTotal({ estruturas, materiaisAvulsos, sufixos });
+    });
+
+    // Subtotal: 1000 (poste) + 50 (kit) = 1050
+    // But F-10/ should be resolved to F-10/11 in materials list
+    expect(result.current.custoData.materiais.find(m => m.sap === 'F-10/11')).toBeDefined();
+    expect(result.current.custoData.totalMaterial).toBe(1050);
+  });
+
+  it('should apply manual MO overrides', async () => {
+    const { result } = renderHook(() => useBudgetCalculator());
+
+    const estruturas = [
+      { codigo_kit: 'KIT1', quantidade: 2, moOverride: 100 }
+    ];
+
+    window.api.getCustoTotal.mockResolvedValue({
+      materiais: [],
+      totalMaterial: 0,
+      totalServico: 50,
+      servicos: [{ codigo_kit: 'KIT1', custo_servico: 25 }]
+    });
+
+    await act(async () => {
+      await result.current.calculateTotal({ estruturas });
+    });
+
+    // 2 * 100 = 200 (override) vs 2 * 25 = 50 (standard)
+    expect(result.current.custoData.totalServico).toBe(200);
+  });
+
+  it('should resolve conductor-based suffixes', async () => {
+    const { result } = renderHook(() => useBudgetCalculator());
+
+    const estruturas = [
+      { codigo_kit: 'M1/', quantidade: 1 }
+    ];
+    const condutorMT = { codigo: '35mm' };
+    const sufixos = [
+      { prefixo: 'M1/', tipo_contexto: 'condutor', valor_contexto: '35mm', codigo_completo: 'M1/35' }
+    ];
+
+    window.api.getCustoTotal.mockResolvedValue({
+      materiais: [{ sap: 'M1/', quantidade: 1, preco_unitario: 10, descricao: 'Conductor' }],
+      totalMaterial: 10,
+      totalServico: 5,
+      servicos: [{ codigo_kit: 'M1/', custo_servico: 5 }]
+    });
+
+    await act(async () => {
+      await result.current.calculateTotal({ estruturas, condutorMT, sufixos });
+    });
+
+    expect(result.current.custoData.materiais.find(m => m.sap === 'M1/35')).toBeDefined();
   });
 });

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /electron/
+Disallow: /electron_obfuscated/
+Disallow: /scripts/
+Disallow: /dist/
+
+Sitemap: https://zenith-master.im3.com.br/sitemap.xml

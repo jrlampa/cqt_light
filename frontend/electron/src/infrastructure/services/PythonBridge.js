@@ -58,21 +58,32 @@ class PythonBridge {
                 }
 
                 try {
+                    // Try parsing whole string first
+                    try {
+                        const parsed = JSON.parse(resultData.trim());
+                        logger.info(`Process ${scriptName} completed successfully.`, 'PythonBridge');
+                        resolve(parsed);
+                        return;
+                    } catch (e) { /* ignore and try extraction */ }
+
                     const jsonStart = resultData.indexOf('[');
                     const jsonEnd = resultData.lastIndexOf(']') + 1;
 
                     if (jsonStart !== -1 && jsonEnd !== -1) {
-                        const parsed = JSON.parse(resultData.substring(jsonStart, jsonEnd));
-                        logger.info(`Process ${scriptName} completed successfully.`, 'PythonBridge');
+                        const jsonStr = resultData.substring(jsonStart, jsonEnd);
+                        const parsed = JSON.parse(jsonStr);
+                        logger.info(`Process ${scriptName} completed successfully (extracted array).`, 'PythonBridge');
                         resolve(parsed);
                     } else {
-                        // Support for plain objects if necessary
                         const objStart = resultData.indexOf('{');
                         const objEnd = resultData.lastIndexOf('}') + 1;
                         if (objStart !== -1 && objEnd !== -1) {
-                            resolve(JSON.parse(resultData.substring(objStart, objEnd)));
+                            const jsonStr = resultData.substring(objStart, objEnd);
+                            const parsed = JSON.parse(jsonStr);
+                            logger.info(`Process ${scriptName} completed successfully (extracted object).`, 'PythonBridge');
+                            resolve(parsed);
                         } else {
-                            resolve(resultData);
+                            resolve(resultData.trim());
                         }
                     }
                 } catch (e) {

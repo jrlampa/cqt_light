@@ -1,3 +1,7 @@
+/**
+ * CQT LIGHT - Preload Script
+ * SEGUIR ESTRITAMENTE: Minimal API Exposure Pattern.
+ */
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
@@ -92,25 +96,28 @@ contextBridge.exposeInMainWorld('api', {
   updateMaterialPrice: (sap, price) => ipcRenderer.invoke('update-material-price', { sap, price }),
   updateAllKitsServiceCost: (amount) => ipcRenderer.invoke('update-all-kits-service-cost', amount),
 
-  // Intelligence & Norms (Cycle 8)
+  // Intelligence & Norms
   getNormsBySap: (sap) => ipcRenderer.invoke('get-norms-by-sap', sap),
   calculateStructureHealth: (poleData) => ipcRenderer.invoke('calculate-structure-health', poleData),
   searchNorms: (query) => ipcRenderer.invoke('search-norms', query),
 
-  // Reporting (Cycle 9)
+  // Reporting
   savePdfReport: (data) => ipcRenderer.invoke('save-pdf-report', data),
 
-  // Operation & GIS (Cycle 10)
+  // Operation & GIS
   scheduleMaintenance: (jobData) => ipcRenderer.invoke('schedule-maintenance', jobData),
   getMaintenanceJobs: () => ipcRenderer.invoke('get-maintenance-jobs'),
   exportGeoJson: (projectData) => ipcRenderer.invoke('export-geojson', projectData),
 
-  // Auditoria (Python Engine Bridge)
+  // Engine Bridge (Hardened)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
-
-  // BOM Generation
   generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),
   getProjectAnalytics: (projectData) => ipcRenderer.invoke('get-project-analytics', projectData),
+  suggestLaborCost: (data) => ipcRenderer.invoke('suggest-labor-cost', data),
+  getDashboardMetrics: () => ipcRenderer.invoke('get-dashboard-metrics'),
+  predictBimCategory: (description) => ipcRenderer.invoke('predict-bim-category', description),
+
+  // TODO: Implement a unified "projectAction" gateway for better audit logging
 
   // Governance & Collaboration
   getAuditFlags: (poleId) => ipcRenderer.invoke('get-audit-flags', poleId),

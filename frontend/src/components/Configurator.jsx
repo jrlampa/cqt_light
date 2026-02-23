@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap, DollarSign, Edit2 } from 'lucide-react';
+import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Search, Zap, DollarSign, Edit2, Package, ShieldCheck, Info } from 'lucide-react';
 
 // Hooks
 import { useBudgetCalculator } from '../hooks/useBudgetCalculator';
@@ -19,7 +19,6 @@ import { CompanySelector } from './CompanySelector';
 import { PriceManagementModal } from './PriceManagementModal';
 import { exportMaterialsToExcel } from '../utils/excelExporter';
 import AuditReport from './AuditReport';
-import { ShieldCheck, Info } from 'lucide-react';
 
 // Conductor options
 const CONDUTORES_MT = [
@@ -208,9 +207,12 @@ const Configurator = ({ onStateChange }) => {
   const searchPoste = async (query) => {
     setPosteQuery(query);
     if (!window.api || !query.trim()) { setPosteResults([]); setShowPosteDropdown(false); return; }
-    // Filter only poles from materials search
+    // Filter only poles from materials search - improved filter
     const results = await window.api.searchMaterials(query);
-    const poles = results.filter(m => m.descricao.toUpperCase().includes('POSTE'));
+    const poles = results.filter(m =>
+      m.descricao.toUpperCase().includes('POSTE') ||
+      (m.tipo || '').toUpperCase().includes('POSTE')
+    );
     setPosteResults(poles);
     setShowPosteDropdown(poles.length > 0);
     nav.setPosteHighlight(0);
@@ -236,11 +238,7 @@ const Configurator = ({ onStateChange }) => {
 
   // Selection
   const selectPoste = (mat) => {
-    const entry = { ...mat, id: Date.now(), quantidade: 1 };
-    setMateriaisAvulsos(prev => [...prev, entry]);
-    setPosteQuery('');
-    setPosteResults([]);
-    setShowPosteDropdown(false);
+    openQtyPopup(mat, 'material');
   };
 
   const openQtyPopup = (item, type) => {
@@ -333,11 +331,11 @@ const Configurator = ({ onStateChange }) => {
     setShowKitDetails(true);
   };
 
-  const updateKitMateriais = (materiaisExtras) => {
+  const updateKitMateriais = (materiaisExtras, moOverride) => {
     if (!selectedKit) return;
     setEstruturas(prev => prev.map(kit =>
       kit.id === selectedKit.id
-        ? { ...kit, materiaisExtras }
+        ? { ...kit, materiaisExtras, moOverride }
         : kit
     ));
   };
@@ -585,10 +583,11 @@ const Configurator = ({ onStateChange }) => {
 
         {/* Poste */}
         <div className="relative">
-          <label className="text-xs text-gray-500 uppercase font-bold">Poste (adiciona aos materiais)</label>
+          <label htmlFor="poste-search" className="text-xs text-gray-700 uppercase font-bold">Poste (adiciona aos materiais)</label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
+              id="poste-search"
               ref={nav.posteInputRef}
               type="text"
               value={posteQuery}
@@ -607,7 +606,7 @@ const Configurator = ({ onStateChange }) => {
                   className={`w-full text-left px-2 py-1.5 text-xs flex gap-2 ${idx === nav.posteHighlight ? 'bg-green-100' : 'hover:bg-gray-50'}`}
                 >
                   <span className="font-mono font-bold text-green-600">{mat.sap}</span>
-                  <span className="text-gray-500 truncate text-[10px]">{mat.descricao}</span>
+                  <span className="text-gray-700 truncate text-[10px]">{mat.descricao}</span>
                 </button>
               ))}
             </div>
@@ -618,12 +617,15 @@ const Configurator = ({ onStateChange }) => {
         <div className="grid grid-cols-2 gap-2">
           {/* MT Conductor */}
           <div className="relative">
-            <label className="text-[10px] text-gray-500 uppercase font-bold flex items-center gap-1">
+            <label htmlFor="mt-selector" className="text-[10px] text-gray-700 uppercase font-bold flex items-center gap-1">
               <Zap className="w-3 h-3 text-orange-500" /> MT
             </label>
             <button
+              id="mt-selector"
               onClick={() => { nav.setMtHighlight(0); setShowMTDropdown(!showMTDropdown); }}
               onKeyDown={handleMTNav}
+              aria-expanded={showMTDropdown}
+              aria-haspopup="listbox"
               className="w-full text-left px-2 py-1.5 bg-orange-50 border border-orange-100 rounded-lg text-xs font-medium text-orange-700 truncate focus:outline-none focus:ring-2 focus:ring-orange-300"
             >
               {condutorMT.label}
@@ -655,12 +657,15 @@ const Configurator = ({ onStateChange }) => {
 
           {/* BT Conductor */}
           <div className="relative">
-            <label className="text-[10px] text-gray-500 uppercase font-bold flex items-center gap-1">
+            <label htmlFor="bt-selector" className="text-[10px] text-gray-700 uppercase font-bold flex items-center gap-1">
               <Zap className="w-3 h-3 text-blue-500" /> BT
             </label>
             <button
+              id="bt-selector"
               onClick={() => { nav.setBtHighlight(0); setShowBTDropdown(!showBTDropdown); }}
               onKeyDown={handleBTNav}
+              aria-expanded={showBTDropdown}
+              aria-haspopup="listbox"
               className="w-full text-left px-2 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-xs font-medium text-blue-700 truncate focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               {condutorBT.label}

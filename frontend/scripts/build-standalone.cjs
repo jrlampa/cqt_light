@@ -24,32 +24,44 @@ async function build() {
     // Paths
     const sourceDir = path.join(__dirname, '../electron');
     const buildDir = path.join(__dirname, '../electron_obfuscated');
+    const frontendAssetsDir = path.join(__dirname, '../dist/assets');
 
-    // 1. Clean & Copy
+    // 1. Clean & Copy Backend
     if (await fs.pathExists(buildDir)) {
         await fs.remove(buildDir);
     }
     await fs.copy(sourceDir, buildDir);
 
-    // 2. Obfuscate recursively
-    async function obfuscateDir(dir) {
+    // 2. Obfuscate Backend recursively
+    async function obfuscateDir(dir, isFrontend = false) {
         const files = await fs.readdir(dir);
         for (const file of files) {
             const fullPath = path.join(dir, file);
             const stat = await fs.stat(fullPath);
 
             if (stat.isDirectory()) {
-                await obfuscateDir(fullPath);
+                await obfuscateDir(fullPath, isFrontend);
             } else if (file.endsWith('.js') || file.endsWith('.cjs')) {
-                console.log(`Obfuscating: ${path.relative(buildDir, fullPath)}`);
+                console.log(`Obfuscating ${isFrontend ? '[Front]' : '[Back]'}: ${path.relative(isFrontend ? frontendAssetsDir : buildDir, fullPath)}`);
                 const content = await fs.readFile(fullPath, 'utf8');
-                const result = JavaScriptObfuscator.obfuscate(content, OB_CONFIG);
-                await fs.writeFile(fullPath, result.getObfuscatedCode());
+                try {
+                    const result = JavaScriptObfuscator.obfuscate(content, OB_CONFIG);
+                    await fs.writeFile(fullPath, result.getObfuscatedCode());
+                } catch (err) {
+                    console.error(`Error obfuscating ${file}:`, err.message);
+                }
             }
         }
     }
 
-    await obfuscateDir(buildDir);
+    await obfuscateDir(buildDir, false);
+
+    // 3. Obfuscate Frontend Assets (Extra Layer)
+    if (await fs.pathExists(frontendAssetsDir)) {
+        console.log('--- Obfuscating Frontend Assets ---');
+        await obfuscateDir(frontendAssetsDir, true);
+    }
+
     console.log('--- Zenith Obfuscation Complete ---');
 }
 

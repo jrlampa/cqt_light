@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Search, Plus, Trash2, Zap, X } from 'lucide-react';
+import { Layers, Search, Plus, Trash2, Zap, X, AlertTriangle } from 'lucide-react';
 
 export const StructureList = ({
   estruturas,
@@ -65,7 +65,14 @@ export const StructureList = ({
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-800 line-clamp-1">{kit.descricao_kit}</span>
-                    <span className="text-xs text-gray-500">Valor Serviço: R$ {(kit.custo_servico || 0).toFixed(2)}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Valor Serviço: R$ {(kit.custo_servico || 0).toFixed(2)}</span>
+                      {(kit.custo_servico || 0) === 0 && (
+                        <span className="flex items-center gap-1 text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100 font-bold">
+                          <AlertTriangle className="w-2.5 h-2.5" /> SEM M.O.
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <Plus className={`w-4 h-4 ml-auto ${idx === structureHighlight ? 'text-blue-500' : 'text-gray-300'}`} />
                 </button>
@@ -97,6 +104,16 @@ export const StructureList = ({
                     <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
                       <span className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">{est.quantidade} un</span>
                       <span>R$ {(est.preco_kit || 0).toFixed(2)}/un</span>
+                      {(est.custo_servico || 0) === 0 && !est.moOverride && (
+                        <span className="flex items-center gap-1 text-[10px] text-amber-600 font-bold">
+                          <AlertTriangle className="w-3 h-3" /> ATENÇÃO M.O.
+                        </span>
+                      )}
+                      {est.moOverride && (
+                        <span className="flex items-center gap-1 text-[10px] text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                          M.O. MANUAL: R$ {est.moOverride.toFixed(2)}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

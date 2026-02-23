@@ -38,12 +38,12 @@ const StructureMarker = memo(({ s, viewMode, topPos, isReviewMode, flags = [], o
                 position={topPos}
                 icon={activeFlags.length > 0 && isReviewMode ? L.divIcon({
                     className: 'custom-div-icon',
-                    html: `< div class="bg-red-500 rounded-full p-1 animate-bounce border-2 border-white shadow-lg" > <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div > `,
+                    html: `<div class="bg-red-500 rounded-full p-1 animate-bounce border-2 border-white shadow-lg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>`,
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
                 }) : L.divIcon({
                     className: 'structure-marker',
-                    html: `< div class="w-4 h-4 rounded-full border-2 border-white shadow-md ${healthColor} transition-all duration-300" ></div > `,
+                    html: `<div class="w-4 h-4 rounded-full border-2 border-white shadow-md ${healthColor} transition-all duration-300"></div>`,
                     iconSize: [16, 16],
                     iconAnchor: [8, 8]
                 })}

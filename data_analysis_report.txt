@@ -1,0 +1,596 @@
+
+FILE: CADASTRO DE KITS E MATERIAIS - PROJETOS DE CLANDESTINOS E DE BLINDAGEM.xlsm
+  - CAPA (29 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - CONSTRUÇÃO (286 rows):
+    COLUMNS: ['CE', 'DESCRIÇÃO', 'LOTE', 'PONTO/ TRECHO', 'PP', 'QTD', 'UMB', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 12', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': 'PROJETO', 'Unnamed: 8': nan, 'LOTE': 123456.0, 'DESCRIÇÃO': nan, 'PONTO/ TRECHO': 'PONTO', 'Unnamed: 12': 1.0, 'PP': 14.0, 'CE': 72.0, 'QTD': 1.0, 'UMB': nan}
+  - NORMALIZAÇÃO (6 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': 'PROJETO', 'Unnamed: 8': nan}
+  - KITS_MATERIAIS (1000 rows):
+    COLUMNS: ['DESCRIÇÃO', 'DESCRIÇÃO.1', 'KIT', 'LOTE', 'UMB', 'Unnamed: 0', 'Unnamed: 3', 'Unnamed: 4']
+    INTERESTING COLS: ['KIT']
+    SAMPLE: {'Unnamed: 0': nan, 'KIT': '13A', 'DESCRIÇÃO': 'RET  FERRAG.1 LIN.TRIA.POSTE CENTRO     ', 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'LOTE': 307941.0, 'DESCRIÇÃO.1': 'RESINA TERMOP ANTICH CYRANA TERMOCYRAN', 'UMB': 'UN'}
+  - CIDADES_RJ (92 rows):
+    COLUMNS: ['Cidade', 'Latitude', 'Longitude', 'População', 'Posição', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Área Km²']
+    SAMPLE: {'Posição': 1, 'Cidade': nan, 'Latitude': -22.763888888889, 'Longitude': -43.398888888889, 'Área Km²': 79.0, 'População': 483087, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': nan, 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan}
+  - ID_CAPEX (16 rows):
+    COLUMNS: ['ATIVIDADE', 'ID CAPEX', 'SEGUIMENTO', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'SEGUIMENTO': 'EXPANSÃO BAIXADA', 'ATIVIDADE': 'Novas Ligações Redes BT/MT', 'ID CAPEX': 'O-1-01-00-OB', 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan}
+----------------------------------------
+
+FILE: PLAN MATERIAL LIGHT 2019.xls
+  - PADRÕES MT, BT, RURAL (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 100', 'Unnamed: 101', 'Unnamed: 102', 'Unnamed: 103', 'Unnamed: 104', 'Unnamed: 105', 'Unnamed: 106', 'Unnamed: 107', 'Unnamed: 108', 'Unnamed: 109', 'Unnamed: 11', 'Unnamed: 110', 'Unnamed: 111', 'Unnamed: 112', 'Unnamed: 113', 'Unnamed: 114', 'Unnamed: 115', 'Unnamed: 116', 'Unnamed: 117', 'Unnamed: 118', 'Unnamed: 119', 'Unnamed: 12', 'Unnamed: 120', 'Unnamed: 121', 'Unnamed: 122', 'Unnamed: 123', 'Unnamed: 124', 'Unnamed: 125', 'Unnamed: 126', 'Unnamed: 127', 'Unnamed: 128', 'Unnamed: 129', 'Unnamed: 13', 'Unnamed: 130', 'Unnamed: 131', 'Unnamed: 132', 'Unnamed: 133', 'Unnamed: 134', 'Unnamed: 135', 'Unnamed: 136', 'Unnamed: 137', 'Unnamed: 138', 'Unnamed: 139', 'Unnamed: 14', 'Unnamed: 140', 'Unnamed: 141', 'Unnamed: 142', 'Unnamed: 143', 'Unnamed: 144', 'Unnamed: 145', 'Unnamed: 146', 'Unnamed: 147', 'Unnamed: 148', 'Unnamed: 149', 'Unnamed: 15', 'Unnamed: 150', 'Unnamed: 151', 'Unnamed: 152', 'Unnamed: 153', 'Unnamed: 154', 'Unnamed: 155', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35', 'Unnamed: 36', 'Unnamed: 37', 'Unnamed: 38', 'Unnamed: 39', 'Unnamed: 4', 'Unnamed: 40', 'Unnamed: 41', 'Unnamed: 42', 'Unnamed: 43', 'Unnamed: 44', 'Unnamed: 45', 'Unnamed: 46', 'Unnamed: 47', 'Unnamed: 48', 'Unnamed: 49', 'Unnamed: 5', 'Unnamed: 50', 'Unnamed: 51', 'Unnamed: 52', 'Unnamed: 53', 'Unnamed: 54', 'Unnamed: 55', 'Unnamed: 56', 'Unnamed: 57', 'Unnamed: 58', 'Unnamed: 59', 'Unnamed: 6', 'Unnamed: 60', 'Unnamed: 61', 'Unnamed: 62', 'Unnamed: 63', 'Unnamed: 64', 'Unnamed: 65', 'Unnamed: 66', 'Unnamed: 67', 'Unnamed: 68', 'Unnamed: 69', 'Unnamed: 7', 'Unnamed: 70', 'Unnamed: 71', 'Unnamed: 72', 'Unnamed: 73', 'Unnamed: 74', 'Unnamed: 75', 'Unnamed: 76', 'Unnamed: 77', 'Unnamed: 78', 'Unnamed: 79', 'Unnamed: 8', 'Unnamed: 80', 'Unnamed: 81', 'Unnamed: 82', 'Unnamed: 83', 'Unnamed: 84', 'Unnamed: 85', 'Unnamed: 86', 'Unnamed: 87', 'Unnamed: 88', 'Unnamed: 89', 'Unnamed: 9', 'Unnamed: 90', 'Unnamed: 91', 'Unnamed: 92', 'Unnamed: 93', 'Unnamed: 94', 'Unnamed: 95', 'Unnamed: 96', 'Unnamed: 97', 'Unnamed: 98', 'Unnamed: 99']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': nan, 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan, 'Unnamed: 32': nan, 'Unnamed: 33': nan, 'Unnamed: 34': nan, 'Unnamed: 35': nan, 'Unnamed: 36': nan, 'Unnamed: 37': nan, 'Unnamed: 38': nan, 'Unnamed: 39': nan, 'Unnamed: 40': nan, 'Unnamed: 41': nan, 'Unnamed: 42': nan, 'Unnamed: 43': nan, 'Unnamed: 44': nan, 'Unnamed: 45': nan, 'Unnamed: 46': nan, 'Unnamed: 47': nan, 'Unnamed: 48': nan, 'Unnamed: 49': nan, 'Unnamed: 50': nan, 'Unnamed: 51': nan, 'Unnamed: 52': nan, 'Unnamed: 53': nan, 'Unnamed: 54': nan, 'Unnamed: 55': nan, 'Unnamed: 56': nan, 'Unnamed: 57': nan, 'Unnamed: 58': nan, 'Unnamed: 59': nan, 'Unnamed: 60': nan, 'Unnamed: 61': nan, 'Unnamed: 62': nan, 'Unnamed: 63': nan, 'Unnamed: 64': nan, 'Unnamed: 65': nan, 'Unnamed: 66': nan, 'Unnamed: 67': nan, 'Unnamed: 68': nan, 'Unnamed: 69': nan, 'Unnamed: 70': nan, 'Unnamed: 71': nan, 'Unnamed: 72': nan, 'Unnamed: 73': nan, 'Unnamed: 74': nan, 'Unnamed: 75': nan, 'Unnamed: 76': nan, 'Unnamed: 77': nan, 'Unnamed: 78': nan, 'Unnamed: 79': nan, 'Unnamed: 80': nan, 'Unnamed: 81': nan, 'Unnamed: 82': nan, 'Unnamed: 83': nan, 'Unnamed: 84': nan, 'Unnamed: 85': nan, 'Unnamed: 86': nan, 'Unnamed: 87': nan, 'Unnamed: 88': nan, 'Unnamed: 89': nan, 'Unnamed: 90': nan, 'Unnamed: 91': nan, 'Unnamed: 92': nan, 'Unnamed: 93': nan, 'Unnamed: 94': nan, 'Unnamed: 95': nan, 'Unnamed: 96': nan, 'Unnamed: 97': nan, 'Unnamed: 98': nan, 'Unnamed: 99': nan, 'Unnamed: 100': nan, 'Unnamed: 101': nan, 'Unnamed: 102': nan, 'Unnamed: 103': nan, 'Unnamed: 104': nan, 'Unnamed: 105': nan, 'Unnamed: 106': nan, 'Unnamed: 107': nan, 'Unnamed: 108': nan, 'Unnamed: 109': nan, 'Unnamed: 110': nan, 'Unnamed: 111': nan, 'Unnamed: 112': nan, 'Unnamed: 113': nan, 'Unnamed: 114': nan, 'Unnamed: 115': nan, 'Unnamed: 116': nan, 'Unnamed: 117': nan, 'Unnamed: 118': nan, 'Unnamed: 119': nan, 'Unnamed: 120': nan, 'Unnamed: 121': nan, 'Unnamed: 122': nan, 'Unnamed: 123': nan, 'Unnamed: 124': nan, 'Unnamed: 125': nan, 'Unnamed: 126': nan, 'Unnamed: 127': nan, 'Unnamed: 128': nan, 'Unnamed: 129': nan, 'Unnamed: 130': nan, 'Unnamed: 131': nan, 'Unnamed: 132': nan, 'Unnamed: 133': nan, 'Unnamed: 134': nan, 'Unnamed: 135': nan, 'Unnamed: 136': nan, 'Unnamed: 137': nan, 'Unnamed: 138': nan, 'Unnamed: 139': nan, 'Unnamed: 140': nan, 'Unnamed: 141': nan, 'Unnamed: 142': nan, 'Unnamed: 143': nan, 'Unnamed: 144': nan, 'Unnamed: 145': nan, 'Unnamed: 146': nan, 'Unnamed: 147': nan, 'Unnamed: 148': nan, 'Unnamed: 149': nan, 'Unnamed: 150': nan, 'Unnamed: 151': nan, 'Unnamed: 152': nan, 'Unnamed: 153': nan, 'Unnamed: 154': nan, 'Unnamed: 155': nan}
+  - PARTE A (47 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': 'CADASTRAMENTO DE', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan}
+  - PARTE A1 (1000 rows):
+    COLUMNS: ['GECN', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 100', 'Unnamed: 101', 'Unnamed: 102', 'Unnamed: 103', 'Unnamed: 104', 'Unnamed: 105', 'Unnamed: 106', 'Unnamed: 107', 'Unnamed: 108', 'Unnamed: 109', 'Unnamed: 11', 'Unnamed: 110', 'Unnamed: 111', 'Unnamed: 112', 'Unnamed: 113', 'Unnamed: 114', 'Unnamed: 115', 'Unnamed: 116', 'Unnamed: 117', 'Unnamed: 118', 'Unnamed: 119', 'Unnamed: 12', 'Unnamed: 120', 'Unnamed: 121', 'Unnamed: 122', 'Unnamed: 123', 'Unnamed: 124', 'Unnamed: 125', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35', 'Unnamed: 36', 'Unnamed: 37', 'Unnamed: 38', 'Unnamed: 39', 'Unnamed: 4', 'Unnamed: 40', 'Unnamed: 41', 'Unnamed: 42', 'Unnamed: 43', 'Unnamed: 44', 'Unnamed: 45', 'Unnamed: 46', 'Unnamed: 47', 'Unnamed: 48', 'Unnamed: 49', 'Unnamed: 5', 'Unnamed: 50', 'Unnamed: 51', 'Unnamed: 52', 'Unnamed: 53', 'Unnamed: 54', 'Unnamed: 55', 'Unnamed: 56', 'Unnamed: 57', 'Unnamed: 58', 'Unnamed: 59', 'Unnamed: 6', 'Unnamed: 60', 'Unnamed: 61', 'Unnamed: 62', 'Unnamed: 63', 'Unnamed: 64', 'Unnamed: 65', 'Unnamed: 66', 'Unnamed: 67', 'Unnamed: 68', 'Unnamed: 69', 'Unnamed: 7', 'Unnamed: 70', 'Unnamed: 71', 'Unnamed: 72', 'Unnamed: 73', 'Unnamed: 74', 'Unnamed: 75', 'Unnamed: 76', 'Unnamed: 77', 'Unnamed: 78', 'Unnamed: 79', 'Unnamed: 8', 'Unnamed: 80', 'Unnamed: 81', 'Unnamed: 82', 'Unnamed: 83', 'Unnamed: 84', 'Unnamed: 85', 'Unnamed: 86', 'Unnamed: 87', 'Unnamed: 88', 'Unnamed: 89', 'Unnamed: 9', 'Unnamed: 90', 'Unnamed: 91', 'Unnamed: 92', 'Unnamed: 93', 'Unnamed: 94', 'Unnamed: 95', 'Unnamed: 96', 'Unnamed: 97', 'Unnamed: 98', 'Unnamed: 99']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'GECN': '00:00:00', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan, 'Unnamed: 32': nan, 'Unnamed: 33': nan, 'Unnamed: 34': nan, 'Unnamed: 35': nan, 'Unnamed: 36': nan, 'Unnamed: 37': nan, 'Unnamed: 38': nan, 'Unnamed: 39': nan, 'Unnamed: 40': nan, 'Unnamed: 41': nan, 'Unnamed: 42': nan, 'Unnamed: 43': nan, 'Unnamed: 44': nan, 'Unnamed: 45': nan, 'Unnamed: 46': nan, 'Unnamed: 47': nan, 'Unnamed: 48': nan, 'Unnamed: 49': nan, 'Unnamed: 50': nan, 'Unnamed: 51': nan, 'Unnamed: 52': nan, 'Unnamed: 53': nan, 'Unnamed: 54': nan, 'Unnamed: 55': nan, 'Unnamed: 56': nan, 'Unnamed: 57': nan, 'Unnamed: 58': nan, 'Unnamed: 59': nan, 'Unnamed: 60': nan, 'Unnamed: 61': nan, 'Unnamed: 62': nan, 'Unnamed: 63': nan, 'Unnamed: 64': nan, 'Unnamed: 65': nan, 'Unnamed: 66': nan, 'Unnamed: 67': nan, 'Unnamed: 68': nan, 'Unnamed: 69': nan, 'Unnamed: 70': nan, 'Unnamed: 71': nan, 'Unnamed: 72': nan, 'Unnamed: 73': nan, 'Unnamed: 74': nan, 'Unnamed: 75': nan, 'Unnamed: 76': nan, 'Unnamed: 77': nan, 'Unnamed: 78': nan, 'Unnamed: 79': nan, 'Unnamed: 80': nan, 'Unnamed: 81': nan, 'Unnamed: 82': nan, 'Unnamed: 83': nan, 'Unnamed: 84': nan, 'Unnamed: 85': nan, 'Unnamed: 86': nan, 'Unnamed: 87': nan, 'Unnamed: 88': nan, 'Unnamed: 89': nan, 'Unnamed: 90': nan, 'Unnamed: 91': nan, 'Unnamed: 92': nan, 'Unnamed: 93': nan, 'Unnamed: 94': nan, 'Unnamed: 95': nan, 'Unnamed: 96': nan, 'Unnamed: 97': nan, 'Unnamed: 98': nan, 'Unnamed: 99': nan, 'Unnamed: 100': nan, 'Unnamed: 101': nan, 'Unnamed: 102': nan, 'Unnamed: 103': nan, 'Unnamed: 104': nan, 'Unnamed: 105': nan, 'Unnamed: 106': nan, 'Unnamed: 107': nan, 'Unnamed: 108': nan, 'Unnamed: 109': nan, 'Unnamed: 110': nan, 'Unnamed: 111': nan, 'Unnamed: 112': nan, 'Unnamed: 113': nan, 'Unnamed: 114': nan, 'Unnamed: 115': nan, 'Unnamed: 116': nan, 'Unnamed: 117': nan, 'Unnamed: 118': nan, 'Unnamed: 119': nan, 'Unnamed: 120': nan, 'Unnamed: 121': nan, 'Unnamed: 122': nan, 'Unnamed: 123': nan, 'Unnamed: 124': nan, 'Unnamed: 125': nan}
+  - PARTE A (2) (47 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': 'CADASTRAMENTO DE', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan}
+  - PARTE A1 (2) (1000 rows):
+    COLUMNS: ['GECN', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 100', 'Unnamed: 101', 'Unnamed: 102', 'Unnamed: 103', 'Unnamed: 104', 'Unnamed: 105', 'Unnamed: 106', 'Unnamed: 107', 'Unnamed: 108', 'Unnamed: 109', 'Unnamed: 11', 'Unnamed: 110', 'Unnamed: 111', 'Unnamed: 112', 'Unnamed: 113', 'Unnamed: 114', 'Unnamed: 115', 'Unnamed: 116', 'Unnamed: 117', 'Unnamed: 118', 'Unnamed: 119', 'Unnamed: 12', 'Unnamed: 120', 'Unnamed: 121', 'Unnamed: 122', 'Unnamed: 123', 'Unnamed: 124', 'Unnamed: 125', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35', 'Unnamed: 36', 'Unnamed: 37', 'Unnamed: 38', 'Unnamed: 39', 'Unnamed: 4', 'Unnamed: 40', 'Unnamed: 41', 'Unnamed: 42', 'Unnamed: 43', 'Unnamed: 44', 'Unnamed: 45', 'Unnamed: 46', 'Unnamed: 47', 'Unnamed: 48', 'Unnamed: 49', 'Unnamed: 5', 'Unnamed: 50', 'Unnamed: 51', 'Unnamed: 52', 'Unnamed: 53', 'Unnamed: 54', 'Unnamed: 55', 'Unnamed: 56', 'Unnamed: 57', 'Unnamed: 58', 'Unnamed: 59', 'Unnamed: 6', 'Unnamed: 60', 'Unnamed: 61', 'Unnamed: 62', 'Unnamed: 63', 'Unnamed: 64', 'Unnamed: 65', 'Unnamed: 66', 'Unnamed: 67', 'Unnamed: 68', 'Unnamed: 69', 'Unnamed: 7', 'Unnamed: 70', 'Unnamed: 71', 'Unnamed: 72', 'Unnamed: 73', 'Unnamed: 74', 'Unnamed: 75', 'Unnamed: 76', 'Unnamed: 77', 'Unnamed: 78', 'Unnamed: 79', 'Unnamed: 8', 'Unnamed: 80', 'Unnamed: 81', 'Unnamed: 82', 'Unnamed: 83', 'Unnamed: 84', 'Unnamed: 85', 'Unnamed: 86', 'Unnamed: 87', 'Unnamed: 88', 'Unnamed: 89', 'Unnamed: 9', 'Unnamed: 90', 'Unnamed: 91', 'Unnamed: 92', 'Unnamed: 93', 'Unnamed: 94', 'Unnamed: 95', 'Unnamed: 96', 'Unnamed: 97', 'Unnamed: 98', 'Unnamed: 99']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'GECN': '00:00:00', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan, 'Unnamed: 32': nan, 'Unnamed: 33': nan, 'Unnamed: 34': nan, 'Unnamed: 35': nan, 'Unnamed: 36': nan, 'Unnamed: 37': nan, 'Unnamed: 38': nan, 'Unnamed: 39': nan, 'Unnamed: 40': nan, 'Unnamed: 41': nan, 'Unnamed: 42': nan, 'Unnamed: 43': nan, 'Unnamed: 44': nan, 'Unnamed: 45': nan, 'Unnamed: 46': nan, 'Unnamed: 47': nan, 'Unnamed: 48': nan, 'Unnamed: 49': nan, 'Unnamed: 50': nan, 'Unnamed: 51': nan, 'Unnamed: 52': nan, 'Unnamed: 53': nan, 'Unnamed: 54': nan, 'Unnamed: 55': nan, 'Unnamed: 56': nan, 'Unnamed: 57': nan, 'Unnamed: 58': nan, 'Unnamed: 59': nan, 'Unnamed: 60': nan, 'Unnamed: 61': nan, 'Unnamed: 62': nan, 'Unnamed: 63': nan, 'Unnamed: 64': nan, 'Unnamed: 65': nan, 'Unnamed: 66': nan, 'Unnamed: 67': nan, 'Unnamed: 68': nan, 'Unnamed: 69': nan, 'Unnamed: 70': nan, 'Unnamed: 71': nan, 'Unnamed: 72': nan, 'Unnamed: 73': nan, 'Unnamed: 74': nan, 'Unnamed: 75': nan, 'Unnamed: 76': nan, 'Unnamed: 77': nan, 'Unnamed: 78': nan, 'Unnamed: 79': nan, 'Unnamed: 80': nan, 'Unnamed: 81': nan, 'Unnamed: 82': nan, 'Unnamed: 83': nan, 'Unnamed: 84': nan, 'Unnamed: 85': nan, 'Unnamed: 86': nan, 'Unnamed: 87': nan, 'Unnamed: 88': nan, 'Unnamed: 89': nan, 'Unnamed: 90': nan, 'Unnamed: 91': nan, 'Unnamed: 92': nan, 'Unnamed: 93': nan, 'Unnamed: 94': nan, 'Unnamed: 95': nan, 'Unnamed: 96': nan, 'Unnamed: 97': nan, 'Unnamed: 98': nan, 'Unnamed: 99': nan, 'Unnamed: 100': nan, 'Unnamed: 101': nan, 'Unnamed: 102': nan, 'Unnamed: 103': nan, 'Unnamed: 104': nan, 'Unnamed: 105': nan, 'Unnamed: 106': nan, 'Unnamed: 107': nan, 'Unnamed: 108': nan, 'Unnamed: 109': nan, 'Unnamed: 110': nan, 'Unnamed: 111': nan, 'Unnamed: 112': nan, 'Unnamed: 113': nan, 'Unnamed: 114': nan, 'Unnamed: 115': nan, 'Unnamed: 116': nan, 'Unnamed: 117': nan, 'Unnamed: 118': nan, 'Unnamed: 119': nan, 'Unnamed: 120': nan, 'Unnamed: 121': nan, 'Unnamed: 122': nan, 'Unnamed: 123': nan, 'Unnamed: 124': nan, 'Unnamed: 125': nan}
+  - PARTE A (3) (47 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': 'CADASTRAMENTO DE', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan}
+  - PARTE A1 (3) (1000 rows):
+    COLUMNS: ['GECN', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 100', 'Unnamed: 101', 'Unnamed: 102', 'Unnamed: 103', 'Unnamed: 104', 'Unnamed: 105', 'Unnamed: 106', 'Unnamed: 107', 'Unnamed: 108', 'Unnamed: 109', 'Unnamed: 11', 'Unnamed: 110', 'Unnamed: 111', 'Unnamed: 112', 'Unnamed: 113', 'Unnamed: 114', 'Unnamed: 115', 'Unnamed: 116', 'Unnamed: 117', 'Unnamed: 118', 'Unnamed: 119', 'Unnamed: 12', 'Unnamed: 120', 'Unnamed: 121', 'Unnamed: 122', 'Unnamed: 123', 'Unnamed: 124', 'Unnamed: 125', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 32', 'Unnamed: 33', 'Unnamed: 34', 'Unnamed: 35', 'Unnamed: 36', 'Unnamed: 37', 'Unnamed: 38', 'Unnamed: 39', 'Unnamed: 4', 'Unnamed: 40', 'Unnamed: 41', 'Unnamed: 42', 'Unnamed: 43', 'Unnamed: 44', 'Unnamed: 45', 'Unnamed: 46', 'Unnamed: 47', 'Unnamed: 48', 'Unnamed: 49', 'Unnamed: 5', 'Unnamed: 50', 'Unnamed: 51', 'Unnamed: 52', 'Unnamed: 53', 'Unnamed: 54', 'Unnamed: 55', 'Unnamed: 56', 'Unnamed: 57', 'Unnamed: 58', 'Unnamed: 59', 'Unnamed: 6', 'Unnamed: 60', 'Unnamed: 61', 'Unnamed: 62', 'Unnamed: 63', 'Unnamed: 64', 'Unnamed: 65', 'Unnamed: 66', 'Unnamed: 67', 'Unnamed: 68', 'Unnamed: 69', 'Unnamed: 7', 'Unnamed: 70', 'Unnamed: 71', 'Unnamed: 72', 'Unnamed: 73', 'Unnamed: 74', 'Unnamed: 75', 'Unnamed: 76', 'Unnamed: 77', 'Unnamed: 78', 'Unnamed: 79', 'Unnamed: 8', 'Unnamed: 80', 'Unnamed: 81', 'Unnamed: 82', 'Unnamed: 83', 'Unnamed: 84', 'Unnamed: 85', 'Unnamed: 86', 'Unnamed: 87', 'Unnamed: 88', 'Unnamed: 89', 'Unnamed: 9', 'Unnamed: 90', 'Unnamed: 91', 'Unnamed: 92', 'Unnamed: 93', 'Unnamed: 94', 'Unnamed: 95', 'Unnamed: 96', 'Unnamed: 97', 'Unnamed: 98', 'Unnamed: 99']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'GECN': '00:00:00', 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan, 'Unnamed: 32': nan, 'Unnamed: 33': nan, 'Unnamed: 34': nan, 'Unnamed: 35': nan, 'Unnamed: 36': nan, 'Unnamed: 37': nan, 'Unnamed: 38': nan, 'Unnamed: 39': nan, 'Unnamed: 40': nan, 'Unnamed: 41': nan, 'Unnamed: 42': nan, 'Unnamed: 43': nan, 'Unnamed: 44': nan, 'Unnamed: 45': nan, 'Unnamed: 46': nan, 'Unnamed: 47': nan, 'Unnamed: 48': nan, 'Unnamed: 49': nan, 'Unnamed: 50': nan, 'Unnamed: 51': nan, 'Unnamed: 52': nan, 'Unnamed: 53': nan, 'Unnamed: 54': nan, 'Unnamed: 55': nan, 'Unnamed: 56': nan, 'Unnamed: 57': nan, 'Unnamed: 58': nan, 'Unnamed: 59': nan, 'Unnamed: 60': nan, 'Unnamed: 61': nan, 'Unnamed: 62': nan, 'Unnamed: 63': nan, 'Unnamed: 64': nan, 'Unnamed: 65': nan, 'Unnamed: 66': nan, 'Unnamed: 67': nan, 'Unnamed: 68': nan, 'Unnamed: 69': nan, 'Unnamed: 70': nan, 'Unnamed: 71': nan, 'Unnamed: 72': nan, 'Unnamed: 73': nan, 'Unnamed: 74': nan, 'Unnamed: 75': nan, 'Unnamed: 76': nan, 'Unnamed: 77': nan, 'Unnamed: 78': nan, 'Unnamed: 79': nan, 'Unnamed: 80': nan, 'Unnamed: 81': nan, 'Unnamed: 82': nan, 'Unnamed: 83': nan, 'Unnamed: 84': nan, 'Unnamed: 85': nan, 'Unnamed: 86': nan, 'Unnamed: 87': nan, 'Unnamed: 88': nan, 'Unnamed: 89': nan, 'Unnamed: 90': nan, 'Unnamed: 91': nan, 'Unnamed: 92': nan, 'Unnamed: 93': nan, 'Unnamed: 94': nan, 'Unnamed: 95': nan, 'Unnamed: 96': nan, 'Unnamed: 97': nan, 'Unnamed: 98': nan, 'Unnamed: 99': nan, 'Unnamed: 100': nan, 'Unnamed: 101': nan, 'Unnamed: 102': nan, 'Unnamed: 103': nan, 'Unnamed: 104': nan, 'Unnamed: 105': nan, 'Unnamed: 106': nan, 'Unnamed: 107': nan, 'Unnamed: 108': nan, 'Unnamed: 109': nan, 'Unnamed: 110': nan, 'Unnamed: 111': nan, 'Unnamed: 112': nan, 'Unnamed: 113': nan, 'Unnamed: 114': nan, 'Unnamed: 115': nan, 'Unnamed: 116': nan, 'Unnamed: 117': nan, 'Unnamed: 118': nan, 'Unnamed: 119': nan, 'Unnamed: 120': nan, 'Unnamed: 121': nan, 'Unnamed: 122': nan, 'Unnamed: 123': nan, 'Unnamed: 124': nan, 'Unnamed: 125': nan}
+  - SAP (1000 rows):
+    COLUMNS: ['06.09.2016                                               Relatórios de listas de tarefas                                                      1', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'06.09.2016                                               Relatórios de listas de tarefas                                                      1': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan}
+----------------------------------------
+
+FILE: RESUMO KITS MAIS USADOS.xlsx
+  - KITS RESUMO (235 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'Unnamed: 0': 'POSTES', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - KITS_MATERIAIS (1000 rows):
+    COLUMNS: ['DESCRIÇÃO', 'DESCRIÇÃO.1', 'KIT', 'LOTE', 'UMB', 'Unnamed: 0', 'Unnamed: 3', 'Unnamed: 4']
+    INTERESTING COLS: ['KIT']
+    SAMPLE: {'Unnamed: 0': nan, 'KIT': '13A', 'DESCRIÇÃO': 'RET  FERRAG.1 LIN.TRIA.POSTE CENTRO     ', 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'LOTE': 307941.0, 'DESCRIÇÃO.1': 'RESINA TERMOP ANTICH CYRANA TERMOCYRAN', 'UMB': 'UN'}
+----------------------------------------
+
+FILE: CM AÉREO BLINDAGEM 24.01.25 CONSTRUÇÃO E NORMALIZAÇÃO -INDICA.xlsm
+  - TP - 34,5 kV (12 rows):
+    COLUMNS: ['873.3', 'TP34RL - TP – 34,5 kV (122029)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'TP34RL - TP – 34,5 kV (122029)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '873.3': nan}
+  - TP - 13,8 kV (9 rows):
+    COLUMNS: ['307.44000000000005', 'TP13RL - TP – 13,8 kV (122031)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'TP13RL - TP – 13,8 kV (122031)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '307.44000000000005': nan}
+  - Chave Tele - 13,8 kV (41 rows):
+    COLUMNS: ['13CERLN - Chave Telecomando - 13,8 kV (122030)', '6163.163999999999', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CERLN - Chave Telecomando - 13,8 kV (122030)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '6163.163999999999': nan}
+  - BANCO CAPACITORES – Por corrent (38 rows):
+    COLUMNS: ['21399.994399999996', 'BC-A-CT - Banco de Capacitores – Por corrente (14871)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BC-A-CT - Banco de Capacitores – Por corrente (14871)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '21399.994399999996': nan}
+  - BANCO CAPACITORES – Time Switch (35 rows):
+    COLUMNS: ['20868.2634', 'BCA-TS/N - Banco de Capacitores – Time Switch (14897)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BCA-TS/N - Banco de Capacitores – Time Switch (14897)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '20868.2634': nan}
+  - BANCO CAPACITORES FIXO (23 rows):
+    COLUMNS: ['13BC/N - Banco de Capacitores Fixo (14870)', '3556.1951999999997', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13BC/N - Banco de Capacitores Fixo (14870)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3556.1951999999997': nan}
+  - CF – 34,5 kV - Derivação (22 rows):
+    COLUMNS: ['1468.625', 'FU/DER10 - Chave de Fusível – 34,5 kV - Derivação (???)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'FU/DER10 - Chave de Fusível – 34,5 kV - Derivação (???)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1468.625': nan}
+  - Para raios - 34,5 kV (15 rows):
+    COLUMNS: ['1841.7486', '34CE2JPR - Para raios – 27 kV - Rede (121849)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE2JPR - Para raios – 27 kV - Rede (121849)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1841.7486': nan}
+  - Para raios - 13,8 kV (15 rows):
+    COLUMNS: ['13CE2JPR - Para raios – 15 kV - Rede (121820)', '1829.2296000000001', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CE2JPR - Para raios – 15 kV - Rede (121820)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1829.2296000000001': nan}
+  - CF – 13,8 kV - Derivação (22 rows):
+    COLUMNS: ['1316.335', 'FU/DER10 - Chave de Fusível – 13,8 kV - Derivação (14376)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'FU/DER10 - Chave de Fusível – 13,8 kV - Derivação (14376)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1316.335': nan}
+  - KS – 13,8 kV - Derivação (19 rows):
+    COLUMNS: ['1325.0426', '13FA/DER - Chave de Faca – 13,8 kV - Derivação (???)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13FA/DER - Chave de Faca – 13,8 kV - Derivação (???)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1325.0426': nan}
+  - KS – 34,5 kV - Derivação (20 rows):
+    COLUMNS: ['2008.7825999999998', '34FA/DER - Chave de Faca – 34,5 kV - Derivação (14645)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34FA/DER - Chave de Faca – 34,5 kV - Derivação (14645)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2008.7825999999998': nan}
+  - KS – 34,5 kV - Rede (16 rows):
+    COLUMNS: ['2837.569999999999', '34FA/N - Chave de Faca – 34,5 kV - Rede (14439)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34FA/N - Chave de Faca – 34,5 kV - Rede (14439)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2837.569999999999': nan}
+  - CFR – Derivação (20 rows):
+    COLUMNS: ['1508.5939999999998', '15CEDCFR - Chave de Fusível Religadora – 13,8 kV - Derivação (121947)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'15CEDCFR - Chave de Fusível Religadora – 13,8 kV - Derivação (121947)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1508.5939999999998': nan}
+  - CFR - Rede - Bypass (25 rows):
+    COLUMNS: ['13B4CFRS - Chave de Fusível Religadora – 13,8 kV - Rede c/ By-pass (122249)', '4092.3950000000004', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13B4CFRS - Chave de Fusível Religadora – 13,8 kV - Rede c/ By-pass (122249)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4092.3950000000004': nan}
+  - Encapsulado - Comparativo (21 rows):
+    COLUMNS: ['4588.659999999999', 'CM-BR-CV - Medidor Encapsulado - Comparativo (121589)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'CM-BR-CV - Medidor Encapsulado - Comparativo (121589)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4588.659999999999': nan}
+  - Encapsulado - Faturamento (33 rows):
+    COLUMNS: ['4199.2717999999995', 'CM2CNCNF - Medidor Encapsulado - Faturamento (121432)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'CM2CNCNF - Medidor Encapsulado - Faturamento (121432)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4199.2717999999995': nan}
+  - CF – 13,8 kV - Rede (24 rows):
+    COLUMNS: ['13B4CFS - Chave de Fusível – 13,8 kV - Rede (122251)', '3642.7950000000005', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13B4CFS - Chave de Fusível – 13,8 kV - Rede (122251)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3642.7950000000005': nan}
+  - KS – 13,8 kV - Rede (15 rows):
+    COLUMNS: ['13FA/N - Chave de Faca – 13,8 kV - Rede (???)', '1714.6199999999994', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13FA/N - Chave de Faca – 13,8 kV - Rede (???)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1714.6199999999994': nan}
+  - Regulador - Poste (46 rows):
+    COLUMNS: ['13RGDF3P - Regulador - Poste (122111)', '18405.910000000007', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13RGDF3P - Regulador - Poste (122111)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '18405.910000000007': nan}
+  - Sec Mono - Der Bypass (21 rows):
+    COLUMNS: ['13NSMDER - Sec Mono - Derivação com By-pass (122080)', '3861.0199999999995', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    INTERESTING COLS: ['13NSMDER - Sec Mono - Derivação com By-pass (122080)']
+    SAMPLE: {'13NSMDER - Sec Mono - Derivação com By-pass (122080)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3861.0199999999995': nan}
+  - Sec Mono - Derivação (21 rows):
+    COLUMNS: ['13SECMB - Sec Mono - Derivação sem By-pass (122175)', '2074.195', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    INTERESTING COLS: ['13SECMB - Sec Mono - Derivação sem By-pass (122175)']
+    SAMPLE: {'13SECMB - Sec Mono - Derivação sem By-pass (122175)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2074.195': nan}
+  - Contrato Parceira BCKUP (480 rows):
+    COLUMNS: ['ELLCA - Contrato Nº 460000 - ÚLTIMO REAJUSTE: JANEIRO', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['ELLCA - Contrato Nº 460000 - ÚLTIMO REAJUSTE: JANEIRO']
+    SAMPLE: {'ELLCA - Contrato Nº 460000 - ÚLTIMO REAJUSTE: JANEIRO': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': nan, 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan}
+  - Contrato Parceira (2) (558 rows):
+    COLUMNS: ['CD SERVICE - Contrato Nº 4600008513 - ÚLTIMO REAJUSTE:', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    INTERESTING COLS: ['CD SERVICE - Contrato Nº 4600008513 - ÚLTIMO REAJUSTE:']
+    SAMPLE: {'CD SERVICE - Contrato Nº 4600008513 - ÚLTIMO REAJUSTE:': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - MENU (10 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan}
+  - Contrato Parceira (462 rows):
+    COLUMNS: ['ELLCA - Contrato Nº 4600010374 - ÚLTIMO REAJUSTE: ', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 2', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28', 'Unnamed: 29', 'Unnamed: 3', 'Unnamed: 30', 'Unnamed: 31', 'Unnamed: 32', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['ELLCA - Contrato Nº 4600010374 - ÚLTIMO REAJUSTE: ']
+    SAMPLE: {'ELLCA - Contrato Nº 4600010374 - ÚLTIMO REAJUSTE: ': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan, 'Unnamed: 17': nan, 'Unnamed: 18': nan, 'Unnamed: 19': nan, 'Unnamed: 20': nan, 'Unnamed: 21': nan, 'Unnamed: 22': nan, 'Unnamed: 23': nan, 'Unnamed: 24': nan, 'Unnamed: 25': nan, 'Unnamed: 26': nan, 'Unnamed: 27': nan, 'Unnamed: 28': nan, 'Unnamed: 29': nan, 'Unnamed: 30': nan, 'Unnamed: 31': nan, 'Unnamed: 32': nan}
+  - Custo Materiais (548 rows):
+    COLUMNS: ['Desenho', 'MD', 'MD 26.08.22', 'MD 30.01.23', 'MD ATÉ 17/07/2022', 'Modulares', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 15', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 9', 'kit']
+    INTERESTING COLS: ['kit', 'Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan, 'kit': nan, 'Desenho': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'MD ATÉ 17/07/2022': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'MD 26.08.22': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'MD 30.01.23': nan, 'Unnamed: 15': nan}
+  - Modular Blindagem (733 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BLINDAGEM - CONTRATO: 4600010374', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BLINDAGEM - CONTRATO: 4600010374']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BLINDAGEM - CONTRATO: 4600010374': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - CTR GERADORES (65 rows):
+    COLUMNS: ['ANTERIOR', 'CONTRATO MIL GERADORES LTDA - 03.01.2020 / início -  / término - ', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'CONTRATO MIL GERADORES LTDA - 03.01.2020 / início -  / término - ': 3012361.0, 'Unnamed: 1': 'ARREND GERADOR 15KVA - CONST AÉREA', 'Unnamed: 2': 1.0, 'Unnamed: 3': 'VB', 'Unnamed: 4': 419.52, 'Unnamed: 5': nan, 'ANTERIOR': 713.58}
+  - KITS (412 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': '1 km de rede trifásica - considerando um vão de 30 m = 34 postes - Rede Nua 34,5kV Com estrutura - 201A', 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan}
+  - EQUIP-POSTE (99 rows):
+    COLUMNS: ['MM60', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 7']
+    SAMPLE: {'Unnamed: 0': 327269.0, 'Unnamed: 1': 'POSTE QUAD ACO 90X90X7500MM 200DAN', 'Unnamed: 2': 1296.58, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'MM60': 1296.58, 'Unnamed: 7': nan}
+  - CERCA (16 rows):
+    COLUMNS: ['408.55500000000006', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': 'TOTAL', 'Unnamed: 6': nan, '408.55500000000006': nan}
+  - LEADS (76 rows):
+    COLUMNS: ['1119.22', '300 e 225 kVA', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'300 e 225 kVA': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1119.22': nan}
+  - CABOS (8 rows):
+    COLUMNS: ['MM60', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'MM60': nan}
+  - MM60 (1000 rows):
+    COLUMNS: ['        Preço', ' /', '01.11.24', '02.01.2023', '08.09.22', '14.08.23', '17.04.23', '18.07.2022', '23.10.23', '24.01.24', '24.07.24', '26.08.22', '29.02.24', 'ABC', 'Cen.', 'ClAv.', 'Criado/a', 'GCm', 'Grp.merc.', 'Material', 'Moeda', 'Preço anterior', 'Prç', 'TMat', 'Texto breve material', 'Tp.aval.', 'TpM', 'UMB', 'Unnamed: 24', 'Unnamed: 27', 'VALORES FIXOS 02.01.23', 'Últ.modif.']
+    INTERESTING COLS: ['Moeda', 'VALORES FIXOS 02.01.23', 'Últ.modif.']
+    SAMPLE: {'Material': 374502.0, 'Cen.': 6.0, 'Tp.aval.': nan, 'Texto breve material': 'PROTETOR NETWORK RED SUB3000A 60KA 216,5', 'Últ.modif.': '30.12.2021', 'TMat': 'HIBE', 'Grp.merc.': 'M57.35', 'UMB': 'PC', 'GCm': 'M09', 'ABC': 'C', 'TpM': 'ND', 'ClAv.': 'ACDI', 'Prç': 'V', '        Preço': 54950.68, 'Preço anterior': 44395.99, 'Moeda': 'BRL', ' /': 1.0, 'Criado/a': 3968278, '18.07.2022': 241730.88, '26.08.22': nan, '08.09.22': 241730.88, '02.01.2023': 85000.0, '17.04.23': 9575.92, '14.08.23': 9575.92, 'Unnamed: 24': -45374.76, 'VALORES FIXOS 02.01.23': 85000.0, '23.10.23': 36395.99, 'Unnamed: 27': -18554.690000000002, '29.02.24': 36395.99, '24.07.24': 36395.99, '01.11.24': nan, '24.01.24': 54950.68}
+  - Rede Invertida Afastamento (332 rows):
+    COLUMNS: ['13INV2A', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'13INV2A': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': nan, 'Unnamed: 4': 'TEXTO', 'Unnamed: 5': 'MM60', 'Unnamed: 6': 'CUSTO TOTAL', 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan}
+  - Rede Invertida Vertical (196 rows):
+    COLUMNS: ['AÇÃO', 'DESENHO', 'STATUS DESENHO', 'STATUS SAP', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8']
+    INTERESTING COLS: ['STATUS SAP']
+    SAMPLE: {'Unnamed: 0': '13IVV1', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'STATUS SAP': nan, 'DESENHO': nan, 'AÇÃO': nan, 'STATUS DESENHO': nan}
+  - REDE BT DUPLO T (7 rows):
+    COLUMNS: ['SI4DT', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'SI4DT': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total'}
+  - IP (5 rows):
+    COLUMNS: ['IP', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'IP': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total'}
+  - NORMALIZAÇÃO (18 rows):
+    COLUMNS: ['3791.16', 'MATERIAIS', 'Total', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'MATERIAIS': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3791.16': nan, 'Unnamed: 8': nan, 'Unnamed: 9': 'ESTRUTURA DA CORDOALHA', 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - Modular Aéreo Urbano BKUP (978 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 26/08/2022 (SAP) – EMPRESA - CD SERVICE ', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 26/08/2022 (SAP) – EMPRESA - CD SERVICE ']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 26/08/2022 (SAP) – EMPRESA - CD SERVICE ': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - Regulador - Plataforma (52 rows):
+    COLUMNS: ['13RGDFPL - Regulador - Plataforma (122193)', '40607.52356000001', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13RGDFPL - Regulador - Plataforma (122193)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '40607.52356000001': nan}
+  - Regulador - Plataforma 25,6kV (53 rows):
+    COLUMNS: ['25RGDFPL- Regulador - Plataforma (-)', '44254.593559999994', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'25RGDFPL- Regulador - Plataforma (-)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '44254.593559999994': nan}
+  - CTR GERADORES AUX (65 rows):
+    COLUMNS: ['CONTRATO MIL GERADORES LTDA - 03.01.2020 / início -  / término - ', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'CONTRATO MIL GERADORES LTDA - 03.01.2020 / início -  / término - ': 3012361.0, 'Unnamed: 1': 'ARREND GERADOR 15KVA - CONST AÉREA', 'Unnamed: 2': 1.0, 'Unnamed: 3': 'VB', 'Unnamed: 4': 713.58}
+  - CTR BLIND (89 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO ELCCA BLINDAGEM - 24.03.2022 / início - 01.02.2022 / término - 31.01.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 0', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan}
+  - CTR BLIND AUX (368 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO ELCCA BLINDAGEM - 24.03.2022 / início - 01.02.2022 / término - 31.01.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - CTR CD SERVICE (387 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO CD SERVICE BLINDAGEM - 14.07.2021 / início - 01.06.2021 / término - 31.12.2022', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 0', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan}
+  - CTR CD SERVICE AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO CD SERVICE BLINDAGEM - 14.07.2021 / início - 01.06.2021 / término - 31.12.2022', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - CTR OE (511 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO INDICA OESTE - 29.09.2020 / INÍCIO - 01.10.2020 / TÉRMINO - 30.09.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 0', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - CTR OE AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO INDICA OESTE - 29.09.2020 / INÍCIO - 01.10.2020 / TÉRMINO - 30.09.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan}
+  - CTR VL (766 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO EZENTIS VALE - 21.10.2021 / INÍCIO - 01.10.2021 / TÉRMINO - 30.09.2024', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 0', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - CTR VL AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO EZENTIS VALE - 21.10.2021 / INÍCIO - 01.10.2021 / TÉRMINO - 30.09.2024', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan}
+  - CTR CS (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO DÍNAMO CENTRO SUL - 29.09.2020 / INÍCIO - 01.10.2020 / TÉRMINO - 30.09.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 541', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan}
+  - CTR CS AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO DÍNAMO CENTRO SUL - 29.09.2020 / INÍCIO - 01.10.2020 / TÉRMINO - 30.09.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan}
+  - CTR LE (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO ELCCA LESTE - 28.02.2020 / início - 02.03.2020 / término - 01.03.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': 'Soma: 0', 'Unnamed: 10': nan, 'Unnamed: 11': 'Qtd de serviço que saíram do contrato: 326'}
+  - CTR LE AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO ELCCA LESTE - 28.02.2020 / início - 02.03.2020 / término - 01.03.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan}
+  - CTR BX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO INDICA BAIXADA - 13.10.2021 / INÍCIO - 01.09.2021 / TÉRMINO - 03.03.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'Soma: 0', 'Unnamed: 9': nan, 'Unnamed: 10': 'Qtd de serviço que saíram do contrato: 2590', 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan}
+  - F-11PP (5 rows):
+    COLUMNS: ['512.95', 'F-11/PP', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'F-11/PP': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '512.95': nan}
+  - CTR BX AUX (1000 rows):
+    COLUMNS: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    SAMPLE: {'Unnamed: 0': nan, 'Unnamed: 1': 'CONTRATO INDICA BAIXADA - 13.10.2021 / INÍCIO - 01.09.2021 / TÉRMINO - 03.03.2023', 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan}
+  - DIVERSOS (7 rows):
+    COLUMNS: ['MM60', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 6', 'Unnamed: 7', 'VALOR TOTAL']
+    INTERESTING COLS: ['VALOR TOTAL']
+    SAMPLE: {'Unnamed: 0': 327029, 'Unnamed: 1': 1, 'Unnamed: 2': 'PC', 'Unnamed: 3': 'CAIXA DERIVAÇÃO DE RAMAIS              (ITEM 327029)', 'MM60': 153.64, 'VALOR TOTAL': 153.64, 'Unnamed: 6': nan, 'Unnamed: 7': nan}
+  - 34B4RL (34 rows):
+    COLUMNS: ['10471.074000000002', '34B4RL', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34B4RL': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '10471.074000000002': nan}
+  - 13B4RSLB (35 rows):
+    COLUMNS: ['13B4RSLB', '5514.678999999999', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13B4RSLB': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '5514.678999999999': nan}
+  - C-1_3-AR (2 rows):
+    COLUMNS: ['7.88', 'CORDOALHA', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'CORDOALHA': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '7.88': nan}
+  - 13N1 (11 rows):
+    COLUMNS: ['13N1', '457.0389', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13N1': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '457.0389': nan}
+  - 13N3 (14 rows):
+    COLUMNS: ['1093.44', 'Total', 'U3 - FIM DE REDE', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U3 - FIM DE REDE': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1093.44': nan}
+  - 13N4 (17 rows):
+    COLUMNS: ['1943.0462999999995', 'Total', 'U4 - DUPLA ANCORAGEM', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U4 - DUPLA ANCORAGEM': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1943.0462999999995': nan}
+  - 13N1N3 (28 rows):
+    COLUMNS: ['1642.5351999999998', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1642.5351999999998': nan}
+  - 13N3N3 (31 rows):
+    COLUMNS: ['2353.9226', 'Total', 'U3 - FIM DE REDE', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U3 - FIM DE REDE': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2353.9226': nan}
+  - 34N1 (11 rows):
+    COLUMNS: ['34N1', '628.2588999999999', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34N1': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '628.2588999999999': nan}
+  - 34N3 (14 rows):
+    COLUMNS: ['1408.7199999999996', '34N3', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34N3': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1408.7199999999996': nan}
+  - BTZCDCS4 (17 rows):
+    COLUMNS: ['1513.7284', 'BTZCDCS4', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BTZCDCS4': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1513.7284': nan}
+  - TAP75SR (43 rows):
+    COLUMNS: ['4283.026800000001', 'TAP75SR', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'TAP75SR': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4283.026800000001': nan}
+  - 34N4 (18 rows):
+    COLUMNS: ['2627.9489', '34N4', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34N4': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2627.9489': nan}
+  - 13CE1A (10 rows):
+    COLUMNS: ['13CE1A', '200.38', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CE1A': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '200.38': nan}
+  - 13CE2 (13 rows):
+    COLUMNS: ['366.445', 'Total', 'U3 - FIM DE REDE', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U3 - FIM DE REDE': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '366.445': nan}
+  - 13CE3 (16 rows):
+    COLUMNS: ['657.2800000000001', 'Total', 'U4 - DUPLA ANCORAGEM', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U4 - DUPLA ANCORAGEM': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '657.2800000000001': nan}
+  - 13CE4 (17 rows):
+    COLUMNS: ['822.675', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '822.675': nan}
+  - 13CE2-3 (29 rows):
+    COLUMNS: ['1040.5849999999998', 'Total', 'U3 - FIM DE REDE', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U3 - FIM DE REDE': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1040.5849999999998': nan}
+  - 34CE1A (10 rows):
+    COLUMNS: ['223.81', '34CE1A', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE1A': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '223.81': nan}
+  - Sec Mono - Rede (24 rows):
+    COLUMNS: ['13SECMB - Sec Mono - Rede (122175)', '4168.035000000001', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    INTERESTING COLS: ['13SECMB - Sec Mono - Rede (122175)']
+    SAMPLE: {'13SECMB - Sec Mono - Rede (122175)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4168.035000000001': nan}
+  - Cabo Armado (7 rows):
+    COLUMNS: ['101.48999999999998', 'Cabo Armado', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'Cabo Armado': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '101.48999999999998': nan}
+  - 34CE2 (13 rows):
+    COLUMNS: ['34CE2', '372.135', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE2': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '372.135': nan}
+  - 34CE3 (16 rows):
+    COLUMNS: ['34CE3', '708.2099999999999', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE3': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '708.2099999999999': nan}
+  - 34CE4 (18 rows):
+    COLUMNS: ['1253.175', '34CE4', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE4': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1253.175': nan}
+  - 34CE2-3 (32 rows):
+    COLUMNS: ['1148.0149999999996', '34CE2-3', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34CE2-3': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1148.0149999999996': nan}
+  - PB-RA (7 rows):
+    COLUMNS: ['209.87', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '209.87': nan}
+  - PB-RAP34 (9 rows):
+    COLUMNS: ['293.08000000000004', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '293.08000000000004': nan}
+  - PB-RAP (9 rows):
+    COLUMNS: ['293.08000000000004', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '293.08000000000004': nan}
+  - PB-RAG34 (12 rows):
+    COLUMNS: ['4573.9', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4573.9': nan}
+  - PB-RAG (10 rows):
+    COLUMNS: ['1337.46', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1337.46': nan}
+  - PB-DRF (8 rows):
+    COLUMNS: ['151.14000000000001', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '151.14000000000001': nan}
+  - PB-DPP (25 rows):
+    COLUMNS: ['5253.722900000001', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '5253.722900000001': nan}
+  - BT-S1 (6 rows):
+    COLUMNS: ['176.7163', 'S1', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'S1': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '176.7163': nan}
+  - BT-S3 (5 rows):
+    COLUMNS: ['220.24629999999996', 'S1', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'S1': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '220.24629999999996': nan}
+  - BT-S4 (5 rows):
+    COLUMNS: ['326.39', 'S4', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'S4': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '326.39': nan}
+  - BT-SI1 (5 rows):
+    COLUMNS: ['113.48', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '113.48': nan}
+  - BT-SI3.SI3 (8 rows):
+    COLUMNS: ['189.98', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '189.98': nan}
+  - BT-SI3 (8 rows):
+    COLUMNS: ['96.41', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '96.41': nan}
+  - BT-SI4 (10 rows):
+    COLUMNS: ['216.57', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '216.57': nan}
+  - BT-SI1.SI3 (13 rows):
+    COLUMNS: ['258.99', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '258.99': nan}
+  - AT-1 (8 rows):
+    COLUMNS: ['758.7699999999999', 'AT-1', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'AT-1': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '758.7699999999999': nan}
+  - AT-2 (9 rows):
+    COLUMNS: ['438.22999999999996', 'AT-2', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'AT-2': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '438.22999999999996': nan}
+  - Religador - 34,5 kV (40 rows):
+    COLUMNS: ['10965.414000000002', '34B4RL - Religador - 34,5 kV (122029)', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'34B4RL - Religador - 34,5 kV (122029)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '10965.414000000002': nan}
+  - Religador - 13,8 kV (41 rows):
+    COLUMNS: ['13CERLN - Religador - 13,8 kV (122030)', '6163.163999999999', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CERLN - Religador - 13,8 kV (122030)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '6163.163999999999': nan}
+  - AT-3 (9 rows):
+    COLUMNS: ['1279.53', 'AT-3', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'AT-3': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1279.53': nan}
+  - AT-3_BZ (9 rows):
+    COLUMNS: ['1307.9299999999996', 'AT-3/BZ', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'AT-3/BZ': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1307.9299999999996': nan}
+  - Trafo - Convencional (26 rows):
+    COLUMNS: ['13CE2JT - Trafo - Convencional (121815)', '3151.4036', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CE2JT - Trafo - Convencional (121815)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3151.4036': nan}
+  - Trafo - AP (24 rows):
+    COLUMNS: ['13CE2JTA - Trafo - AP (121818)', '2557.7942', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CE2JTA - Trafo - AP (121818)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2557.7942': nan}
+  - Trafo - Conv Paralelo (25 rows):
+    COLUMNS: ['13CE2JT2 - Trafo - Convencional Paralelo (121817)', '3479.9635999999996', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13CE2JT2 - Trafo - Convencional Paralelo (121817)': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3479.9635999999996': nan}
+  - 13TRSR  (30 rows):
+    COLUMNS: ['13TRSR - INSTALAÇÃO DE TRANSFORMADOR CONVENCIONAL SEM REDE SECUNDÁRIA', '3522.0231000000003', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13TRSR - INSTALAÇÃO DE TRANSFORMADOR CONVENCIONAL SEM REDE SECUNDÁRIA': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3522.0231000000003': nan}
+  - 13TAPSR (23 rows):
+    COLUMNS: ['13TAPSR - INSTALAÇÃO DE TRANSFORMADOR AUTOPROTEGIDO SEM REDE SECUNDÁRIA', '2266.8331', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'13TAPSR - INSTALAÇÃO DE TRANSFORMADOR AUTOPROTEGIDO SEM REDE SECUNDÁRIA': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '2266.8331': nan}
+  - BTZCB48 (13 rows):
+    COLUMNS: ['381.85519999999997', 'BTZCB48 - INSTALAÇÃO DE UMA CAIXA DE BLINDAGEM PARA 48 MEDIDORES', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BTZCB48 - INSTALAÇÃO DE UMA CAIXA DE BLINDAGEM PARA 48 MEDIDORES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '381.85519999999997': nan}
+  - PB-TCP34 (34 rows):
+    COLUMNS: ['4322.730500000001', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4322.730500000001': nan}
+  - PB-TAP34 (28 rows):
+    COLUMNS: ['4395.5576', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '4395.5576': nan}
+  - PB-RA34 (7 rows):
+    COLUMNS: ['209.87', 'Total', 'U1 - PINO SIMPLES', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'U1 - PINO SIMPLES': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '209.87': nan}
+  - INVTRAP (39 rows):
+    COLUMNS: ['3835.4522', 'BRINVBT3 - FIM DE REDE COM BLINDAGEM BT', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BRINVBT3 - FIM DE REDE COM BLINDAGEM BT': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3835.4522': nan}
+  - INVTRAPA (49 rows):
+    COLUMNS: ['6270.623699999999', 'BRINVBT3 - FIM DE REDE COM BLINDAGEM BT', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'BRINVBT3 - FIM DE REDE COM BLINDAGEM BT': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '6270.623699999999': nan}
+  - MBNM-B2 (21 rows):
+    COLUMNS: ['1215.6952', 'MBNM-B2', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'MBNM-B2': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '1215.6952': nan}
+  - MBNM-CS2 (10 rows):
+    COLUMNS: ['496.9', 'MBNM-CS2', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'MBNM-CS2': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '496.9': nan}
+  - MBNM-S (6 rows):
+    COLUMNS: ['19.41', 'MBNM-S', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'MBNM-S': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '19.41': nan}
+  - MBNMTRAP (40 rows):
+    COLUMNS: ['3842.8332999999993', 'MBNMTRAP', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'MBNMTRAP': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '3842.8332999999993': nan}
+  - BT RCSN (16 rows):
+    COLUMNS: ['705.9900000000002', 'MBNMTRAP', 'Total', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5']
+    SAMPLE: {'MBNMTRAP': 'ITEM', 'Unnamed: 1': 'QNTD', 'Unnamed: 2': 'UM', 'Unnamed: 3': 'TEXTO', 'Unnamed: 4': 'MM60', 'Unnamed: 5': 'Custo Total', 'Total': nan, '705.9900000000002': nan}
+  - CONTRATOS (9 rows):
+    COLUMNS: ['CONTRATO', 'Dat. Contrato', 'EMPRESA', 'FIM', 'FORN', 'INÍCIO', 'REGIONAL', 'STAT']
+    SAMPLE: {'CONTRATO': 4600008652, 'EMPRESA': 'INDICA ASSESSORIA E SERVIÇOS L', 'FORN': 8602, 'Dat. Contrato': '13.10.21', 'INÍCIO': nan, 'FIM': nan, 'REGIONAL': 'BAIXADA', 'STAT': nan}
+  - Plan2 (11 rows):
+    COLUMNS: ['Faturamento', 'Unnamed: 1']
+    SAMPLE: {'Faturamento': 'Medidor Encapsulado', 'Unnamed: 1': 15311.2}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - CLASSIFICAÇÃO ROBUSTEZ (8 rows):
+    COLUMNS: ['CUSTO POR CLIENTE (PMSD - TOTAL)', 'CUSTO POR KM/REDE (PMSD - TOTAL)', 'GRAU DE SECURIZAÇÃO', 'INTERVENÇÃO', 'TIPO DE REDE', 'TIPO DE ROBUSTEZ']
+    SAMPLE: {'TIPO DE REDE': 'REDE RCSN', 'TIPO DE ROBUSTEZ': 'COMPLETO', 'CUSTO POR KM/REDE (PMSD - TOTAL)': 145011.49000000002, 'CUSTO POR CLIENTE (PMSD - TOTAL)': 483.3716333333334, 'INTERVENÇÃO': '-', 'GRAU DE SECURIZAÇÃO': 'MÉDIO - 3'}
+  - CLASSIFICAÇÃO (7 rows):
+    COLUMNS: ['CUSTO POR CLIENTE (PMSD - CONSTRUÇÃO)', 'CUSTO POR CLIENTE (PMSD - NORMALIZAÇÃO)', 'CUSTO POR CLIENTE (PMSD - TOTAL)', 'GRAU DE SECURIZAÇÃO', 'INTERVENÇÃO', 'TIPO DE REDE/BLINDAGEM']
+    SAMPLE: {'TIPO DE REDE/BLINDAGEM': 'REDE BT CABO ARMADO', 'CUSTO POR CLIENTE (PMSD - CONSTRUÇÃO)': nan, 'CUSTO POR CLIENTE (PMSD - NORMALIZAÇÃO)': 1999.41196, 'CUSTO POR CLIENTE (PMSD - TOTAL)': nan, 'INTERVENÇÃO': 'ESCADA / CESTO', 'GRAU DE SECURIZAÇÃO': 'MÉDIO - 3'}
+  - REDE BTZERO B144 (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - MENSAGEIRO (56 rows):
+    COLUMNS: ['1 km de rede monofásica - considerando um vão de 30 m = 34 postes - Rede MT aberta com estrutura - 53MM²', 'Unnamed: 0', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['1 km de rede monofásica - considerando um vão de 30 m = 34 postes - Rede MT aberta com estrutura - 53MM²']
+    SAMPLE: {'Unnamed: 0': nan, '1 km de rede monofásica - considerando um vão de 30 m = 34 postes - Rede MT aberta com estrutura - 53MM²': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': 'BRBT-1', 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan}
+  - REDE INVERTIDA (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - Planilha1 (4 rows):
+    COLUMNS: ['CM', 'MEDIO', 'MM60', 'OPÇÃO', 'Unnamed: 0', 'VCOMPRA']
+    SAMPLE: {'Unnamed: 0': nan, 'CM': nan, 'MM60': nan, 'VCOMPRA': nan, 'MEDIO': nan, 'OPÇÃO': nan}
+  - REDE RCSN (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - REDE BT CABO ARAMADO (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - REDE BTZERO CS (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - REDE BTZERO C-48 (R_CONCENTRIC) (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - REDE BTZERO C-48 (R_MULTIPLEXA) (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 08/09/2022 (SAP) – EMPRESA - ELLCA BLINDAGEM': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+  - RAMAL CONC X MULTIPLEX (7 rows):
+    COLUMNS: ['Unnamed: 0']
+    SAMPLE: {'Unnamed: 0': 'Rede BT Zero - C48'}
+  - Abas (105 rows):
+    COLUMNS: ['1', 'TP - 34,5 kV']
+    SAMPLE: {'TP - 34,5 kV': 'TP - 13,8 kV', '1': 1}
+----------------------------------------
+
+FILE: CM AÉREO URB - 01.07.2025 - CONTRATO 4600008097 - EMPRESA DÍNAMO - REGIONAL CENTRO SUL.xlsm
+  - Contrato Parceira (617 rows):
+    COLUMNS: ['DINAMO - Contrato Nº 4600008097', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    INTERESTING COLS: ['DINAMO - Contrato Nº 4600008097']
+    SAMPLE: {'DINAMO - Contrato Nº 4600008097': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URB - 01.07.2025 - CONTRATO 4600010389 - EMPRESA PARTNERSHIP - REG CENTRO SUL.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['PARTNERSHIP- Contrato Nº 4600010389', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'PARTNERSHIP- Contrato Nº 4600010389': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - PARTNERSHIP', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - PARTNERSHIP']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - PARTNERSHIP': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URBANO - 01.07.2025 - CONTRATO 4600009167 - EMPRESA ELLCA - REGIONAL VALE.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['ELLCA INTERIOR - Contrato Nº 4600009167', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'ELLCA INTERIOR - Contrato Nº 4600009167': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (492 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA ELLCA - REGIONAL VALE', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA ELLCA - REGIONAL VALE']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA ELLCA - REGIONAL VALE': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URBANO - 01.07.2025 - CONTRATO 4600010309 - EMPRESA CENEGED - REGIONAL VALE.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['CENEGED - Contrato Nº 4600010309', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'CENEGED - Contrato Nº 4600010309': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA CENEGED - REGIONAL VALE', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA CENEGED - REGIONAL VALE']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA CENEGED - REGIONAL VALE': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URBANO - 01.07.2025 - CONTRATO 4600010350 - EMPRESA INDICA - REGIONAL OESTE.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['INDICA OESTE - Contrato Nº 4600010350', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'INDICA OESTE - Contrato Nº 4600010350': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA OESTE', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA OESTE']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA OESTE': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URBANO - 01.07.2025 - CONTRATO 4600010374 - EMPRESA INDICA - REGIONAL BAIXADA.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['INDICA BAIXADA- Contrato Nº 4600010374', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'INDICA BAIXADA- Contrato Nº 4600010374': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BAIXADA', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BAIXADA']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - INDICA BAIXADA': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------
+
+FILE: CM AÉREO URBANO - 01.07.2025 - CONTRATO 4600010421 - EMPRESA ELLCA - REGIONAL LESTE.xlsm
+  - Contrato Parceira (621 rows):
+    COLUMNS: ['ELLCA - Contrato Nº 4600010421', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4']
+    SAMPLE: {'ELLCA - Contrato Nº 4600010421': 'Rede Aérea - Expansão/Manutenção', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan}
+  - Custo Materiais (488 rows):
+    COLUMNS: ['MD', 'Modulares', 'Unnamed: 1']
+    INTERESTING COLS: ['Modulares']
+    SAMPLE: {'Modulares': '1 - Instalação de Rede de MT - 25/34,5 kV – (Valores em R$/Km)', 'Unnamed: 1': nan, 'MD': nan}
+  - Modular Aéreo Urbano (1000 rows):
+    COLUMNS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - ELLCA', 'Unnamed: 1', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9']
+    INTERESTING COLS: ['CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - ELLCA']
+    SAMPLE: {'CUSTO MODULAR DA REDE AÉREA – 01/07/2025 (SAP) – EMPRESA - ELLCA': 'Número da Nota de Serviço  //  Endereço da Solicitação', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan}
+----------------------------------------

@@ -10,7 +10,7 @@ export function useBudgetCalculator() {
   const [calcTime, setCalcTime] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const calculateTotal = useCallback(async ({ estruturas, materiaisAvulsos, condutorMT, condutorBT, sufixos = [], templates = [] }) => {
+  const calculateTotal = useCallback(async ({ estruturas = [], materiaisAvulsos = [], condutorMT, condutorBT, sufixos = [], templates = [] }) => {
     if (!window.api) return;
     setIsCalculating(true);
     const start = performance.now();
@@ -46,7 +46,7 @@ export function useBudgetCalculator() {
 
       // 0. Identify active Pole for context (take the first one found)
       let activePosteCode = null;
-      materiaisAvulsos.forEach(m => {
+      (materiaisAvulsos || []).forEach(m => {
         if (m.descricao?.toUpperCase().includes('POSTE') || m.sap?.endsWith('B')) {
           activePosteCode = m.sap;
         }
@@ -57,7 +57,7 @@ export function useBudgetCalculator() {
       const templateExtras = []; // Materials from manual templates
       const templatesMap = new Map(); // To track qty of templates for reporting
 
-      estruturas.forEach(e => {
+      (estruturas || []).forEach(e => {
         const count = e.quantidade || 1;
         const code = e.codigo_kit;
 
@@ -118,7 +118,7 @@ export function useBudgetCalculator() {
 
       // 3. Process 'Postes' (special category in loose materials)
       const postes = [];
-      materiaisAvulsos.forEach(mat => {
+      (materiaisAvulsos || []).forEach(mat => {
         if (mat.descricao?.toUpperCase().includes('POSTE')) {
           const qty = mat.quantidade || 1;
           const price = mat.preco_unitario || 0;
@@ -236,7 +236,7 @@ export function useBudgetCalculator() {
 
       // Add loose materials (excluding postes)
       let looseTotal = 0;
-      materiaisAvulsos.forEach(mat => {
+      (materiaisAvulsos || []).forEach(mat => {
         if (!mat.descricao?.toUpperCase().includes('POSTE')) {
           const qty = mat.quantidade || 1;
           const price = mat.preco_unitario || 0;
@@ -257,18 +257,59 @@ export function useBudgetCalculator() {
       ];
 
       // Recalculate totals based on map (to account for merged quantities)
-      // Note: Prices for extras might be missing.
       const totalPostes = postes.reduce((sum, p) => sum + p.subtotal, 0);
-      const totalKits = Array.from(kitsMap.values()).reduce((sum, k) => sum + k.subtotal, 0);
+      const totalKitsMaterials = Array.from(kitsMap.values()).reduce((sum, k) => sum + k.subtotal, 0);
 
-      // Recalculate material total from map
-      let calcTotalMaterial = 0;
+      // Recalculate material total from map (Consolidated loose materials)
+      let calcTotalMaterialOnly = 0;
       consolidatedMaterials.forEach(m => {
-        calcTotalMaterial += m.subtotal;
+        calcTotalMaterialOnly += m.subtotal;
       });
 
-      const totalMaterial = calcTotalMaterial + totalPostes + totalKits;
-      const totalServico = kitData.totalServico; // Services from standard kits
+      const totalMaterial = calcTotalMaterialOnly + totalPostes + totalKitsMaterials;
+
+      // Service costs: Backend defaults + Manual Overrides
+      const standardServiceCost = kitData.totalServico;
+      const overridesServiceCost = estruturas.reduce((sum, est) => {
+        if (est.moOverride !== undefined && est.moOverride !== null) {
+          // If we have an override, we subtract the "expected" backend cost if it was already included 
+          // (but standardServiceCost from getCustoTotal already sums standard kit costs)
+          // Wait, if it's a standard kit, kitData.totalServico includes it. 
+          // If it's a manual template, it might not be in kitData.totalServico.
+
+          // Better logic: Calculate service cost from scratch here if we want full control
+          // but getCustoTotal represents standard mappings. 
+          // Let's assume moOverride replaces the WHOLE service cost for that instance.
+          return sum + (est.moOverride * (est.quantidade || 1));
+        }
+        return sum;
+      }, 0);
+
+      // Filter out standard service costs for kits that have overrides
+      const kitIdsWithOverrides = new Set(
+        estruturas
+          .filter(e => e.moOverride !== undefined && e.moOverride !== null)
+          .map(e => e.codigo_kit)
+      );
+
+      const filteredStandardServiceCost = (kitData.servicos || []).reduce((sum, s) => {
+        // If THIS instance (by kit id) has an override, we shouldn't count its original cost.
+        // Problem: kitData.servicos is a flat list. If we have 2 N1 kits and one has override...
+        // For now, if a kit code has ANY override in the project, we'll manually sum all its instances to be safe.
+
+        // Simplified: totalServico = sum of (moOverride || standardCost) for each structure
+        return sum; // Handled below
+      }, 0);
+
+      const finalTotalServico = estruturas.reduce((sum, est) => {
+        const qty = est.quantidade || 1;
+        if (est.moOverride !== undefined && est.moOverride !== null) {
+          return sum + (est.moOverride * qty);
+        }
+        // Fallback to standard cost fetched from backend for this kit
+        const standard = (kitData.servicos || []).find(s => s.codigo_kit === est.codigo_kit);
+        return sum + ((standard?.custo_servico || 0) * qty);
+      }, 0);
 
       const calcTimeMs = performance.now() - start;
       setCalcTime(calcTimeMs);
@@ -276,8 +317,8 @@ export function useBudgetCalculator() {
       const newCustoData = {
         materiais: allMaterials,
         totalMaterial,
-        totalServico,
-        totalGeral: totalMaterial + totalServico
+        totalServico: finalTotalServico,
+        totalGeral: totalMaterial + finalTotalServico
       };
 
       setCustoData(newCustoData);

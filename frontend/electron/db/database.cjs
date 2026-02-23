@@ -18,6 +18,7 @@ class DatabaseService {
       // Performance optimizations
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');
+      this.db.pragma('foreign_keys = ON');
 
       const schemaPath = path.join(__dirname, 'schema.sql');
       const schema = fs.readFileSync(schemaPath, 'utf-8');
@@ -43,6 +44,10 @@ class DatabaseService {
   }
 
   all(sql, params = []) {
+    return this.db.prepare(sql).all(params);
+  }
+
+  rawQuery(sql, params = []) {
     return this.db.prepare(sql).all(params);
   }
 
@@ -241,10 +246,13 @@ class DatabaseService {
     const materials = this.get('SELECT COUNT(*) as count FROM materiais');
     const kits = this.get('SELECT COUNT(*) as count FROM kits');
     const servicos = this.get('SELECT COUNT(*) as count FROM servicos_cm');
+    const totalValue = this.get('SELECT SUM(preco_unitario) as total FROM materiais');
+
     return {
       materials: materials?.count || 0,
       kits: kits?.count || 0,
-      servicos: servicos?.count || 0
+      servicos: servicos?.count || 0,
+      total_value: totalValue?.total || 0,
     };
   }
 
