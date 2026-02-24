@@ -84,13 +84,13 @@ const AnalyticsManager = ({ projectData = {} }) => {
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
                             <ShieldCheck className="w-3.5 h-3.5" />
-                            SotA VERIFIED
+                            SotA VERIFICADO
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
-                            <p className="text-xs text-gray-400 mb-1 uppercase tracking-tighter">Layers Audit</p>
+                            <p className="text-xs text-gray-400 mb-1 uppercase tracking-tighter">Auditoria de Camadas</p>
                             <p className="text-lg font-bold text-gray-700">100% OK</p>
                         </div>
                         <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">

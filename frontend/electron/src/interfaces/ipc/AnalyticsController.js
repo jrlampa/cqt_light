@@ -73,8 +73,8 @@ class AnalyticsController {
                     status: bimScore > 90 ? 'READY_FOR_EXECUTION' : 'PLANNING'
                 },
                 dxf: {
-                    score: 95,
-                    status: 'VERIFIED'
+                    score: 0, // TBD: Implement real DXF quality audit
+                    status: 'PENDING'
                 }
             };
 

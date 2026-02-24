@@ -3,31 +3,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import App from '../App';
 import React, { Suspense } from 'react';
 
-// Simplified Lucide Mock
-vi.mock('lucide-react', () => {
-    const DummyIcon = ({ name, className }) => <div className={className}>{name}</div>;
-    return {
-        Calculator: (p) => <DummyIcon name="Calc" {...p} />,
-        Layers: (p) => <DummyIcon name="Layers" {...p} />,
-        Package: (p) => <DummyIcon name="Pack" {...p} />,
-        DollarSign: (p) => <DummyIcon name="$$" {...p} />,
-        Map: (p) => <DummyIcon name="Map" {...p} />,
-        Database: (p) => <DummyIcon name="DB" {...p} />,
-        BarChart3: (p) => <DummyIcon name="Bar" {...p} />,
-        FileText: (p) => <DummyIcon name="File" {...p} />,
-        ShieldCheck: (p) => <DummyIcon name="Shield" {...p} />,
-    };
-});
+// Redundant mock removed (now global in setupTests.js)
 
-// Mock all lazy components WITHOUT referencing outside variables in factory
-vi.mock('./components/Dashboard', () => ({ default: () => <div data-testid="dashboard">Dashboard</div> }));
-vi.mock('./components/Configurator', () => ({ default: () => <div data-testid="configurator">Configurator</div> }));
-vi.mock('./components/MaterialManager', () => ({ default: () => <div data-testid="materials">Materials</div> }));
-vi.mock('./components/KitEditor', () => ({ default: () => <div data-testid="kiteditor">KitEditor</div> }));
-vi.mock('./components/LaborManager', () => ({ default: () => <div data-testid="labor">Labor</div> }));
-vi.mock('./components/StructuralMap', () => ({ default: () => <div data-testid="map">Map</div> }));
-vi.mock('./components/AnalyticsManager', () => ({ default: () => <div data-testid="analytics">Analytics</div> }));
-vi.mock('./components/ReportsDashboard', () => ({ default: () => <div data-testid="reports">Reports</div> }));
+// Mock all lazy components
+vi.mock('../components/Dashboard', () => ({ default: () => <div data-testid="dashboard">Dashboard</div> }));
+vi.mock('../components/Configurator', () => ({ default: () => <div data-testid="configurator">Configurator</div> }));
+vi.mock('../components/MaterialManager', () => ({ default: () => <div data-testid="materials">Materials</div> }));
+vi.mock('../components/KitEditor', () => ({ default: () => <div data-testid="kiteditor">KitEditor</div> }));
+vi.mock('../components/LaborManager', () => ({ default: () => <div data-testid="labor">Labor</div> }));
+vi.mock('../components/StructuralMap', () => ({ default: () => <div data-testid="map">Map</div> }));
+vi.mock('../components/AnalyticsManager', () => ({ default: () => <div data-testid="analytics">Analytics</div> }));
+vi.mock('../components/ReportsDashboard', () => ({ default: () => <div data-testid="reports">Reports</div> }));
+vi.mock('../components/MaintenanceBacklog', () => ({ default: () => <div data-testid="backlog">Backlog</div> }));
 
 // Mock window.api
 global.window.api = {
@@ -46,10 +33,10 @@ describe('App Component - Minimal Stability Test', () => {
             render(<App />);
         });
 
-        expect(screen.getByText(/CQT Light/i)).toBeInTheDocument();
+        expect(screen.getByText(/CQT Light/i)).toBeTruthy();
 
         await waitFor(() => {
-            expect(screen.getByTestId('configurator')).toBeInTheDocument();
+            expect(screen.getByTestId('configurator')).toBeTruthy();
         });
     });
 
@@ -62,7 +49,7 @@ describe('App Component - Minimal Stability Test', () => {
         fireEvent.click(biBtn);
 
         await waitFor(() => {
-            expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+            expect(screen.getByTestId('dashboard')).toBeTruthy();
         });
     });
 });

@@ -82,6 +82,60 @@ class MaterialRepository {
       VALUES (?, ?, ?, ?, ?)
     `, [empresaId, sap, precoAnterior, precoNovo, origem]);
   }
+
+  importPrecosFromArray(empresaId, precosArray, origem = 'importacao') {
+    let contador = 0;
+    precosArray.forEach(item => {
+      if (item.sap && item.preco_unitario !== undefined) {
+        this.setPrecoEmpresa(empresaId, item.sap, item.preco_unitario, origem);
+        contador++;
+      }
+    });
+    return contador;
+  }
+
+  reajusteEmMassa(empresaId, percentual, filtroSaps = null) {
+    let query = `SELECT sap, preco_unitario FROM precos_empresa WHERE empresa_id = ?`;
+    let params = [empresaId];
+
+    if (filtroSaps && filtroSaps.length > 0) {
+      const placeholders = filtroSaps.map(() => '?').join(',');
+      query += ` AND sap IN (${placeholders})`;
+      params = params.concat(filtroSaps);
+    }
+
+    const precos = db.all(query, params);
+    let contador = 0;
+
+    precos.forEach(item => {
+      const novoPreco = item.preco_unitario * (1 + percentual / 100);
+      db.run(`
+        UPDATE precos_empresa 
+        SET preco_unitario = ?, origem = 'reajuste', data_atualizacao = CURRENT_TIMESTAMP
+        WHERE empresa_id = ? AND sap = ?
+      `, [novoPreco, empresaId, item.sap]);
+
+      db.run(`
+        INSERT INTO historico_precos (empresa_id, sap, preco_anterior, preco_novo, tipo_alteracao, percentual)
+        VALUES (?, ?, ?, ?, 'reajuste_percentual', ?)
+      `, [empresaId, item.sap, item.preco_unitario, novoPreco, percentual]);
+
+      contador++;
+    });
+
+    return contador;
+  }
+
+  getHistoricoPrecos(empresaId, limit = 100) {
+    return db.all(`
+      SELECT h.*, m.descricao
+      FROM historico_precos h
+      LEFT JOIN materiais m ON h.sap = m.sap
+      WHERE h.empresa_id = ?
+      ORDER BY h.data_alteracao DESC
+      LIMIT ?
+    `, [empresaId, limit]);
+  }
 }
 
 module.exports = new MaterialRepository();

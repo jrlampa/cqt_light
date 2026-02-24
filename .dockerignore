@@ -1,31 +1,72 @@
+# Git & Metadata
 .git
 .gitignore
-.vscode
-.idea
+.gitattributes
+.antigravityignore
+brain/
+.gemini/
+MEMORY.md
+ARCHITECTURE.md
+IMPLEMENTATION_PLAN.md
+walkthrough.md
+*.md
+
+# Environments & Dependencies
 node_modules
 frontend/node_modules
 venv
 env
+.env
 __pycache__
 *.pyc
 *.pyo
 *.pyd
+
+# Databases & Large Data
 *.db
 *.sqlite
+*.sqlite3
 *.xlsm
 *.xlsx
+*.xls
+*.csv
 *.docx
 *.pdf
 data/raw/
+data/processed/
 PLANILHA CUSTO MODULAR/
 Padrões/
 Padrões construtivos/
+
+# Build Artifacts
 dist
+build
 frontend/dist
 dist_electron
 electron_obfuscated
 scripts/dist
+scripts/build
+out
+*.spec
+*.exe
+
+# IDEs & System
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Logs & Tests
 *.log
-MEMORY.md
-IMPLEMENTATION_PLAN.md
-/brain/
+tests/
+__tests__/
+frontend/tests/
+playwright-report/
+test-results/
+coverage/
+test_output.txt
+
+# Docker config itself (if not needed in container)
+Dockerfile
+Dockerfile-python
+docker-compose.yml

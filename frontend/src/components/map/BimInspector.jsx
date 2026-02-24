@@ -18,8 +18,8 @@ const BimInspector = ({ asset, onClose, onAudit }) => {
             {/* Header */}
             <div className="p-4 bg-slate-900 text-white flex justify-between items-center">
                 <div>
-                    <h3 className="font-bold text-sm tracking-tight">{asset.pole_id || 'Asset details'}</h3>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">{asset.material_desc || 'BIM Generic'}</p>
+                    <h3 className="font-bold text-sm tracking-tight">{asset.pole_id || 'Detalhes do Ativo'}</h3>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">{asset.material_desc || 'BIM Genérico'}</p>
                 </div>
                 <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full transition-colors">
                     <X className="w-4 h-4" />
@@ -52,7 +52,7 @@ const BimInspector = ({ asset, onClose, onAudit }) => {
                             <p className="text-sm font-bold text-gray-800">{asset.bim_lifecycle?.ageYears || 0} anos</p>
                         </div>
                         <div>
-                            <p className="text-[9px] text-gray-500">Remanecente</p>
+                            <p className="text-[9px] text-gray-500">Remanescente</p>
                             <p className="text-sm font-bold text-indigo-600">{asset.bim_lifecycle?.remainingLife || 0} anos</p>
                         </div>
                     </div>

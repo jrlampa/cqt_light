@@ -1,62 +1,96 @@
-# Systems
+# ==========================================
+# CQT Light - SotA Git Exclusion Rules
+# ==========================================
+
+# --- OS & IDEs ---
 .DS_Store
 Thumbs.db
+*.local
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Environments
+# --- Environments & Dependencies ---
+node_modules/
+bower_components/
 venv/
 env/
 .env
+.env.local
+.venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.python-version
+pip-log.txt
 
-# IDEs
-.vscode/
-.idea/
-
-# Node
-node_modules/
-dist/
-build/
-.npm/
-
-# Large Files & Data
-PLANILHA CUSTO MODULAR/
-Padrões/
-temp_excel/
+# --- Data & Large Files (Rule: Zero Bloat) ---
 *.xlsm
 *.xlsx
+*.xls
+*.csv
 *.docx
-data/raw/
 *.pdf
+*.zip
+*.tar.gz
+*.rar
+PLANILHA CUSTO MODULAR/
+Padrões/
+Padrões construtivos/
+temp_excel/
+data/raw/
+data/processed/
+*.bak
+*.old
+
+# --- Databases (Development/Local) ---
 *.db
 *.sqlite
+*.sqlite3
 data/technical_data.db
+frontend/cqt_light.db
 
-# Logs
-*.log
-logs/
-
-# React
-frontend/dist/
-frontend/node_modules/
-Padrões construtivos/ANEXO B - RECON.zip
-Padrões construtivos/OPO-25-0008 - RUA MANUEL BECKMAM.zip
-Padrões construtivos/Padrões.zip
-Padrões construtivos/Reguladores de tensão.zip
-Padrões construtivos/TRAÇÃO DOS CONDUTORES.jpeg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 9m300dAN_30L-Layout1.jpg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 11m300dAN-Layout1.jpg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 11m600dAN-Layout1.jpg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 11m1000dAN-Layout1.jpg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m600dAN-Layout1.jpg
-Padrões construtivos/CINTAS A ULTILIZAR/POSTE 12m1000dAN-Layout1.jpg
-Padrões construtivos/Padrão CMB/WhatsApp Image 2025-05-06 at 11.53.29.jpeg
-Padrões construtivos/Padrão Cabo Armado/imagem.png
-
-# Build & Distribution (Cycle 6)
+# --- Build & Distribution ---
+dist/
+build/
+dist_electron/
+electron_obfuscated/
 scripts/dist/
 scripts/build/
 *.spec
-frontend/dist_electron/
-frontend/electron_obfuscated/
+out/
+Release/
 frontend/build_resources/icon.png
+*.exe
+*.msi
+*.app
+*.dmg
+
+# --- Logs & Performance ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+.eslintcache
+.stylelintcache
+
+# --- AI & Agent Metadata (Antigravity) ---
+.antigravityignore
+brain/
+.gemini/
+working_memory_rag.md
+knowledge_base_extraction.md
+
+# --- Test Outputs ---
+test_output.txt
+coverage/
+.nyc_output/
+playwright-report/
+test-results/

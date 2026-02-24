@@ -9,6 +9,10 @@ const IntelligenceController = require('./ipc/IntelligenceController');
 const ReportingController = require('./ipc/ReportingController');
 const MaintenanceController = require('./ipc/MaintenanceController');
 const GisController = require('./ipc/GisController');
+const KitController = require('./ipc/KitController');
+const ProjectController = require('./ipc/ProjectController');
+const CompanyController = require('./ipc/CompanyController');
+const SufixoController = require('./ipc/SufixoController');
 
 // Future controllers will be added here
 const controllers = [
@@ -20,7 +24,11 @@ const controllers = [
     IntelligenceController,
     ReportingController,
     MaintenanceController,
-    GisController
+    GisController,
+    KitController,
+    ProjectController,
+    CompanyController,
+    SufixoController
 ];
 
 class ControllerRegistry {

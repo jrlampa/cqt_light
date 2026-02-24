@@ -371,7 +371,7 @@ const KitEditor = () => {
                       <th className="px-4 py-3 text-left">Descrição</th>
                       <th className="px-4 py-3 text-center">Un</th>
                       <th className="px-4 py-3 text-right w-24">Qtd</th>
-                      <th className="px-4 py-3 text-right">Unit (R$)</th>
+                      <th className="px-4 py-3 text-right">Unitário (R$)</th>
                       <th className="px-4 py-3 text-right">Subtotal</th>
                       <th className="px-4 py-3 w-10"></th>
                     </tr>

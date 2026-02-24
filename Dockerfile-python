@@ -7,16 +7,20 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     sqlite3 \
     libsqlite3-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements if they exist, otherwise install core ones
-COPY scripts/requirements.txt* ./
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; \
-    else pip install --no-cache-dir pandas openpyxl sqlalchemy; fi
+# Copy requirements from root
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy scripts
+# Copy scripts and data
 COPY scripts/ ./scripts/
 COPY data/ ./data/
 
-# Default command (could be used for scheduled tasks or worker)
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+
+# Default command
 CMD ["python", "scripts/check_deps.py"]
