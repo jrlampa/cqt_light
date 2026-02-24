@@ -381,65 +381,6 @@ const Configurator = ({ onStateChange }) => {
     });
   };
 
-  const applyOptimization = (suggestion) => {
-    setMateriaisAvulsos(prev => prev.map(m =>
-      m.sap === suggestion.original_sap
-        ? { ...m, sap: suggestion.suggested_sap, descricao: suggestion.suggested_name }
-        : m
-    ));
-    alert(`🚀 Otimização aplicada: ${suggestion.suggested_name}`);
-  };
-
-  const applyEngineeringFix = () => {
-    if (!engineeringReport || engineeringReport.status === 'SAFE') return;
-
-    // Auto-Fix: Swap pole for a stronger one
-    setMateriaisAvulsos(prev => prev.map(m => {
-      if (m.descricao.toUpperCase().includes('POSTE')) {
-        return { ...m, descricao: `POSTE CONCRETO DT ${100 * Math.ceil(engineeringReport.totalLoadDaN / 100) + 300} daN` };
-      }
-      return m;
-    }));
-    alert('🛠️ Correção automática aplicada: Poste atualizado para suportar a carga calculada.');
-  };
-
-  const handleGenerateMemorial = async () => {
-    if (!window.api) return;
-    try {
-      // Fetch latest analytics for the report
-      const [sagReport, smartBOM] = await Promise.all([
-        window.api.calculateSag({ span: 35, conductor: condutorMT }),
-        window.api.rationalizeBOM(materiaisAvulsos)
-      ]);
-
-      const projectData = {
-        structures: estruturas,
-        materials: materiaisAvulsos,
-        engineeringReport,
-        sagReport,
-        smartBOM,
-        costData: custoData
-      };
-      const memorial = await window.api.generateTechnicalMemorial(projectData);
-
-      // For now, downloading as a txt file
-      const blob = new Blob([memorial], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Memorial_Tecnico_Zenith_${Date.now()}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      alert('📝 Memorial Técnico gerado com sucesso!');
-    } catch (err) {
-      console.error('Failed to generate memorial', err);
-      alert('❌ Erro ao gerar memorial técnico.');
-    }
-  };
-
   const runAudit = async () => {
     if (!window.api) return;
     try {
@@ -626,10 +567,6 @@ const Configurator = ({ onStateChange }) => {
               data={custoData}
               structures={estruturas}
               materialsAvulsos={materiaisAvulsos}
-              engineeringReport={engineeringReport}
-              condutorMT={condutorMT}
-              onApplyOptimization={applyOptimization}
-              onGenerateMemorial={handleGenerateMemorial}
             />
           </div>
         )}
@@ -674,22 +611,12 @@ const Configurator = ({ onStateChange }) => {
 
         {/* Engineering Warning Overlay */}
         {engineeringReport && engineeringReport.status !== 'SAFE' && (
-          <div className={`mt-2 p-3 rounded-xl border flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 ${engineeringReport.status === 'CRITICAL' ? 'bg-red-50 border-red-200 text-red-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
-            <div className="flex items-center gap-3">
-              <AlertOctagon className="w-5 h-5 shrink-0" />
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest">Engineering Alert ({engineeringReport.status})</p>
-                <p className="text-[11px] font-medium leading-tight">{engineeringReport.recommendation}</p>
-              </div>
+          <div className={`mt-2 p-3 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${engineeringReport.status === 'CRITICAL' ? 'bg-red-50 border-red-200 text-red-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+            <AlertOctagon className="w-5 h-5 shrink-0" />
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest">Engineering Alert ({engineeringReport.status})</p>
+              <p className="text-[11px] font-medium leading-tight">{engineeringReport.recommendation}</p>
             </div>
-            {engineeringReport.status === 'CRITICAL' && (
-              <button
-                onClick={applyEngineeringFix}
-                className="w-full py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-black uppercase tracking-widest transition"
-              >
-                Auto-Corrigir Estrutura (SotA Fix)
-              </button>
-            )}
           </div>
         )}
 

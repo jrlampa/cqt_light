@@ -108,6 +108,39 @@ class BimPredictorService {
         };
     }
 
+    /**
+     * Estimates asset health and lifecycle based on age and material type.
+     * @param {Object} asset BIM Asset data (GIS structure)
+     * @param {Object} material Material catalog reference
+     */
+    estimateLifecycle(asset, material) {
+        const vidaUtil = asset.vida_util_estimada || material?.vida_util_anos || 30;
+        const dataInstalacao = new Date(asset.data_instalacao || Date.now());
+        const ageYears = (new Date() - dataInstalacao) / (1000 * 60 * 60 * 24 * 365.25);
+
+        let health = 100 - (ageYears / vidaUtil) * 100;
+
+        // Engineering multipliers: Material-specific decay
+        const desc = (material?.descricao || '').toUpperCase();
+        if (desc.includes('MADEIRA')) health *= 0.85;
+        if (desc.includes('CONCRETO DT')) health *= 1.05;
+        if (desc.includes('POLIMERICO')) health *= 0.95;
+
+        health = Math.max(0, Math.min(100, health));
+
+        let status = 'healthy';
+        if (health < 35) status = 'critical';
+        else if (health < 70) status = 'warning';
+
+        return {
+            health: parseFloat(health.toFixed(1)),
+            ageYears: parseFloat(ageYears.toFixed(1)),
+            remainingLife: parseFloat(Math.max(0, vidaUtil - ageYears).toFixed(1)),
+            status,
+            remaning_percent: parseFloat(((vidaUtil - ageYears) / vidaUtil * 100).toFixed(1))
+        };
+    }
+
     getDefault() {
         return {
             category: 'Diversos / Consumo',

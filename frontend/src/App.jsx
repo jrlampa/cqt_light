@@ -10,6 +10,7 @@ const LaborManager = lazy(() => import('./components/LaborManager'));
 const StructuralMap = lazy(() => import('./components/StructuralMap'));
 const AnalyticsManager = lazy(() => import('./components/AnalyticsManager'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
+const MaintenanceBacklog = lazy(() => import('./components/MaintenanceBacklog'));
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
@@ -55,8 +56,9 @@ function App() {
 
     // Analytics/BI Tabs
     { id: 'dashboard', label: 'Dashboard BI', icon: BarChart3, shortcut: '6', mode: 'analytics' },
-    { id: 'analytics', label: 'Auditoria SotA', icon: ShieldCheck, shortcut: '7', mode: 'analytics' },
-    { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '8', mode: 'analytics' },
+    { id: 'backlog', label: 'Backlog BIM', icon: Package, shortcut: '7', mode: 'analytics' },
+    { id: 'analytics', label: 'Auditoria SotA', icon: ShieldCheck, shortcut: '8', mode: 'analytics' },
+    { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '9', mode: 'analytics' },
   ];
 
   const filteredTabs = tabs.filter(t => t.mode === appMode);
@@ -69,6 +71,7 @@ function App() {
       case 'labor': return <LaborManager />;
       case 'map': return <StructuralMap projectData={projectData} />;
       case 'dashboard': return <Dashboard />;
+      case 'backlog': return <MaintenanceBacklog />;
       case 'analytics': return <AnalyticsManager projectData={projectData} />;
       case 'reports': return <ReportsDashboard projectData={projectData} />;
       default: return <Configurator onStateChange={setProjectData} />;

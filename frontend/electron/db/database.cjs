@@ -641,6 +641,103 @@ class DatabaseService {
       resolved: resolved?.count || 0
     };
   }
+
+  // ========== GIS ASSETS (BIM Twin) ==========
+
+  getAllGisAssets() {
+    return this.all(`
+      SELECT g.*, m.descricao as material_desc, m.vida_util_anos as material_vida_util
+      FROM estruturas_gis g
+      LEFT JOIN materiais m ON g.sap_material = m.sap
+      ORDER BY g.pole_id
+    `);
+  }
+
+  upsertGisAsset(asset) {
+    const { pole_id, sap_material, lat, lng, altura, estado_conservacao, vida_util_estimada, bim_metadata } = asset;
+    return this.run(`
+      INSERT INTO estruturas_gis (pole_id, sap_material, lat, lng, altura, estado_conservacao, vida_util_estimada, bim_metadata_json)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(pole_id) DO UPDATE SET
+        sap_material = excluded.sap_material,
+        lat = excluded.lat,
+        lng = excluded.lng,
+        altura = excluded.altura,
+        estado_conservacao = excluded.estado_conservacao,
+        vida_util_estimada = excluded.vida_util_estimada,
+        bim_metadata_json = excluded.bim_metadata_json
+    `, [pole_id, sap_material, lat, lng, altura, estado_conservacao || 'bom', vida_util_estimada, JSON.stringify(bim_metadata || {})]);
+  }
+
+  deleteGisAsset(poleId) {
+    return this.run('DELETE FROM estruturas_gis WHERE pole_id = ?', [poleId]);
+  }
+
+  // ========== FIELD INTELLIGENCE (Cycle 21) ==========
+
+  addVistoria(vistoria) {
+    const { pole_id, condicao, auditor, obs } = vistoria;
+    return this.run(`
+      INSERT INTO vistorias_campo (pole_id, condicao_encontrada, auditor, observacoes)
+      VALUES (?, ?, ?, ?)
+    `, [pole_id, condicao, auditor || 'ZenithField', obs]);
+  }
+
+  getVistoriasByPole(poleId) {
+    return this.all('SELECT * FROM vistorias_campo WHERE pole_id = ? ORDER BY data_vistoria DESC', [poleId]);
+  }
+
+  scheduleMaintenance(job) {
+    const { pole_id, tipo, data_agendada, prioridade, equipe, custo } = job;
+    return this.run(`
+      INSERT INTO manutencoes_programadas (pole_id, tipo_servico, data_agendada, prioridade, equipe_atribuida, custo_estimado)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `, [pole_id, tipo, data_agendada, prioridade, equipe, custo || 0]);
+  }
+
+  getMaintenanceBacklog() {
+    return this.all(`
+      SELECT m.*, g.lat, g.lng, g.estado_conservacao as pred_status
+      FROM manutencoes_programadas m
+      JOIN estruturas_gis g ON m.pole_id = g.pole_id
+      WHERE m.status = 'pendente'
+      ORDER BY 
+        CASE m.prioridade 
+          WHEN 'emergencial' THEN 1 
+          WHEN 'alta' THEN 2 
+          WHEN 'media' THEN 3 
+          ELSE 4 
+        END,
+        m.data_agendada ASC
+    `);
+  }
+
+  updateMaintenanceStatus(id, status) {
+    return this.run('UPDATE manutencoes_programadas SET status = ? WHERE id = ?', [status, id]);
+  }
+
+  // ========== PRICING & OPTIMIZATION (Cycle 23/24) ==========
+
+  getPricingZones() {
+    return this.all('SELECT * FROM pricing_zones ORDER BY nome');
+  }
+
+  getMaterialAlternatives(sap) {
+    return this.all(`
+      SELECT ma.*, m.descricao as alternative_desc, m.preco_unitario as alternative_price
+      FROM material_alternatives ma
+      JOIN materiais m ON ma.alternative_sap = m.sap
+      WHERE ma.original_sap = ?
+      ORDER BY ma.priority ASC
+    `, [sap]);
+  }
+
+  getRegionalPrice(sap, zoneName) {
+    const zone = this.get('SELECT multiplier FROM pricing_zones WHERE nome = ?', [zoneName]);
+    const multiplier = zone ? zone.multiplier : 1.0;
+    const material = this.get('SELECT preco_unitario FROM materiais WHERE sap = ?', [sap]);
+    return material ? material.preco_unitario * multiplier : 0;
+  }
 }
 
 module.exports = new DatabaseService();

@@ -184,3 +184,29 @@ CREATE TABLE IF NOT EXISTS maintenance_jobs (
 );
 CREATE INDEX IF NOT EXISTS idx_maintenance_pole ON maintenance_jobs(pole_id);
 CREATE INDEX IF NOT EXISTS idx_maintenance_status ON maintenance_jobs(status);
+-- 18. vistorias_campo (Reconciliation)
+CREATE TABLE IF NOT EXISTS vistorias_campo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pole_id TEXT NOT NULL,
+    data_vistoria DATETIME DEFAULT CURRENT_TIMESTAMP,
+    auditor TEXT DEFAULT 'ZenithField',
+    condicao_encontrada TEXT CHECK(condicao_encontrada IN ('bom', 'regular', 'precário', 'critico')),
+    observacoes TEXT,
+    FOREIGN KEY(pole_id) REFERENCES estruturas_gis(pole_id)
+);
+
+-- 19. pricing_zones (Regional Intelligence)
+CREATE TABLE IF NOT EXISTS pricing_zones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT UNIQUE NOT NULL,
+    multiplier REAL DEFAULT 1.0
+);
+
+-- 20. material_alternatives (Optimization Engine)
+CREATE TABLE IF NOT EXISTS material_alternatives (
+    original_sap TEXT NOT NULL,
+    alternative_sap TEXT NOT NULL,
+    priority INTEGER DEFAULT 1,
+    notes TEXT,
+    PRIMARY KEY(original_sap, alternative_sap)
+);

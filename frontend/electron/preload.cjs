@@ -109,6 +109,29 @@ contextBridge.exposeInMainWorld('api', {
   getMaintenanceJobs: () => ipcRenderer.invoke('get-maintenance-jobs'),
   exportGeoJson: (projectData) => ipcRenderer.invoke('export-geojson', projectData),
 
+  // GIS Assets (BIM Twin)
+  getAllGisAssets: () => ipcRenderer.invoke('get-all-gis-assets'),
+  upsertGisAsset: (data) => ipcRenderer.invoke('upsert-gis-asset', data),
+  deleteGisAsset: (poleId) => ipcRenderer.invoke('delete-gis-asset', poleId),
+
+  // Field Intelligence & Governance (Cycle 21)
+  addVistoria: (data) => ipcRenderer.invoke('add-vistoria', data),
+  getVistorias: (poleId) => ipcRenderer.invoke('get-vistorias', poleId),
+  getMaintenanceBacklog: () => ipcRenderer.invoke('get-maintenance-backlog'),
+  updateMaintenanceStatus: (id, status) => ipcRenderer.invoke('update-maintenance-status', { id, status }),
+  getSuggestedBacklog: () => ipcRenderer.invoke('get-suggested-backlog'),
+
+  // Engineering Intelligence (Cycle 22)
+  calculateStress: (data) => ipcRenderer.invoke('calculate-stress', data),
+  calculateVoltageDrop: (conductor, current, distance) => ipcRenderer.invoke('calculate-voltage-drop', conductor, current, distance),
+  calculateSag: (data) => ipcRenderer.invoke('calculate-sag', data),
+  validateStructures: (structures) => ipcRenderer.invoke('validate-structures', structures),
+  findCostSavings: (materials, zone) => ipcRenderer.invoke('find-cost-savings', materials, zone),
+  generateTechnicalMemorial: (projectData) => ipcRenderer.invoke('generate-technical-memorial', projectData),
+  rationalizeBOM: (materials, structures) => ipcRenderer.invoke('rationalize-bom', materials, structures),
+  calculateAssetHealth: (asset) => ipcRenderer.invoke('calculate-asset-health', asset),
+  assessProjectRisk: (assets) => ipcRenderer.invoke('assess-project-risk', assets),
+
   // Engine Bridge (Hardened)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
   generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),

@@ -1,0 +1,46 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/jonat/OneDrive - IM3 Brasil/utils/myworld/cqt_light/frontend[39m
+
+ [31mÔØ»[39m electron/__tests__/OptimizationService.test.js [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+[31m       [31m├ù[31m should return suggestions when cheaper alternatives exist[39m[32m 5[2mms[22m[39m
+[31m       [31m├ù[31m should trigger volume discount heuristic[39m[32m 1[2mms[22m[39m
+       [32mÔ£ô[39m should suggest a stronger pole if overloaded[32m 1[2mms[22m[39m
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed Tests 2 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»
+
+ FAIL  electron/__tests__/OptimizationService.test.js > OptimizationService > findCostSavings > should return suggestions when cheaper alternatives exist
+TypeError: Cannot read properties of null (reading 'prepare')
+ ÔØ» DatabaseService.all electron/db/database.cjs:47:20
+     45| 
+     46|   all(sql, params = []) {
+     47|     return this.db.prepare(sql).all(params);
+       |                    ^
+     48|   }
+     49| 
+ ÔØ» DatabaseService.getMaterialAlternatives electron/db/database.cjs:726:17
+ ÔØ» OptimizationService.findCostSavings electron/services/OptimizationService.js:21:37
+ ÔØ» electron/__tests__/OptimizationService.test.js:25:59
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/2]ÔÄ»
+
+ FAIL  electron/__tests__/OptimizationService.test.js > OptimizationService > findCostSavings > should trigger volume discount heuristic
+TypeError: Cannot read properties of null (reading 'prepare')
+ ÔØ» DatabaseService.all electron/db/database.cjs:47:20
+     45| 
+     46|   all(sql, params = []) {
+     47|     return this.db.prepare(sql).all(params);
+       |                    ^
+     48|   }
+     49| 
+ ÔØ» DatabaseService.getMaterialAlternatives electron/db/database.cjs:726:17
+ ÔØ» OptimizationService.findCostSavings electron/services/OptimizationService.js:21:37
+ ÔØ» electron/__tests__/OptimizationService.test.js:36:59
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/2]ÔÄ»
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 19:21:10
+[2m   Duration [22m 587ms[2m (transform 51ms, setup 0ms, import 78ms, tests 7ms, environment 344ms)[22m
+

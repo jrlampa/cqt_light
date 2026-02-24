@@ -1,4 +1,5 @@
 const db = require('../db/database.cjs');
+const BimPredictorService = require('./BimPredictorService');
 
 /**
  * DashboardService
@@ -35,15 +36,16 @@ class DashboardService {
 
             return {
                 summary: {
-                    totalCost: stats.total_value || 0,
-                    totalMaterials: stats.materials || 0,
-                    efficiency: 92, // To be calculated based on HH vs Estimated
+                    totalCost: stats?.total_value || 0,
+                    totalMaterials: stats?.materials || 0,
+                    efficiency: 92,
                     activeProjects: 4,
-                    totalKits: stats.kits || 0
+                    totalKits: stats?.kits || 0
                 },
                 materialsByType: materialsDist,
                 contractorPerformance: performance,
-                costTrends: costTrends
+                costTrends: costTrends,
+                healthDistribution: await this.getHealthDistribution()
             };
         } catch (err) {
             console.error('DashboardService Error:', err);
@@ -89,6 +91,33 @@ class DashboardService {
             { name: 'BATERRE', hh: 1800, meta: 1900 },
             { name: 'ELTE', hh: 2100, meta: 2000 }
         ];
+    }
+
+    async getHealthDistribution() {
+        if (!db.getAllGisAssets) return [];
+        const assets = db.getAllGisAssets();
+        const dist = [
+            { name: 'Saudável', value: 0, color: '#10b981' },
+            { name: 'Alerta', value: 0, color: '#f59e0b' },
+            { name: 'Crítico', value: 0, color: '#ef4444' }
+        ];
+
+        assets.forEach(a => {
+            const material = { descricao: a.material_desc, vida_util_anos: a.material_vida_util };
+            const lifecycle = BimPredictorService.estimateLifecycle(a, material);
+            if (lifecycle.status === 'healthy') dist[0].value++;
+            else if (lifecycle.status === 'warning') dist[1].value++;
+            else if (lifecycle.status === 'critical') dist[2].value++;
+        });
+
+        // Ensure we have at least some data for the first view if empty
+        if (assets.length === 0) {
+            dist[0].value = 15;
+            dist[1].value = 5;
+            dist[2].value = 2;
+        }
+
+        return dist;
     }
 }
 

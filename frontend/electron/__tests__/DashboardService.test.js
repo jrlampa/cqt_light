@@ -29,6 +29,8 @@ describe('DashboardService', () => {
             return Promise.resolve([]);
         });
 
+        vi.spyOn(db, 'getAllGisAssets').mockReturnValue([]);
+
         const metrics = await dashboardService.getMetrics();
 
         expect(metrics).not.toBeNull();
@@ -39,6 +41,7 @@ describe('DashboardService', () => {
     it('should return default/fallback data if queries return empty', async () => {
         vi.spyOn(db, 'getStats').mockResolvedValue({ materials: 100, kits: 50, servicos: 10, total_value: 500000 });
         vi.spyOn(db, 'rawQuery').mockResolvedValue([]);
+        vi.spyOn(db, 'getAllGisAssets').mockReturnValue([]);
 
         const metrics = await dashboardService.getMetrics();
         expect(metrics.materialsByType).toHaveLength(4);

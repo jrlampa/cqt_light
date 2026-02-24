@@ -6,6 +6,13 @@ const ControllerRegistry = require('./src/interfaces/ControllerRegistry');
 const PythonBridge = require('./src/infrastructure/services/PythonBridge');
 const DashboardService = require('./services/DashboardService');
 const BimPredictorService = require('./services/BimPredictorService');
+const MaintenanceService = require('./services/MaintenanceService');
+const EngineeringService = require('./services/EngineeringService');
+const OptimizationService = require('./services/OptimizationService');
+const ReportService = require('./services/ReportService');
+const BOMService = require('./services/BOMService');
+const AssetService = require('./services/AssetService');
+const db = require('./db/database.cjs');
 
 let mainWindow;
 
@@ -167,3 +174,48 @@ ipcMain.handle('suggest-labor-cost', (_, data) => PythonBridge.run('ai_labor_est
 // Zenith Analytics & BI
 ipcMain.handle('get-dashboard-metrics', () => DashboardService.getMetrics());
 ipcMain.handle('predict-bim-category', (_, description) => BimPredictorService.predict(description));
+
+// GIS Assets with BIM Intelligence
+ipcMain.handle('get-all-gis-assets', async () => {
+  const assets = db.getAllGisAssets();
+  // Enrich with inferred BIM lifecycle data
+  return assets.map(asset => {
+    const material = { descricao: asset.material_desc, vida_util_anos: asset.material_vida_util };
+    return {
+      ...asset,
+      bim_lifecycle: BimPredictorService.estimateLifecycle(asset, material)
+    };
+  });
+});
+
+ipcMain.handle('upsert-gis-asset', (e, data) => db.upsertGisAsset(data));
+ipcMain.handle('delete-gis-asset', (e, id) => db.deleteGisAsset(id));
+
+// Field Intelligence & Governance (Cycle 21)
+ipcMain.handle('add-vistoria', (e, data) => db.addVistoria(data));
+ipcMain.handle('get-vistorias', (e, id) => db.getVistoriasByPole(id));
+ipcMain.handle('get-maintenance-backlog', () => db.getMaintenanceBacklog());
+ipcMain.handle('update-maintenance-status', (e, { id, status }) => db.updateMaintenanceStatus(id, status));
+ipcMain.handle('get-suggested-backlog', () => MaintenanceService.generateSuggestedBacklog());
+ipcMain.handle('schedule-batch-maintenance', (e, suggestions) => MaintenanceService.scheduleBatch(suggestions));
+
+// Engineering Intelligence (Cycle 22/23)
+ipcMain.handle('calculate-stress', (e, data) => EngineeringService.calculateMechanicalStress(data.pole, data.structures, data.conductors));
+ipcMain.handle('calculate-vdrop', (e, data) => EngineeringService.calculateVoltageDrop(data.conductor, data.distance, data.current));
+ipcMain.handle('calculate-sag', (e, data) => EngineeringService.calculateConductorSag(data.span, data.conductor, data.temp));
+ipcMain.handle('find-cost-savings', async (event, materials, zone) => {
+  return await OptimizationService.findCostSavings(materials, zone);
+});
+
+ipcMain.handle('generate-technical-memorial', async (event, projectData) => {
+  return ReportService.generateTechnicalMemorial(projectData);
+});
+
+ipcMain.handle('rationalize-bom', async (event, materials, structures) => {
+  return BOMService.rationalizeBOM(materials, structures);
+});
+
+ipcMain.handle('validate-structures', (e, structures) => EngineeringService.validateStructureCompatibility(structures));
+
+ipcMain.handle('calculate-asset-health', (e, asset) => AssetService.calculateAssetHealth(asset));
+ipcMain.handle('assess-project-risk', (e, assets) => AssetService.assessProjectRisk(assets));
