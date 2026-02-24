@@ -15,6 +15,7 @@ const CompanyController = require('./ipc/CompanyController');
 const SufixoController = require('./ipc/SufixoController');
 const EngineeringController = require('./ipc/EngineeringController');
 const OptimizationController = require('./ipc/OptimizationController');
+const DesignerAssistantController = require('./ipc/DesignerAssistantController');
 
 // Future controllers will be added here
 const controllers = [
@@ -32,7 +33,8 @@ const controllers = [
     CompanyController,
     SufixoController,
     EngineeringController,
-    OptimizationController
+    OptimizationController,
+    DesignerAssistantController
 ];
 
 class ControllerRegistry {
@@ -46,7 +48,7 @@ class ControllerRegistry {
             try {
                 // Determine if we need to sanitize inputs (basic project data or query strings)
                 let sanitizedArgs = args;
-                const sanitizableChannels = ['project', 'audit', 'bom', 'analytics', 'engineering'];
+                const sanitizableChannels = ['project', 'audit', 'bom', 'analytics', 'engineering', 'designer'];
 
                 if (sanitizableChannels.some(c => channel.includes(c))) {
                     const SanitizationService = require('../infrastructure/services/SanitizationService');

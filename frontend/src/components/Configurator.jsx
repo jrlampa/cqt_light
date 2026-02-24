@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Zap, DollarSign, Package, ShieldCheck, AlertOctagon } from 'lucide-react';
+import { Calculator, FolderOpen, LayoutTemplate, Trash2, Save, FileText, Download, Zap, DollarSign, Package, ShieldCheck, AlertOctagon, Search } from 'lucide-react';
 
 // Components
 import { StructureList } from './StructureList';
@@ -16,6 +16,7 @@ import { PriceManagementModal } from './PriceManagementModal';
 import AuditReport from './AuditReport';
 import BudgetIntelligence from './BudgetIntelligence';
 import { QuantityModal } from './configurator/QuantityModal';
+import AssistantSidebar from './configurator/DesignerAssistant/AssistantSidebar';
 
 // Utils & Hook
 import { exportMaterialsToExcel } from '../utils/excelExporter';
@@ -99,15 +100,25 @@ const Configurator = ({ onStateChange }) => {
         />
 
         {state.showAssistant && (
-          <div className="flex-1 mt-2">
-            <BudgetIntelligence
-              data={state.custoData}
-              structures={state.estruturas}
-              materialsAvulsos={state.materiaisAvulsos}
-              engineeringReport={state.engineeringReport}
-              condutorMT={state.condutorMT}
-              onApplyOptimization={handlers.applyOptimization}
-              onGenerateMemorial={handlers.handleGenerateMemorial}
+          <div className="flex-1 mt-2 mb-2">
+            <AssistantSidebar
+              projectData={{
+                poles: state.estruturas,
+                materials: state.custoData?.materiais || [],
+                sections: [],
+                condutorMT: state.condutorMT,
+                condutorBT: state.condutorBT
+              }}
+              onApplySuggestion={(insight, sap) => {
+                // Handle suggestion application
+                // For now, add the suggested material to avulsos
+                const suggestion = {
+                  sap,
+                  descricao: `[SUGESTÃO] ${insight.type}`,
+                  quantidade: 1
+                };
+                handlers.openQtyPopup(suggestion, 'material');
+              }}
             />
           </div>
         )}
