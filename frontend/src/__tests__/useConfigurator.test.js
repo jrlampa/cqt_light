@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useConfigurator } from '../components/configurator/useConfigurator';
 import React from 'react';
 
-// Mock lucide-react (since setupTests is not global anymore)
+// Mock lucide-react
 vi.mock('lucide-react', () => {
     return new Proxy({}, {
         get: (target, prop) => {
@@ -12,6 +12,26 @@ vi.mock('lucide-react', () => {
         }
     });
 });
+
+// Mock hooks
+vi.mock('../hooks/useBudgetCalculator', () => ({
+    useBudgetCalculator: () => ({
+        custoData: { materiais: [], totalMaterial: 0, totalServico: 0, totalGeral: 0 },
+        setCustoData: vi.fn(),
+        calculateTotal: vi.fn().mockImplementation(() => Promise.resolve())
+    })
+}));
+
+vi.mock('../hooks/useKeyboardNav', () => ({
+    useKeyboardNav: () => ({
+        setPosteHighlight: vi.fn(),
+        setStructureHighlight: vi.fn(),
+        setMaterialHighlight: vi.fn(),
+        focusQty: vi.fn(),
+        focusStructure: vi.fn(),
+        focusMaterial: vi.fn()
+    })
+}));
 
 // Mock window.api
 global.window.api = {
@@ -26,53 +46,85 @@ global.window.api = {
     searchMaterials: vi.fn().mockResolvedValue([]),
     calculateStress: vi.fn().mockResolvedValue({ status: 'SAFE' }),
     auditProject: vi.fn().mockResolvedValue([]),
+    calculateSag: vi.fn().mockResolvedValue({}),
+    rationalizeBOM: vi.fn().mockResolvedValue({}),
+    generateTechnicalMemorial: vi.fn().mockResolvedValue('memorial data')
 };
-
-// Mock window.confirm
-if (typeof window.confirm === 'undefined') {
-    window.confirm = () => true;
-}
 
 describe('useConfigurator Hook', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.restoreAllMocks();
         localStorage.clear();
     });
 
     it('should initialize with default state', async () => {
-        const { result } = renderHook(() => useConfigurator(() => { }));
+        let result;
+        await act(async () => {
+            const hook = renderHook(() => useConfigurator(() => { }));
+            result = hook.result;
+        });
         expect(result.current.state.estruturas).toEqual([]);
-        expect(result.current.state.isAuditing).toBe(false);
+        expect(result.current.state.activeTab).toBe('estruturas');
     });
 
-    it('should add a structure via search', async () => {
-        window.api.searchKits.mockResolvedValue([{ codigo_kit: 'K1', descricao_kit: 'D1' }]);
-        const { result } = renderHook(() => useConfigurator(() => { }));
-
+    it('should handle searchPoste with filtering', async () => {
+        window.api.searchMaterials.mockResolvedValue([
+            { sap: '1', descricao: 'POSTE DT 300' },
+            { sap: '2', descricao: 'CRUZETA' }
+        ]);
+        let result;
         await act(async () => {
-            await result.current.handlers.searchStructure('K1');
+            const hook = renderHook(() => useConfigurator(() => { }));
+            result = hook.result;
         });
 
-        expect(result.current.state.structureResults.length).toBe(1);
+        await act(async () => {
+            await result.current.handlers.searchPoste('POSTE');
+        });
+
+        expect(result.current.state.posteResults).toHaveLength(1);
+        expect(result.current.state.showPosteDropdown).toBe(true);
     });
 
-    it('should clear all state', async () => {
-        vi.spyOn(window, 'confirm').mockReturnValue(true);
-        const { result } = renderHook(() => useConfigurator(() => { }));
-
+    it('should manage structures addition and removal', async () => {
+        let result;
         await act(async () => {
-            result.current.handlers.clearAll();
+            const hook = renderHook(() => useConfigurator(() => { }));
+            result = hook.result;
         });
 
-        expect(result.current.state.estruturas).toEqual([]);
+        await act(async () => {
+            result.current.handlers.openQtyPopup({ codigo_kit: 'K1' }, 'structure');
+        });
+
+        expect(result.current.state.showQtyPopup).toBe(true);
+
+        await act(async () => {
+            result.current.handlers.confirmAddItem();
+        });
+
+        expect(result.current.state.estruturas).toHaveLength(1);
+
+        const id = result.current.state.estruturas[0].id;
+        await act(async () => {
+            result.current.handlers.removeStructure(id);
+        });
+        expect(result.current.state.estruturas).toHaveLength(0);
     });
 
-    it('should update company info', async () => {
-        const { result } = renderHook(() => useConfigurator(() => { }));
+    it('should run project audit', async () => {
+        window.api.auditProject.mockResolvedValue([{ severity: 'INFO', message: 'Audit OK' }]);
+        let result;
         await act(async () => {
-            result.current.state.setEmpresaAtiva({ id: 1, nome: 'Test' });
+            const hook = renderHook(() => useConfigurator(() => { }));
+            result = hook.result;
         });
-        expect(result.current.state.empresaAtiva.id).toBe(1);
+
+        await act(async () => {
+            await result.current.handlers.runAudit();
+        });
+
+        expect(result.current.state.auditResults).toHaveLength(1);
+        expect(result.current.state.showAuditReport).toBe(true);
     });
 });

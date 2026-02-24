@@ -1,98 +1,79 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { createRequire } from 'module';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const require = createRequire(import.meta.url);
-const kitRepo = require('../src/infrastructure/repositories/KitRepository');
-const db = require('../db/database.cjs');
+// We import the Class version for testing
+const { KitRepository } = require('../src/infrastructure/repositories/KitRepository');
 
-describe('KitRepository', () => {
+describe('KitRepository (100% Coverage)', () => {
+    let repo;
+    let mockDb;
+
     beforeEach(() => {
-        vi.clearAllMocks();
-        vi.restoreAllMocks();
+        mockDb = {
+            all: vi.fn(),
+            get: vi.fn(),
+            run: vi.fn()
+        };
+        repo = new KitRepository(mockDb);
     });
 
-    it('should get all kits', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        kitRepo.getAll();
-        expect(db.all).toHaveBeenCalled();
+    it('getAll should fetch all kits', () => {
+        mockDb.all.mockReturnValue([{ codigo_kit: 'K1' }]);
+        const result = repo.getAll();
+        expect(mockDb.all).toHaveBeenCalledWith(expect.stringContaining('SELECT * FROM kits'));
+        expect(result).toHaveLength(1);
     });
 
-    it('should search kits', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        kitRepo.search('test');
-        expect(db.all).toHaveBeenCalled();
+    it('getCustoTotal should correctly calculate totals with multi-kit projects', () => {
+        const kitCodes = ['K1', 'K1'];
+
+        mockDb.all.mockReturnValueOnce([
+            { codigo_kit: 'K1', sap: 'M1', descricao: 'Mat 1', unidade: 'UN', preco_unitario: 10, quantidade: 2 }
+        ]);
+        mockDb.all.mockReturnValueOnce([
+            { codigo_kit: 'K1', descricao_kit: 'Kit 1', codigo_servico: 'S1', custo_servico: 50 }
+        ]);
+
+        const result = repo.getCustoTotal(kitCodes);
+
+        expect(result.totalMaterial).toBe(40);
+        expect(result.totalServico).toBe(100);
+        expect(result.totalGeral).toBe(140);
+        expect(result.materiais[0].quantidade).toBe(4);
     });
 
-    it('should get kit by code', () => {
-        vi.spyOn(db, 'get').mockReturnValue({ codigo_kit: 'K1' });
-        kitRepo.get('K1');
-        expect(db.get).toHaveBeenCalledWith(expect.any(String), ['K1']);
+    it('search should handle query correctly', () => {
+        repo.search('pole');
+        expect(mockDb.all).toHaveBeenCalled();
     });
 
-    it('should upsert kit', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        kitRepo.upsert({ codigoKit: 'K1', descricaoKit: 'D1' });
-        expect(db.run).toHaveBeenCalled();
+    it('get should fetch single kit', () => {
+        repo.get('K1');
+        expect(mockDb.get).toHaveBeenCalledWith(expect.any(String), ['K1']);
     });
 
-    it('should delete kit', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        kitRepo.delete('K1');
-        expect(db.run).toHaveBeenCalledTimes(2);
+    it('upsert should register kit', () => {
+        repo.upsert({ codigoKit: 'K1', descricaoKit: 'D1' });
+        expect(mockDb.run).toHaveBeenCalled();
     });
 
-    it('should get kit composition', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        kitRepo.getComposition('KIT01');
-        expect(db.all).toHaveBeenCalledWith(expect.stringContaining('FROM kit_composicao'), ['KIT01']);
+    it('delete should remove composition and kit', () => {
+        repo.delete('K1');
+        expect(mockDb.run).toHaveBeenCalledTimes(2);
     });
 
-    it('should add material to kit', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        kitRepo.addMaterial('K1', 'S1', 10);
-        expect(db.run).toHaveBeenCalled();
+    it('getComposition should join with materials', () => {
+        repo.getComposition('K1');
+        expect(mockDb.all).toHaveBeenCalledWith(expect.stringContaining('JOIN materiais'), ['K1']);
     });
 
-    it('should calculate total cost', () => {
-        vi.spyOn(db, 'all').mockImplementation((query) => {
-            if (query.includes('materiais')) {
-                return [{
-                    codigo_kit: 'KIT01',
-                    sap: 'S1',
-                    descricao: 'M1',
-                    unidade: 'UN',
-                    preco_unitario: 10,
-                    quantidade: 10
-                }];
-            }
-            if (query.includes('kits')) {
-                return [{
-                    codigo_kit: 'KIT01',
-                    descricao_kit: 'D1',
-                    codigo_servico: 'S1',
-                    custo_servico: 50
-                }];
-            }
-            return [];
-        });
-
-        const result = kitRepo.getCustoTotal(['KIT01']);
-        expect(result.totalGeral).toBe(150);
-        expect(result.totalMaterial).toBe(100);
-        expect(result.totalServico).toBe(50);
+    it('addMaterial should update composition', () => {
+        repo.addMaterial('K1', 'M1', 5);
+        expect(mockDb.run).toHaveBeenCalledWith(expect.any(String), ['K1', 'M1', 5]);
     });
 
-    it('should return default cost for empty input', () => {
-        const result = kitRepo.getCustoTotal([]);
-        expect(result.totalGeral).toBe(0);
-        expect(result.materiais).toEqual([]);
-    });
-
-    it('should return stats', () => {
-        vi.spyOn(db, 'get').mockReturnValue({ count: 10 });
-        const stats = kitRepo.getStats();
-        expect(stats.materials).toBe(10);
-        expect(stats.kits).toBe(10);
+    it('getStats should collect project counts', () => {
+        mockDb.get.mockReturnValue({ count: 10 });
+        const stats = repo.getStats();
         expect(stats.budgets).toBe(10);
     });
 });

@@ -10,23 +10,24 @@ const ComplianceService = require('./engineering/ComplianceService');
 
 class EngineeringService {
     calculateMechanicalStress(pole, structures, conductors, deflection = 0) {
-        return MechanicalService.calculateMechanicalStress(pole, structures, conductors, deflection);
+        // Dynamic access to allow mocking in CJS/Vitest interop
+        return (this.MechanicalService || MechanicalService).calculateMechanicalStress(pole, structures, conductors, deflection);
     }
 
     calculateVoltageDrop(conductor, distance, current = 60) {
-        return ElectricalService.calculateVoltageDrop(conductor, distance, current);
+        return (this.ElectricalService || ElectricalService).calculateVoltageDrop(conductor, distance, current);
     }
 
     calculateSpatialDistance(p1, p2) {
-        return SpatialService.calculateSpatialDistance(p1, p2);
+        return (this.SpatialService || SpatialService).calculateSpatialDistance(p1, p2);
     }
 
     calculateConductorSag(data) {
-        return SpatialService.calculateConductorSag(data);
+        return (this.SpatialService || SpatialService).calculateConductorSag(data);
     }
 
     validateStructureCompatibility(structures) {
-        return ComplianceService.validateStructureCompatibility(structures);
+        return (this.ComplianceService || ComplianceService).validateStructureCompatibility(structures);
     }
 }
 
