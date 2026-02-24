@@ -7,8 +7,6 @@ class IntelligenceController {
      * @param {Function} handle - The electron ipcMain.handle function wrapper.
      */
     static register(handle) {
-        const controller = new IntelligenceController();
-
         handle('get-norms-by-sap', async (_, sap) => {
             try {
                 return NormativeRepository.getBySap(sap);
@@ -21,10 +19,9 @@ class IntelligenceController {
         handle('calculate-structure-health', async (_, poleData) => {
             try {
                 // Predictive Maintenance Algorithm (Based on BIM Stage 2 Metadata)
-                // Score = (Life Remaining / Total Life) * 100
-                const { vida_util_anos, ciclo_manutencao_meses, installed_at } = poleData;
+                const { vida_util_anos, installed_at } = poleData;
 
-                const yearsUsed = installed_at ? (new Date().getFullYear() - new Date(installed_at).getFullYear()) : 5; // Default 5 for mock
+                const yearsUsed = installed_at ? (new Date().getFullYear() - new Date(installed_at).getFullYear()) : 5;
                 const health = Math.max(0, Math.min(100, ((vida_util_anos - yearsUsed) / vida_util_anos) * 100));
 
                 let status = 'healthy';
@@ -38,11 +35,32 @@ class IntelligenceController {
             }
         });
 
-        handle('search-norms', async (_, query) => {
+        handle('calculate-asset-health', async (_, asset) => {
             try {
-                return NormativeRepository.search(query);
+                const AssetService = require('../../../services/AssetService');
+                return AssetService.calculateAssetHealth(asset);
             } catch (error) {
-                logger.error('Failed to search norms', 'IntelligenceController', error);
+                logger.error('Failed to calculate asset health', 'IntelligenceController', error);
+                throw error;
+            }
+        });
+
+        handle('assess-project-risk', async (_, assets) => {
+            try {
+                const AssetService = require('../../../services/AssetService');
+                return AssetService.assessProjectRisk(assets);
+            } catch (error) {
+                logger.error('Failed to assess project risk', 'IntelligenceController', error);
+                throw error;
+            }
+        });
+
+        handle('suggest-labor-cost', async (_, data) => {
+            try {
+                const PythonBridge = require('../../../infrastructure/services/PythonBridge');
+                return PythonBridge.run('ai_labor_estimator', data);
+            } catch (error) {
+                logger.error('AI labor estimation failed', 'IntelligenceController', error);
                 throw error;
             }
         });

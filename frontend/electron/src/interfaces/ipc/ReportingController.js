@@ -4,13 +4,7 @@ const fs = require('fs');
 const logger = require('../../infrastructure/services/Logger');
 
 class ReportingController {
-    /**
-     * Registers IPC handlers for the reporting module.
-     * @param {Function} handle - The electron ipcMain.handle function wrapper.
-     */
     static register(handle) {
-        const controller = new ReportingController();
-
         handle('save-pdf-report', async (_, { filename, content }) => {
             try {
                 const { filePath } = await dialog.showSaveDialog({
@@ -20,17 +14,24 @@ class ReportingController {
                 });
 
                 if (filePath) {
-                    // Note: Content is expected to be a Base64 string from jspdf.output('datauristring')
                     const base64Data = content.split('base64,')[1];
                     fs.writeFileSync(filePath, base64Data, { encoding: 'base64' });
-
-                    // Proactive: Open the file after saving
                     shell.openPath(filePath);
                     return { success: true, path: filePath };
                 }
                 return { success: false, reason: 'cancelled' };
             } catch (error) {
                 logger.error('Failed to save PDF', 'ReportingController', error);
+                throw error;
+            }
+        });
+
+        handle('generate-technical-memorial', async (_, projectData) => {
+            try {
+                const ReportService = require('../../../services/ReportService');
+                return ReportService.generateTechnicalMemorial(projectData);
+            } catch (error) {
+                logger.error('Failed to generate technical memorial', 'ReportingController', error);
                 throw error;
             }
         });
