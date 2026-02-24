@@ -1,10 +1,20 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const isDev = require('electron-is-dev');
 const logger = require('./Logger');
 
+// Safe require for electron-is-dev (prevents Vitest crash)
+const getIsDev = () => {
+    try {
+        return require('electron-is-dev');
+    } catch (e) {
+        return process.env.NODE_ENV === 'development' || !process.versions.electron;
+    }
+};
+
 class PythonBridge {
+    static isDev = undefined; // Overridable for testing
+
     /**
      * Executes a Python script or a standalone binary.
      * @param {string} scriptName - Name of the script/binary (e.g., 'audit_engine')
@@ -14,9 +24,10 @@ class PythonBridge {
     static async run(scriptName, projectData) {
         let exePath;
         let args = [];
+        const isDevMode = (this.isDev !== undefined) ? this.isDev : getIsDev();
 
         // Determine if we use the binary or the script
-        if (isDev) {
+        if (isDevMode) {
             exePath = 'python';
             args = [path.join(process.cwd(), '..', 'scripts', `${scriptName}.py`)];
         } else {
@@ -30,26 +41,26 @@ class PythonBridge {
             }
         }
 
-        logger.info(`Starting process: ${scriptName} (Env: ${isDev ? 'Dev' : 'Prod'})`, 'PythonBridge');
+        logger.info(`Starting process: ${scriptName} (Env: ${isDevMode ? 'Dev' : 'Prod'})`, 'PythonBridge');
 
         return new Promise((resolve, reject) => {
-            const process = spawn(exePath, args);
+            const proc = spawn(exePath, args);
             let resultData = '';
             let errorData = '';
 
-            process.stdin.write(JSON.stringify(projectData));
-            process.stdin.end();
+            proc.stdin.write(JSON.stringify(projectData));
+            proc.stdin.end();
 
-            process.stdout.on('data', (data) => {
+            proc.stdout.on('data', (data) => {
                 resultData += data.toString();
             });
 
-            process.stderr.on('data', (data) => {
+            proc.stderr.on('data', (data) => {
                 errorData += data.toString();
                 logger.warn(`Process Stderr [${scriptName}]: ${data.toString().trim()}`, 'PythonBridge');
             });
 
-            process.on('close', (code) => {
+            proc.on('close', (code) => {
                 if (code !== 0) {
                     const errorMsg = `Process ${scriptName} failed (code ${code}): ${errorData}`;
                     logger.error(errorMsg, 'PythonBridge');
@@ -93,7 +104,7 @@ class PythonBridge {
                 }
             });
 
-            process.on('error', (err) => {
+            proc.on('error', (err) => {
                 logger.error(`Failed to spawn process for ${scriptName}`, 'PythonBridge', err);
                 reject(err);
             });

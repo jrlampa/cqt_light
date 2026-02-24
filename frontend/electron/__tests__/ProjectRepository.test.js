@@ -1,84 +1,59 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { createRequire } from 'module';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+const { ProjectRepository } = require('../src/infrastructure/repositories/ProjectRepository');
 
-const require = createRequire(import.meta.url);
-const projectRepo = require('../src/infrastructure/repositories/ProjectRepository');
-const db = require('../db/database.cjs');
+describe('ProjectRepository (100% Coverage)', () => {
+    let repo;
+    let mockDb;
 
-describe('ProjectRepository', () => {
     beforeEach(() => {
-        vi.clearAllMocks();
+        mockDb = {
+            all: vi.fn(),
+            get: vi.fn(),
+            run: vi.fn()
+        };
+        repo = new ProjectRepository(mockDb);
     });
 
-    it('should save budget', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.saveOrcamento('Proj', 100, { items: [] });
-        expect(db.run).toHaveBeenCalled();
+    it('should CRUD orcamentos', async () => {
+        await repo.saveOrcamento('Test', 100, {});
+        expect(mockDb.run).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO orcamentos'), ['Test', 100, '{}']);
+
+        mockDb.all.mockReturnValue([{ id: 1 }]);
+        const all = await repo.getAllOrcamentos();
+        expect(all).toHaveLength(1);
+
+        await repo.getOrcamento(1);
+        expect(mockDb.get).toHaveBeenCalledWith(expect.any(String), [1]);
+
+        await repo.deleteOrcamento(1);
+        expect(mockDb.run).toHaveBeenCalledWith(expect.stringContaining('DELETE'), [1]);
     });
 
-    it('should save template', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.saveTemplate('T1', 'Desc', {});
-        expect(db.run).toHaveBeenCalled();
+    it('should CRUD project templates', async () => {
+        await repo.saveTemplate('T1', 'Desc', {});
+        expect(mockDb.run).toHaveBeenCalledWith(expect.stringContaining('templates_projeto'), ['T1', 'Desc', '{}']);
+
+        await repo.getAllTemplates();
+        expect(mockDb.all).toHaveBeenCalled();
+
+        await repo.getTemplate(1);
+        expect(mockDb.get).toHaveBeenCalled();
+
+        await repo.deleteTemplate(1);
+        expect(mockDb.run).toHaveBeenCalled();
     });
 
-    it('should delete manual template', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.deleteTemplateManual('Nome');
-        expect(db.run).toHaveBeenCalled();
-    });
+    it('should CRUD manual kit templates', async () => {
+        await repo.saveTemplateManual({ nome_template: 'K1', materiais_json: [], observacao: '' });
+        expect(mockDb.run).toHaveBeenCalledWith(expect.stringContaining('templates_kit_manual'), ['K1', '[]', '']);
 
-    it('should get orcamento', () => {
-        vi.spyOn(db, 'get').mockReturnValue({ id: 1 });
-        projectRepo.getOrcamento(1);
-        expect(db.get).toHaveBeenCalled();
-    });
+        await repo.getAllTemplatesManuais();
+        expect(mockDb.all).toHaveBeenCalled();
 
-    it('should get all orcamentos', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        projectRepo.getAllOrcamentos();
-        expect(db.all).toHaveBeenCalled();
-    });
+        await repo.getTemplateManual('K1');
+        expect(mockDb.get).toHaveBeenCalled();
 
-    it('should delete orcamento', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.deleteOrcamento(1);
-        expect(db.run).toHaveBeenCalled();
-    });
-
-    it('should get all templates manuais', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        projectRepo.getAllTemplatesManuais();
-        expect(db.all).toHaveBeenCalled();
-    });
-
-    it('should save manual template', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.saveTemplateManual({ nome: 'N', desc: 'D', items: [] });
-        expect(db.run).toHaveBeenCalled();
-    });
-
-    it('should get all templates', () => {
-        vi.spyOn(db, 'all').mockReturnValue([]);
-        projectRepo.getAllTemplates();
-        expect(db.all).toHaveBeenCalled();
-    });
-
-    it('should delete template', () => {
-        vi.spyOn(db, 'run').mockReturnValue({ changes: 1 });
-        projectRepo.deleteTemplate(1);
-        expect(db.run).toHaveBeenCalled();
-    });
-
-    it('should get template by ID', () => {
-        vi.spyOn(db, 'get').mockReturnValue({ id: 1 });
-        projectRepo.getTemplate(1);
-        expect(db.get).toHaveBeenCalled();
-    });
-
-    it('should get template manual by name', () => {
-        vi.spyOn(db, 'get').mockReturnValue({ nome: 'N' });
-        projectRepo.getTemplateManual('N');
-        expect(db.get).toHaveBeenCalled();
+        await repo.deleteTemplateManual('K1');
+        expect(mockDb.run).toHaveBeenCalled();
     });
 });
