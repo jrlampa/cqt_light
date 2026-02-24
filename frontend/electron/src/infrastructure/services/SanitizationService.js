@@ -37,13 +37,16 @@ class SanitizationService {
     static _sanitizePole(p) {
         return {
             id: this._sanitizeString(p.id),
-            lat: Number(p.lat) || 0,
-            lng: Number(p.lng) || 0,
+            lat: this._sanitizeNumber(p.lat),
+            lng: this._sanitizeNumber(p.lng),
             type: this._sanitizeString(p.type),
-            length: Number(p.length) || 0,
-            foundation_depth: Number(p.foundation_depth) || 0,
+            length: this._sanitizeNumber(p.length),
+            foundation_depth: this._sanitizeNumber(p.foundation_depth),
             sap: this._sanitizeString(p.sap),
-            bim_metadata: p.bim_metadata || { maintenance_months: 24, lifecycle_years: 30 }
+            bim_metadata: p.bim_metadata ? {
+                maintenance_months: this._sanitizeNumber(p.bim_metadata.maintenance_months, 24),
+                lifecycle_years: this._sanitizeNumber(p.bim_metadata.lifecycle_years, 30)
+            } : { maintenance_months: 24, lifecycle_years: 30 }
         };
     }
 
@@ -54,8 +57,8 @@ class SanitizationService {
         return {
             id: this._sanitizeString(s.id),
             conductor: this._sanitizeString(s.conductor),
-            current_a: Number(s.current_a) || 0,
-            voltage_drop_pct: Number(s.voltage_drop_pct) || 0,
+            current_a: this._sanitizeNumber(s.current_a),
+            voltage_drop_pct: this._sanitizeNumber(s.voltage_drop_pct),
             sap: this._sanitizeString(s.sap)
         };
     }
@@ -66,9 +69,9 @@ class SanitizationService {
     static _sanitizeTransformer(t) {
         return {
             id: this._sanitizeString(t.id),
-            capacity_kva: Number(t.capacity_kva) || 0,
-            consumer_count: Number(t.consumer_count) || 0,
-            avg_consumption_kw: Number(t.avg_consumption_kw) || 1.2,
+            capacity_kva: this._sanitizeNumber(t.capacity_kva),
+            consumer_count: this._sanitizeNumber(t.consumer_count),
+            avg_consumption_kw: this._sanitizeNumber(t.avg_consumption_kw, 1.2),
             sap: this._sanitizeString(t.sap)
         };
     }
@@ -80,17 +83,46 @@ class SanitizationService {
         return {
             id: this._sanitizeString(c.id),
             scenario: this._sanitizeString(c.scenario),
-            height_m: Number(c.height_m) || 0
+            height_m: this._sanitizeNumber(c.height_m)
         };
     }
 
     /**
      * Sanitizes a string to prevent basic injection or malformed text.
+     * Includes XSS encoding and SQL escape (logic level).
      */
     static _sanitizeString(str) {
         if (!str) return '';
-        // Basic trim and strip HTML tags if any (very unlikely in technical data but safe)
-        return String(str).trim().replace(/<[^>]*>?/gm, '');
+
+        // 1. Convert to string and trim
+        let sanitized = String(str).trim();
+
+        // 2. Remove HTML tags (XSS Protection)
+        sanitized = sanitized.replace(/<[^>]*>?/gm, '');
+
+        // 3. Escape single quotes and backslashes (SQL Injection Mitigation at logic level)
+        // Note: Real parameterized queries in repositories are the primary defense.
+        sanitized = sanitized.replace(/'/g, "''").replace(/\\/g, "\\\\");
+
+        // 4. Basic XSS encoding for safety
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            '/': '&#x2F;'
+        };
+        sanitized = sanitized.replace(/[&<>"\/]/g, (m) => map[m]);
+
+        return sanitized;
+    }
+
+    /**
+     * Validates and cleans a number.
+     */
+    static _sanitizeNumber(val, fallback = 0) {
+        const num = Number(val);
+        return isNaN(num) ? fallback : num;
     }
 
     /**
