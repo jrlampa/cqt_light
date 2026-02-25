@@ -1,108 +1,145 @@
+const OptimizationService = require('./OptimizationService');
+const EfficiencyService = require('./EfficiencyService');
+const DemandService = require('./DemandService');
+const StructureService = require('./StructureService');
+const EngineeringService = require('../../infrastructure/services/EngineeringService');
+
 /**
  * RuleEngineService
  * Domain service for managing engineering rules and material suggestions.
- * Follows clean architecture and SRP.
+ * Integrates mechanical, electrical and demand calculations.
  */
 class RuleEngineService {
     /**
      * Analyzes project data and returns technical suggestions/alerts.
-     * @param {Object} projectData - The current project state (poles, sections, materials, conductors).
-     * @returns {Array} - List of insights { type, level, message, suggestedSaps }.
+     * @param {Object} projectData - The current project state.
      */
     static async getInsights(projectData) {
         const insights = [];
-        const { poles = [], materials = [], condutorMT, condutorBT } = projectData;
+        const { poles = [], materials = [], condutorMT, condutorBT, consumers = [] } = projectData;
 
-        // Rule 1: Transformer Protection
-        const transformerPoles = poles.filter(p =>
-            p.sap?.startsWith('T-') || p.descricao?.toUpperCase().includes('TRANSFORMADOR')
-        );
-
-        transformerPoles.forEach(p => {
-            const hasArrester = materials.some(m =>
-                m.descricao?.toUpperCase().includes('PARA-RAIO') || m.sap?.startsWith('PR-')
-            );
-            const hasFuse = materials.some(m =>
-                m.descricao?.toUpperCase().includes('CHAVE FUSIVEL') || m.sap?.startsWith('CH-')
-            );
-
-            if (!hasArrester) {
+        // --- 1. DEMAND & TRANSFORMER SIZING ---
+        const demand = DemandService.calculateDemand(consumers);
+        if (demand.suggestedTransformerKVA > 0) {
+            const sizing = DemandService.validateTransformerSizing(materials, demand);
+            if (sizing && sizing.status !== 'SAFE') {
                 insights.push({
-                    type: 'PROTECAO_MT',
-                    level: 'CRITICAL',
-                    message: `Proteção incompleta no poste ${p.sap || 'T-XXX'}: Falta Para-raios.`,
-                    suggestedSaps: ['PR-10KV-POLIMERICO']
-                });
-            }
-
-            if (!hasFuse) {
-                insights.push({
-                    type: 'PROTECAO_MT',
-                    level: 'CRITICAL',
-                    message: `Proteção incompleta no poste ${p.sap || 'T-XXX'}: Falta Chave Fusível.`,
-                    suggestedSaps: ['CH-FUSIVEL-15KV']
-                });
-            }
-        });
-
-        // Rule 2: Conductor vs Structure Compatibility (Spacer/Compacta)
-        const isCompacta = condutorMT?.tipo === 'Compacta' || condutorMT?.label?.toUpperCase().includes('SPACER');
-
-        if (isCompacta) {
-            const nonSpacerKits = poles.filter(p =>
-                p.descricao && !p.descricao.toUpperCase().includes('SPACER') &&
-                !p.descricao.toUpperCase().includes('COMPACTA') &&
-                !p.codigo_kit?.includes('/R') // Suffix check
-            );
-
-            if (nonSpacerKits.length > 0) {
-                insights.push({
-                    type: 'COMPATIBILIDADE_BIM',
-                    level: 'WARNING',
-                    message: `Condutor Spacer selecionado, mas ${nonSpacerKits.length} estruturas parecem ser convencionais.`,
-                    suggestedSaps: ['K-ZENITH-SPACER-N1']
+                    type: 'DIMENSIONAMENTO_CARGA',
+                    level: sizing.status,
+                    message: sizing.message,
+                    suggestedSaps: [`TRANSF-${demand.suggestedTransformerKVA}-KVA`]
                 });
             }
         }
 
-        // Rule 3: Missing Suffixes in Materials
-        const partials = materials.filter(m => m.sap?.endsWith('/'));
-        if (partials.length > 0) {
+        // --- 2. ECONOMIC OPTIMIZATION ---
+        const optimizationData = OptimizationService.analyzeBOM(projectData);
+        optimizationData.optimizations.forEach(opt => {
             insights.push({
-                type: 'QUALIDADE_DADOS',
-                level: 'WARNING',
-                message: `${partials.length} materiais estão com códigos parciais (/). O sistema tentou resolver, mas verifique o orçamento final.`,
-                suggestedSaps: []
+                type: opt.type,
+                level: opt.level,
+                message: opt.message,
+                suggestedSaps: opt.suggestedSap ? [opt.suggestedSap] : [],
+                originalSap: opt.originalSap,
+                impact: opt.impact
+            });
+        });
+
+        // --- 3. PHYSICAL & STRUCTURAL INTEGRITY ---
+
+        // 3.1 Advanced Structural Audit (New StructureService)
+        poles.forEach(p => {
+            const structureCode = p.codigo_kit || p.sap || "";
+            const integrity = StructureService.verifyIntegrity(structureCode, materials);
+
+            if (!integrity.isValid) {
+                insights.push({
+                    type: 'INTEGRIDADE_ESTRUTURAL',
+                    level: 'WARNING',
+                    message: `${integrity.message} no poste em ${p.sap || 'P-XXX'}.`,
+                    suggestedSaps: integrity.missing.map(m => StructureService.suggestCorrection(StructureService.resolveStructureType(structureCode), m))
+                });
+            }
+        });
+
+        // Mechanical Stress
+        if (poles.length > 0) {
+            const mainPole = materials.find(m => m.descricao?.toUpperCase().includes('POSTE')) || { esforco_nom_dan: 300 };
+            const stress = EngineeringService.calculateMechanicalStress(
+                mainPole,
+                poles,
+                { mt: condutorMT, bt: condutorBT }
+            );
+
+            if (stress.status !== 'SAFE') {
+                insights.push({
+                    type: 'ESFORCO_MECANICO',
+                    level: stress.status,
+                    message: stress.recommendation,
+                    suggestedSaps: stress.status === 'CRITICAL' ? ['POSTE-11-600', 'POSTE-12-1000'] : []
+                });
+            }
+
+            // Climate Resilience Check
+            const climateScenarios = EngineeringService.simulateClimateStress(mainPole, poles, { mt: condutorMT, bt: condutorBT });
+            const criticalScenario = climateScenarios.find(s => s.status === 'CRITICAL');
+            if (criticalScenario) {
+                insights.push({
+                    type: 'RESILIENCIA_CLIMATICA',
+                    level: 'WARNING',
+                    message: `Risco de falha estrutural em cenário de ${criticalScenario.scenario}. FS=${criticalScenario.safetyFactor}.`,
+                    suggestedSaps: ['POSTE-12-1000']
+                });
+            }
+        }
+
+        // Voltage Drop
+        if (condutorBT && materials.some(m => m.sap?.startsWith('CAB-BT') || m.descricao?.toUpperCase().includes('MULTIPLEX'))) {
+            const vdrop = EngineeringService.calculateVoltageDrop(condutorBT, 150, 40); // Average span/load
+            if (vdrop.status !== 'SAFE') {
+                insights.push({
+                    type: 'QUEDA_TENSAO',
+                    level: vdrop.status,
+                    message: vdrop.message,
+                    suggestedSaps: ['CABO-BT-70MM', 'CABO-BT-120MM']
+                });
+            }
+        }
+
+        // --- 4. LOGICAL & COMPATIBILITY RULES ---
+
+        // Conductor vs Structure Compatibility
+        const compatibility = EngineeringService.validateStructureCompatibility(poles, condutorMT);
+        if (!compatibility.isValid) {
+            compatibility.alerts.forEach(alert => {
+                insights.push({
+                    type: 'BIM_INCOMPATIBILIDADE',
+                    level: alert.type,
+                    message: alert.message,
+                    suggestedSaps: ['K-ZENITH-SPACER-N1']
+                });
             });
         }
 
-        // Rule 4: Dead-End structures without Anchors
-        const deadEndKits = poles.filter(p =>
-            p.codigo_kit?.includes('N4') || p.descricao?.toUpperCase().includes('FIM DE LINHA')
-        );
-
-        deadEndKits.forEach(p => {
-            const hasAnchor = materials.some(m =>
-                m.descricao?.toUpperCase().includes('ANCORAGEM') || m.descricao?.toUpperCase().includes('ESTREPO')
-            );
-            if (!hasAnchor) {
-                insights.push({
-                    type: 'MONTAGEM_MECANICA',
-                    level: 'WARNING',
-                    message: `Estrutura de fim de linha detectada sem conjunto de ancoragem no poste ${p.sap || ''}.`,
-                    suggestedSaps: ['ANC-MT-CAA']
-                });
-            }
-        });
-
-        // Rule 5: Zero Price Items
-        const zeroPriceItems = materials.filter(m => !m.preco_unitario || m.preco_unitario === 0);
-        if (zeroPriceItems.length > 0) {
+        // --- 4. ELECTRICAL EFFICIENCY ---
+        const efficiency = EfficiencyService.calculateTechnicalLosses(projectData);
+        if (efficiency.status !== 'SAFE') {
             insights.push({
-                type: 'ORCAMENTO',
+                type: 'EFICIENCIA_ENERGETICA',
+                level: efficiency.status,
+                message: efficiency.recommendation,
+                impact: `Perda anual: R$ ${efficiency.financialLossRS}`
+            });
+        }
+
+        // --- 5. PHASE BALANCING ---
+        const balance = EngineeringService.suggestConsumerPhase(consumers);
+        if (balance.isUnbalanced) {
+            insights.push({
+                type: 'BALANCEAMENTO_FASES',
                 level: 'WARNING',
-                message: `${zeroPriceItems.length} materiais com preço zero. Isso subestima o valor global.`,
-                suggestedSaps: zeroPriceItems.slice(0, 3).map(m => m.sap)
+                message: `Desequilíbrio de carga detectado. Corrente de neutro estimada: ${balance.estimatedNeutralCurrentA}A.`,
+                suggestedAction: `Conectar novos consumidores na fase ${balance.suggestedPhase}`
             });
         }
 

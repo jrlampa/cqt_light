@@ -107,7 +107,8 @@ const Configurator = ({ onStateChange }) => {
                 materials: state.custoData?.materiais || [],
                 sections: [],
                 condutorMT: state.condutorMT,
-                condutorBT: state.condutorBT
+                condutorBT: state.condutorBT,
+                consumers: state.consumers
               }}
               onApplySuggestion={(insight, sap) => {
                 // Handle suggestion application

@@ -3,18 +3,21 @@
  * Handles structural analysis and mechanical stress on poles.
  */
 class MechanicalService {
-    calculateMechanicalStress(pole, structures, conductors, deflection = 0) {
+    /**
+     * Calculates mechanical stress for a specific scenario.
+     */
+    calculateMechanicalStress(pole, structures, conductors, deflection = 0, windMultiplier = 1.0) {
         const poleStrength = pole.esforco_nom_dan || 300;
         let totalLoad = 0;
 
         // 1. Structure Vertical & Wind Loads
         structures.forEach(s => {
-            if (s.codigo_kit?.includes('RED')) totalLoad += 60;
-            if (s.codigo_kit?.includes('TR')) totalLoad += 180;
+            if (s.codigo_kit?.includes('RED')) totalLoad += 60 * windMultiplier;
+            if (s.codigo_kit?.includes('TR')) totalLoad += 180 * windMultiplier;
         });
 
         // 2. Conductor Transversal Load (Wind)
-        const windLoad = (conductors.mt ? 45 : 0) + (conductors.bt ? 35 : 0);
+        const windLoad = ((conductors.mt ? 45 : 0) + (conductors.bt ? 35 : 0)) * windMultiplier;
         totalLoad += windLoad;
 
         // 3. Deflection Load (Angular Tension)
@@ -41,6 +44,17 @@ class MechanicalService {
             deflectionAngle: deflection,
             status: utilization > 95 ? 'CRITICAL' : utilization > 80 ? 'WARNING' : 'SAFE',
             recommendation
+        };
+    }
+
+    /**
+     * Simulates multiple climate scenarios for a pole.
+     */
+    simulateClimateStress(pole, structures, conductors, deflection = 0) {
+        return {
+            operational: this.calculateMechanicalStress(pole, structures, conductors, deflection, 1.0),
+            storm: this.calculateMechanicalStress(pole, structures, conductors, deflection, 2.25), // Wind pressure scales with V^2
+            cableBreak: this.calculateMechanicalStress(pole, structures, conductors, 30, 1.0) // Simulates massive imbalance
         };
     }
 }

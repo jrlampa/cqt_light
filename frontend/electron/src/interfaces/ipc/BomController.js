@@ -1,5 +1,5 @@
 const auditUseCase = require('../../application/AuditProjectUseCase');
-const bomUseCase = require('../../application/GenerateBOMUseCase');
+const SmartBOMService = require('../../domain/services/SmartBOMService');
 const logger = require('../../infrastructure/services/Logger');
 
 class BomController {
@@ -9,7 +9,7 @@ class BomController {
         });
 
         handle('generate-bom', async (_, projectData) => {
-            return bomUseCase.execute(projectData);
+            return SmartBOMService.generate(projectData);
         });
 
         handle('rationalize-bom', async (_, { materials, structures }) => {

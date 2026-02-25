@@ -1,0 +1,50 @@
+
+> cqt-light@1.0.0 test
+> vitest run electron/__tests__/ElectricalIntelligence.test.js --no-color
+
+
+ RUN  v4.0.18 C:/Users/jonat/OneDrive - IM3 Brasil/utils/myworld/cqt_light/frontend
+
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js (5 tests | 2 failed) 8ms
+       Ô£ô should calculate diversified demand lower than installed load for multiple consumers 1ms
+       Ô£ô should suggest 75kVA transformer for high demand 0ms
+       ├ù should suggest the phase with minimum load 5ms
+       Ô£ô should detect critical unbalance 0ms
+       ├ù should calculate neutral current (KVA) correctly 1ms
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed Tests 2 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»
+
+ FAIL  electron/__tests__/ElectricalIntelligence.test.js > Electrical Intelligence Services > EngineeringService - Load Balancing > should suggest the phase with minimum load
+AssertionError: expected 'CRITICAL' to be 'WARNING' // Object.is equality
+
+Expected: "WARNING"
+Received: "CRITICAL"
+
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js:35:39
+     33|             const suggestion = EngineeringService.suggestConsumerPhaseÔÇª
+     34|             expect(suggestion.suggestedPhase).toBe('B');
+     35|             expect(suggestion.status).toBe('WARNING');
+       |                                       ^
+     36|         });
+     37| 
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/2]ÔÄ»
+
+ FAIL  electron/__tests__/ElectricalIntelligence.test.js > Electrical Intelligence Services > EngineeringService - Load Balancing > should calculate neutral current (KVA) correctly
+AssertionError: expected 8.5 to be close to 10, received difference is 1.5, but expected 0.05
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js:57:43
+     55|             const suggestion = EngineeringService.suggestConsumerPhaseÔÇª
+     56|             // In a single phase system, Neutral = Phase
+     57|             expect(suggestion.neutralKVA).toBeCloseTo(10, 1);
+       |                                           ^
+     58|         });
+     59|     });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/2]ÔÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  15:38:23
+   Duration  522ms (transform 13ms, setup 0ms, import 20ms, tests 8ms, environment 353ms)
+

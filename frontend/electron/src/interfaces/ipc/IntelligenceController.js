@@ -64,6 +64,16 @@ class IntelligenceController {
                 throw error;
             }
         });
+
+        handle('semantic-material-search', async (_, query) => {
+            try {
+                const MaterialIntelligenceService = require('../../domain/services/MaterialIntelligenceService');
+                return MaterialIntelligenceService.matchMaterial(query);
+            } catch (error) {
+                logger.error('Semantic material search failed', 'IntelligenceController', error);
+                throw error;
+            }
+        });
     }
 }
 

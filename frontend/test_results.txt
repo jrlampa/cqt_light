@@ -1,0 +1,62 @@
+
+> cqt-light@1.0.0 test
+> vitest run electron/__tests__/ElectricalIntelligence.test.js --no-color
+
+
+ RUN  v4.0.18 C:/Users/jonat/OneDrive - IM3 Brasil/utils/myworld/cqt_light/frontend
+
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js (5 tests | 3 failed) 9ms
+       Ô£ô should calculate diversified demand lower than installed load for multiple consumers 1ms
+       ├ù should suggest 75kVA transformer for high demand 3ms
+       ├ù should suggest the phase with minimum load 3ms
+       Ô£ô should detect critical unbalance 0ms
+       ├ù should calculate neutral current (KVA) correctly 0ms
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed Tests 3 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»
+
+ FAIL  electron/__tests__/ElectricalIntelligence.test.js > Electrical Intelligence Services > DemandService > should suggest 75kVA transformer for high demand
+AssertionError: expected 30 to be greater than or equal to 45
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js:22:52
+     20|             ];
+     21|             const result = DemandService.calculateDemand(consumers);
+     22|             expect(result.suggestedTransformerKVA).toBeGreaterThanOrEqÔÇª
+       |                                                    ^
+     23|         });
+     24|     });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/3]ÔÄ»
+
+ FAIL  electron/__tests__/ElectricalIntelligence.test.js > Electrical Intelligence Services > EngineeringService - Load Balancing > should suggest the phase with minimum load
+AssertionError: expected 'CRITICAL' to be 'SAFE' // Object.is equality
+
+Expected: "SAFE"
+Received: "CRITICAL"
+
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js:35:39
+     33|             const suggestion = EngineeringService.suggestConsumerPhaseÔÇª
+     34|             expect(suggestion.suggestedPhase).toBe('B');
+     35|             expect(suggestion.status).toBe('SAFE');
+       |                                       ^
+     36|         });
+     37| 
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/3]ÔÄ»
+
+ FAIL  electron/__tests__/ElectricalIntelligence.test.js > Electrical Intelligence Services > EngineeringService - Load Balancing > should calculate neutral current (KVA) correctly
+AssertionError: expected 8.5 to be close to 10, received difference is 1.5, but expected 0.05
+ ÔØ» electron/__tests__/ElectricalIntelligence.test.js:57:43
+     55|             const suggestion = EngineeringService.suggestConsumerPhaseÔÇª
+     56|             // In a single phase system, Neutral = Phase
+     57|             expect(suggestion.neutralKVA).toBeCloseTo(10, 1);
+       |                                           ^
+     58|         });
+     59|     });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[3/3]ÔÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  12:06:20
+   Duration  660ms (transform 15ms, setup 0ms, import 23ms, tests 9ms, environment 471ms)
+

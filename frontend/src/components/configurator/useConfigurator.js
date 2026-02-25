@@ -32,6 +32,7 @@ export const useConfigurator = (onStateChange) => {
 
     const [estruturas, setEstruturas] = useState(initial.estruturas || []);
     const [materiaisAvulsos, setMateriaisAvulsos] = useState(initial.materiaisAvulsos || []);
+    const [consumers, setConsumers] = useState(initial.consumers || []);
 
     const [structureQuery, setStructureQuery] = useState('');
     const [structureResults, setStructureResults] = useState([]);
@@ -313,17 +314,18 @@ export const useConfigurator = (onStateChange) => {
     }, []);
 
     useEffect(() => {
-        saveState({ condutorMT, condutorBT, estruturas, materiaisAvulsos });
+        saveState({ condutorMT, condutorBT, estruturas, materiaisAvulsos, consumers });
         if (onStateChange) {
             onStateChange({
                 poles: estruturas,
                 sections: [],
                 condutorMT,
                 condutorBT,
-                materiaisAvulsos
+                materiaisAvulsos,
+                consumers
             });
         }
-    }, [condutorMT, condutorBT, estruturas, materiaisAvulsos, onStateChange]);
+    }, [condutorMT, condutorBT, estruturas, materiaisAvulsos, consumers, onStateChange]);
 
     useEffect(() => {
         calculateTotal({ estruturas, materiaisAvulsos, condutorMT, condutorBT, sufixos, templates: manualTemplates });
@@ -385,7 +387,8 @@ export const useConfigurator = (onStateChange) => {
             showAssistant, setShowAssistant,
             engineeringReport, setEngineeringReport,
             custoData, setCustoData,
-            sufixos, manualTemplates
+            sufixos, manualTemplates,
+            consumers, setConsumers
         },
         handlers: {
             searchPoste, searchStructure, searchMaterial,

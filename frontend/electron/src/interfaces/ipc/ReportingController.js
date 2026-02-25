@@ -28,8 +28,8 @@ class ReportingController {
 
         handle('generate-technical-memorial', async (_, projectData) => {
             try {
-                const ReportService = require('../../../services/ReportService');
-                return ReportService.generateTechnicalMemorial(projectData);
+                const TechnicalMemorialService = require('../../domain/services/TechnicalMemorialService');
+                return TechnicalMemorialService.generateMemorial(projectData);
             } catch (error) {
                 logger.error('Failed to generate technical memorial', 'ReportingController', error);
                 throw error;

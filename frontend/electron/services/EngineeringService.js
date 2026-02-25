@@ -14,6 +14,10 @@ class EngineeringService {
         return (this.MechanicalService || MechanicalService).calculateMechanicalStress(pole, structures, conductors, deflection);
     }
 
+    simulateClimateStress(pole, structures, conductors, deflection = 0) {
+        return (this.MechanicalService || MechanicalService).simulateClimateStress(pole, structures, conductors, deflection);
+    }
+
     calculateVoltageDrop(conductor, distance, current = 60) {
         return (this.ElectricalService || ElectricalService).calculateVoltageDrop(conductor, distance, current);
     }
