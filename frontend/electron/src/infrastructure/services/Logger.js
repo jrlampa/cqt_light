@@ -57,7 +57,7 @@ class Logger {
     }
 
     debug(message, context = '') {
-        if (process.env.DEBUG || !app.isPackaged) {
+        if (process.env.DEBUG || !app?.isPackaged) {
             return this._log('DEBUG', message, context);
         }
     }

@@ -12,6 +12,17 @@ class BudgetIQService {
         'KIT': 120.00
     };
 
+    // Man-hours productivity coefficients per material type
+    static PRODUCTIVITY = {
+        POSTE: 4.5,
+        TRANSFORMADOR: 12.0,
+        CABO: 0.05, // per meter
+        KIT: 4.0
+    };
+
+    // Reference hourly rate (R$/h) for labor estimation
+    static HOURLY_RATE = 120.0;
+
     /**
      * Calculates the TCO for a material over its lifespan.
      * @param {Object} material - Material data with price, maintenance and life cycle.

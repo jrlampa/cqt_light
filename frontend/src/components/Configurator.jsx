@@ -20,6 +20,7 @@ import AssistantSidebar from './configurator/DesignerAssistant/AssistantSidebar'
 
 // Utils & Hook
 import { exportMaterialsToExcel } from '../utils/excelExporter';
+import { gerarRelatorioPDF } from '../utils/pdfExporter';
 import { useConfigurator } from './configurator/useConfigurator';
 import { CONDUTORES_MT, CONDUTORES_BT } from './configurator/ConductorData';
 
@@ -134,14 +135,35 @@ const Configurator = ({ onStateChange }) => {
             <Trash2 className="w-3 h-3" /> Limpar
           </button>
           <button
-            onClick={() => alert('Salvar como Kit - Em breve!')}
+            onClick={() => {
+              const nome = prompt('Nome do Kit/Template:', `KIT-${new Date().toISOString().slice(0,10)}`);
+              if (!nome || !nome.trim()) return;
+              if (!window.api) { alert('Erro: API do Electron não está disponível. Verifique se o aplicativo está rodando no ambiente Electron.'); return; }
+              const materiais = state.materiaisAvulsos.map(m => ({
+                codigo: m.sap,
+                descricao: m.descricao,
+                quantidade: m.quantidade || 1,
+              }));
+              const observacao = `Criado via Configurador em ${new Date().toLocaleString('pt-BR')}`;
+              const kitBase = state.estruturas[0]?.codigo_kit || null;
+              window.api.saveTemplateManual(nome.trim(), kitBase, materiais, observacao)
+                .then(() => alert(`✅ Kit "${nome.trim()}" salvo com sucesso!`))
+                .catch(err => alert(`❌ Erro ao salvar kit: ${err.message}`));
+            }}
             disabled={state.estruturas.length === 0 && state.materiaisAvulsos.length === 0}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <Save className="w-3 h-3" /> Kit
           </button>
           <button
-            onClick={() => alert('Relatório PDF - Em breve!')}
+            onClick={() => gerarRelatorioPDF({
+              materiais: state.custoData.materiais,
+              custoData: state.custoData,
+              estruturas: state.estruturas,
+              condutorMT: state.condutorMT,
+              condutorBT: state.condutorBT,
+              empresa: state.empresaAtiva,
+            })}
             disabled={state.estruturas.length === 0 && state.materiaisAvulsos.length === 0}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
