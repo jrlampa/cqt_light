@@ -22,6 +22,7 @@ O projeto segue o padrão **Thin Frontend / Smart Backend** (Electron + Python B
 * **Frontend**: Thin React (Vite) + SotA components.
   * `pdfExporter.js`: Geração de relatório PDF com jsPDF + autoTable.
   * `excelExporter.js`: Exportação de BOM para Excel (XLSX).
+  * `transformerCalculations.js`: Funções puras de cálculo elétrico (demanda, corrente, queda de tensão, carregamento).
 
 ---
 
@@ -31,6 +32,7 @@ O projeto segue o padrão **Thin Frontend / Smart Backend** (Electron + Python B
 * **Regras de Cálculo**: `data/rules/calculation_logic.json`.
 * **Serviços Electron**: `frontend/electron/services/` e `frontend/electron/src/`.
 * **DXF Generator**: `scripts/dxf_generator.py` — Projeção geo→CAD, layers POSTES/CONDUTORES/EQUIPAMENTOS/TEXTO/COTACAO/REFERENCIA.
+* **Transformer Calculations**: `frontend/src/utils/transformerCalculations.js` — Importado pelo componente e pelos testes.
 
 ---
 
@@ -41,24 +43,37 @@ O projeto segue o padrão **Thin Frontend / Smart Backend** (Electron + Python B
 3. **Auditoria Mecânica**: A fórmula $L/10 + 0.6$ é o padrão ouro. Qualquer variação deve ser tratada como Warning pesado ou Critical.
 4. **Vitest + CJS/ESM**: Tests em `electron/__tests__/` que usam `require('vitest')` falham. Usar sempre `import { describe, it, expect } from 'vitest'`. vi.mock + variáveis externas exige `vi.hoisted()`.
 5. **BOMService alias**: `electron/services/BOMService.js` é proxy de `BomService.js` para compatibilidade de testes.
-6. **AuditController alias**: `electron/ipc/AuditController.js` é proxy de `src/interfaces/ipc/AuditController.js`.
+6. **AuditController alias**: `electron/ipc/AuditController.js` é proxy de `src/interfaces/ipc/AuditController.js`. O vi.mock não intercepta o require interno porque o caminho de resolução diverge entre o contexto do teste e o contexto do módulo aninhado. Manter como pre-existing failure.
 7. **BudgetIQService.PRODUCTIVITY**: POSTE=4.5h, TRANSFORMADOR=12h, CABO=0.05h/m, KIT=4h. HOURLY_RATE=R$120/h.
 8. **Logger.debug guard**: `app?.isPackaged` (optional chaining) evita crash em ambiente de teste onde Electron app não está inicializado.
 9. **DXF Generator Design**: O `PlantaEletricaGenerator` usa projeção geográfica simples (1° lat ≈ 111km) para converter coordenadas GPS em coordenadas CAD. Layers obrigatórias: POSTES, CONDUTORES, EQUIPAMENTOS, TEXTO, COTACAO, REFERENCIA. DXF R12 ASCII — compatível com accoreconsole.exe headless.
 10. **PDF Export**: `gerarRelatorioPDF()` usa jsPDF + jspdf-autotable (já nas deps). Gera 3 seções: Dados Gerais, Resumo Financeiro, BOM Completo.
+11. **WMS Layers**: Usar `WMSTileLayer` do react-leaflet com endpoint IBGE gratuito (`geoservicos.ibge.gov.br/geoserver/wms`). Layer: `CGEO:BCG_Municipio_A`. Opacidade 0.5 para sobreposição visual. Estado `wmsLayer` controlado pelo MapToolbar.
+12. **Transformer Load Simulator**: Cálculos baseados em PRODIST Módulo 8, NBR 14039 e guia CEMIG DS-EL-01-1. FP padrão = 0.92. Margem obrigatória de 20% ao sugerir transformador (NBR 14039 seção 4.2.1). Funções puras em `utils/transformerCalculations.js` — importadas pelo componente E pelos testes.
+13. **PythonBridge tests**: Pre-existing failure. vi.mock('child_process') com CJS não intercepta o spawn dentro do módulo CJS PythonBridge.js. Causa: CJS/ESM interop no Vite-node. Não reescrever PythonBridge.js para corrigir.
+14. **ControllerRegistry test**: Pre-existing failure. `MaterialRepository is not a constructor` — erro de compatibilidade CJS/ESM no carregamento do repositório em contexto de teste.
 
 ---
 
-## 🚀 Próximos Passos (Ciclo 3)
+## 🧪 Estado dos Testes
 
-* Integração com `generateDXF` IPC no frontend (botão "Exportar DXF" no mapa ou configurador).
-* Alinhamento ANEEL/PRODIST Módulo 8 (Limites de qualidade).
-* Simulador de carga de Transformadores.
-* Refinar visualização 2.5D no Mapa (Leaflet) com DXF overlay.
-* Phase 5 do roadmap: WMS/WFS layers no mapa (IBGE gratuito).
+* **Total**: 150 testes (142 passando, 8 falhando)
+* **Pre-existing failures**: 4 arquivos (PythonBridge, AuditController, AuditProjectUseCase, ControllerRegistry)
+* **Python DXF tests**: 18 testes (todos passando, headless)
+* **Build**: `npm run build` → OK (zero erros)
+* **CodeQL**: 0 alertas
 
 ---
-*Status: Ciclo 3 — BOM Automation & DXF-IQ (Phase 3)*
-*Data: 2026-02-25*
-*RAG Level: ZENITH ENGINEERING MASTER (Stage 8)*
 
+## 🚀 Próximos Passos (Ciclo 5)
+
+* **Fase 4 (IFC/OpenBIM)**: Exportar estruturas configuradas para IFC 4.0 via IfcOpenShell Python bridge.
+* **Simulador de Stress Estrutural (Fase 6)**: Visualização de heatmap de tensão mecânica em postes.
+* **Corrigir pre-existing test failures**: Reescrever AuditController.test.js para usar vi.mock com caminho absoluto ou refatorar o bridge para um único nível de indireção.
+* **Modo Offline-First (Fase 7)**: Motor de sincronização SQLite com cofre de projetos.
+* **Editor de Relatórios dinâmico (Fase 16)**: Drag-and-drop de blocos de conteúdo para memoriais descritivos.
+
+---
+*Status: Ciclo 4 — DXF Export UI, WMS Layers, Transformer Load Simulator*
+*Data: 2026-02-26*
+*RAG Level: ZENITH ENGINEERING MASTER (Stage 9)*

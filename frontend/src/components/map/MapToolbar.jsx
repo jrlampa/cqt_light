@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Layers, MessageSquare, Info } from 'lucide-react';
+import { Box, Layers, MessageSquare, Map } from 'lucide-react';
 
-const MapToolbar = ({ viewMode, setViewMode, mapType, setMapType, isReviewMode, setIsReviewMode }) => {
+const MapToolbar = ({ viewMode, setViewMode, mapType, setMapType, isReviewMode, setIsReviewMode, wmsLayer, setWmsLayer }) => {
     return (
         <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
             <div className="bg-white/80 backdrop-blur-md p-1.5 rounded-xl shadow-lg border border-white/40 flex flex-col gap-1">
@@ -25,6 +25,13 @@ const MapToolbar = ({ viewMode, setViewMode, mapType, setMapType, isReviewMode, 
                     title="Satélite"
                 >
                     <Layers className="w-5 h-5" />
+                </button>
+                <button
+                    onClick={() => setWmsLayer(wmsLayer === 'none' ? 'ibge_municipios' : 'none')}
+                    className={`p-2 rounded-lg transition-all ${wmsLayer !== 'none' ? 'bg-emerald-500 text-white shadow-md' : 'hover:bg-gray-100 text-gray-600'}`}
+                    title="Camada WMS IBGE (Municípios)"
+                >
+                    <Map className="w-5 h-5" />
                 </button>
             </div>
         </div>
