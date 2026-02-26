@@ -1,4 +1,6 @@
 const EngineeringService = require('../../infrastructure/services/EngineeringService');
+const CADAutomationService = require('../../infrastructure/services/CADAutomationService');
+const SanitizationService = require('../../infrastructure/services/SanitizationService');
 const logger = require('../../infrastructure/services/Logger');
 
 /**
@@ -39,6 +41,25 @@ class EngineeringController {
                 return EngineeringService.validateStructureCompatibility(structures);
             } catch (error) {
                 logger.error('Structure validation failed', 'EngineeringController', error);
+                throw error;
+            }
+        });
+
+        handle('generate-dxf', async (_, rawData) => {
+            try {
+                const data = SanitizationService.sanitizeProjectData(rawData);
+                return await CADAutomationService.generateDXF(data);
+            } catch (error) {
+                logger.error('DXF generation failed', 'EngineeringController', error);
+                throw error;
+            }
+        });
+
+        handle('audit-dxf', async (_, { dxfPath }) => {
+            try {
+                return await CADAutomationService.auditDXFQuality(dxfPath);
+            } catch (error) {
+                logger.error('DXF audit failed', 'EngineeringController', error);
                 throw error;
             }
         });

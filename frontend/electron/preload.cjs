@@ -132,6 +132,10 @@ contextBridge.exposeInMainWorld('api', {
   calculateAssetHealth: (asset) => ipcRenderer.invoke('calculate-asset-health', asset),
   assessProjectRisk: (assets) => ipcRenderer.invoke('assess-project-risk', assets),
 
+  // DXF Generation & Audit (Phase 3: DXF-IQ)
+  generateDXF: (projectData) => ipcRenderer.invoke('generate-dxf', projectData),
+  auditDXF: (dxfPath) => ipcRenderer.invoke('audit-dxf', { dxfPath }),
+
   // Engine Bridge (Hardened)
   auditProject: (projectData) => ipcRenderer.invoke('audit-project', projectData),
   generateBOM: (projectData) => ipcRenderer.invoke('generate-bom', projectData),

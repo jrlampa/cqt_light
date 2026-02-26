@@ -82,6 +82,23 @@ class CADAutomationService {
             return []; // Fallback to empty results
         }
     }
+
+    /**
+     * Generates a 2D electrical layout DXF from project data.
+     * @param {Object} projectData - { output_path, postes, estruturas, condutor_mt, condutor_bt, projeto }
+     * @returns {Promise<Object>} - { status, output_path, stats }
+     */
+    async generateDXF(projectData) {
+        const PythonBridge = require('./PythonBridge');
+        logger.info(`Generating DXF: ${projectData.output_path}`, 'CADAutomationService');
+        try {
+            const result = await PythonBridge.run('dxf_generator', projectData);
+            return result;
+        } catch (error) {
+            logger.error(`DXF generation failed: ${error.message}`, 'CADAutomationService');
+            throw error;
+        }
+    }
 }
 
 module.exports = new CADAutomationService();

@@ -20,6 +20,7 @@ import AssistantSidebar from './configurator/DesignerAssistant/AssistantSidebar'
 
 // Utils & Hook
 import { exportMaterialsToExcel } from '../utils/excelExporter';
+import { gerarRelatorioPDF } from '../utils/pdfExporter';
 import { useConfigurator } from './configurator/useConfigurator';
 import { CONDUTORES_MT, CONDUTORES_BT } from './configurator/ConductorData';
 
@@ -134,14 +135,35 @@ const Configurator = ({ onStateChange }) => {
             <Trash2 className="w-3 h-3" /> Limpar
           </button>
           <button
-            onClick={() => alert('Salvar como Kit - Em breve!')}
+            onClick={() => {
+              const nome = prompt('Nome do Kit/Template:', `KIT-${new Date().toISOString().slice(0,10)}`);
+              if (!nome || !nome.trim()) return;
+              if (!window.api) { alert('Erro: API do Electron não está disponível. Verifique se o aplicativo está rodando no ambiente Electron.'); return; }
+              const materiais = state.materiaisAvulsos.map(m => ({
+                codigo: m.sap,
+                descricao: m.descricao,
+                quantidade: m.quantidade || 1,
+              }));
+              const observacao = `Criado via Configurador em ${new Date().toLocaleString('pt-BR')}`;
+              const kitBase = state.estruturas[0]?.codigo_kit || null;
+              window.api.saveTemplateManual(nome.trim(), kitBase, materiais, observacao)
+                .then(() => alert(`✅ Kit "${nome.trim()}" salvo com sucesso!`))
+                .catch(err => alert(`❌ Erro ao salvar kit: ${err.message}`));
+            }}
             disabled={state.estruturas.length === 0 && state.materiaisAvulsos.length === 0}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <Save className="w-3 h-3" /> Kit
           </button>
           <button
-            onClick={() => alert('Relatório PDF - Em breve!')}
+            onClick={() => gerarRelatorioPDF({
+              materiais: state.custoData.materiais,
+              custoData: state.custoData,
+              estruturas: state.estruturas,
+              condutorMT: state.condutorMT,
+              condutorBT: state.condutorBT,
+              empresa: state.empresaAtiva,
+            })}
             disabled={state.estruturas.length === 0 && state.materiaisAvulsos.length === 0}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
@@ -150,12 +172,42 @@ const Configurator = ({ onStateChange }) => {
         </div>
 
         {state.custoData.materiais.length > 0 && (
-          <button
-            onClick={() => exportMaterialsToExcel(state.custoData.materiais, state.custoData)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
-          >
-            <Download className="w-3 h-3" /> Exportar Excel
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => exportMaterialsToExcel(state.custoData.materiais, state.custoData)}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-purple-200 text-purple-600 hover:bg-purple-50 transition"
+            >
+              <Download className="w-3 h-3" /> Excel
+            </button>
+            <button
+              onClick={async () => {
+                if (!window.api?.generateDXF) { alert('DXF: API do Electron não disponível.'); return; }
+                try {
+                  const postes = (await window.api.getAllGisAssets?.() ?? []).map(a => ({
+                    pole_id: a.pole_id, lat: a.lat, lng: a.lng, altura: a.altura ?? 12,
+                  }));
+                  const result = await window.api.generateDXF({
+                    projeto: { nome: state.empresaAtiva?.nome_fantasia ?? 'Projeto CQT' },
+                    postes,
+                    estruturas: state.estruturas,
+                    condutor_mt: state.condutorMT ?? {},
+                    condutor_bt: state.condutorBT ?? {},
+                  });
+                  if (result?.status === 'SUCCESS') {
+                    alert(`✅ Planta DXF gerada!\n${result.output_path}\nPostes: ${result.stats?.postes ?? 0}`);
+                  } else {
+                    alert(`❌ Erro ao gerar DXF: ${result?.message ?? 'desconhecido'}`);
+                  }
+                } catch (err) {
+                  alert(`❌ ${err.message}`);
+                }
+              }}
+              disabled={state.estruturas.length === 0 && state.materiaisAvulsos.length === 0}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded-lg border border-sky-200 text-sky-600 hover:bg-sky-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            >
+              <Zap className="w-3 h-3" /> DXF
+            </button>
+          </div>
         )}
 
         {/* Engineering Alert */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3, FileText, ShieldCheck } from 'lucide-react';
+import { Calculator, Layers, Package, DollarSign, Map as MapIcon, Database, BarChart3, FileText, ShieldCheck, Zap } from 'lucide-react';
 
 // Lazy load heavy components
 const ReportsDashboard = lazy(() => import('./components/ReportsDashboard'));
@@ -11,6 +11,7 @@ const StructuralMap = lazy(() => import('./components/StructuralMap'));
 const AnalyticsManager = lazy(() => import('./components/AnalyticsManager'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const MaintenanceBacklog = lazy(() => import('./components/MaintenanceBacklog'));
+const TransformerLoadSimulator = lazy(() => import('./components/TransformerLoadSimulator'));
 
 function App() {
   const [activeTab, setActiveTab] = useState('configurator');
@@ -59,6 +60,7 @@ function App() {
     { id: 'backlog', label: 'Backlog BIM', icon: Package, shortcut: '7', mode: 'analytics' },
     { id: 'analytics', label: 'Auditoria SotA', icon: ShieldCheck, shortcut: '8', mode: 'analytics' },
     { id: 'reports', label: 'Relatórios', icon: FileText, shortcut: '9', mode: 'analytics' },
+    { id: 'simulator', label: 'Simulador Carga', icon: Zap, shortcut: '0', mode: 'analytics' },
   ];
 
   const filteredTabs = tabs.filter(t => t.mode === appMode);
@@ -74,6 +76,7 @@ function App() {
       case 'backlog': return <MaintenanceBacklog />;
       case 'analytics': return <AnalyticsManager projectData={projectData} />;
       case 'reports': return <ReportsDashboard projectData={projectData} />;
+      case 'simulator': return <TransformerLoadSimulator />;
       default: return <Configurator onStateChange={setProjectData} />;
     }
   };

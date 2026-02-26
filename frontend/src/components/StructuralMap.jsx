@@ -1,5 +1,5 @@
 import React, { useState, useMemo, memo, useEffect } from 'react';
-import { MapContainer, TileLayer, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, WMSTileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import NormativeExplorer from './NormativeExplorer';
 import { Activity } from 'lucide-react';
@@ -10,6 +10,15 @@ import StructureMarker from './map/StructureMarker';
 import BimInspector from './map/BimInspector';
 import FieldAuditModal from './map/FieldAuditModal';
 
+// Free IBGE WMS endpoints (zero-cost, public API)
+const WMS_LAYERS = {
+    ibge_municipios: {
+        url: 'https://geoservicos.ibge.gov.br/geoserver/wms',
+        layers: 'CGEO:BCG_Municipio_A',
+        label: 'Municípios IBGE',
+    },
+};
+
 const StructuralMap = ({ initialPos = [-22.15018, -42.92185] }) => {
     const [viewMode, setViewMode] = useState('2.5D');
     const [mapType, setMapType] = useState('osm');
@@ -19,6 +28,7 @@ const StructuralMap = ({ initialPos = [-22.15018, -42.92185] }) => {
     const [selectedSap, setSelectedSap] = useState(null);
     const [assets, setAssets] = useState([]);
     const [auditAsset, setAuditAsset] = useState(null);
+    const [wmsLayer, setWmsLayer] = useState('none');
 
     const fetchGisData = async () => {
         if (!window.api) return;
@@ -123,6 +133,7 @@ const StructuralMap = ({ initialPos = [-22.15018, -42.92185] }) => {
                 viewMode={viewMode} setViewMode={setViewMode}
                 mapType={mapType} setMapType={setMapType}
                 isReviewMode={isReviewMode} setIsReviewMode={setIsReviewMode}
+                wmsLayer={wmsLayer} setWmsLayer={setWmsLayer}
             />
 
             <MapContainer
@@ -135,6 +146,18 @@ const StructuralMap = ({ initialPos = [-22.15018, -42.92185] }) => {
                     url={mapType === 'osm' ? "https://{s}.tile.osm.org/{z}/{x}/{y}.png" : "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"}
                     opacity={mapType === 'satellite' ? 0.9 : 1}
                 />
+
+                {/* WMS Layer — IBGE public service (zero-cost) */}
+                {wmsLayer !== 'none' && WMS_LAYERS[wmsLayer] && (
+                    <WMSTileLayer
+                        url={WMS_LAYERS[wmsLayer].url}
+                        layers={WMS_LAYERS[wmsLayer].layers}
+                        format="image/png"
+                        transparent={true}
+                        opacity={0.5}
+                        version="1.1.1"
+                    />
+                )}
 
                 {processedMapData.spans.map((span, idx) => (
                     <Polyline
@@ -167,6 +190,11 @@ const StructuralMap = ({ initialPos = [-22.15018, -42.92185] }) => {
                     <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
                     <span className="text-xs font-mono uppercase tracking-widest">Ativos BIM Mapeados: {assets.length}</span>
                 </div>
+                {wmsLayer !== 'none' && WMS_LAYERS[wmsLayer] && (
+                    <div className="bg-emerald-600/80 backdrop-blur-md px-4 py-1.5 rounded-lg text-white text-[10px] font-bold uppercase tracking-widest border border-emerald-400/50">
+                        WMS: {WMS_LAYERS[wmsLayer].label}
+                    </div>
+                )}
                 {isReviewMode && (
                     <div className="bg-amber-600/80 backdrop-blur-md px-4 py-1.5 rounded-lg text-white text-[10px] font-bold uppercase tracking-widest border border-amber-400/50">
                         Z-Review Mode Ativo
